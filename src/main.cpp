@@ -31,16 +31,19 @@ int main(void) {
     bool towerOn = false;
     int selectedBut = 0;
 
+    Color BColor{0,100,0,100};
+
     // Button
     gui::button buton1("data/gui/but1.png", {1100,0});
 
     gui::texture texture1("data/gui/LMenu.png", {1000,0});
 
-    tower1 tower("data/gui/item1.png");
+    gui::texture mainTower("data/gui/item1.png", {0,0});
 
+    Texture2D tower1Text = LoadTexture("data/gui/item1.png");
     enemys enemy1("data/enemy.png", {-32,96});
 
-    std::vector<Vector2i> placedPosses;
+    std::vector<tower1> placedTowers;
 
     // Ana loop
     while (!WindowShouldClose()){
@@ -72,15 +75,15 @@ int main(void) {
 
                 if(selectedBut==1){
                     Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-                    Vector2 newPos = { worldPos.x-tower.getTexture().height/2, 
-                                       worldPos.y-tower.getTexture().width/2 };
-                    tower.drawEx(newPos);
+                    Vector2 newPos = { worldPos.x-mainTower.getSize().x/2, 
+                                       worldPos.y-mainTower.getSize().y/2 };
+                    mainTower.drawEx(newPos, 1.f);
                 }
 
-                for (Vector2i pos : placedPosses){
-                    Vector2 realPos = mapMan1.getRealPos(pos);
-                    tower.drawEx(realPos);
-                    DrawCircleV({realPos.x+16, realPos.y+16}, 150.f, Color{0,100,0,100});
+                for (tower1& tower : placedTowers){
+                    tower.draw();
+                    //TraceLog(LOG_INFO, "TowerDraww: %i: {%f, %f}", tower.getTexture()->id, tower.getPos().x, tower.getPos().y);
+                    DrawCircleV(tower.getCenter(), tower.getRange(), BColor);
                 }
 
                 enemy1.draw();
@@ -95,6 +98,17 @@ int main(void) {
         enemy1.aiLoop(mapMan1);
         enemy1.move();
 
+        for (tower1& tower : placedTowers){
+            Vector2 center = {tower.getPos().x + tower.getRange(), tower.getPos().y + tower.getRange()};
+            if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy1.getRec())){
+                TraceLog(LOG_INFO, "HEDEF VAR!!!");
+                //tower.createBullet(center, enemy1.getPos());
+                BColor = {100,0,0,100};
+            } else {
+                BColor = {0,100,0,100};
+            }
+        }
+
         Vector2 mousePos = GetMousePosition();
 
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
@@ -103,12 +117,12 @@ int main(void) {
                 TileData data = mapMan1.getTileByPos(worldPos);
 
                 if(data.type==1){
-                    for (Vector2i pos : placedPosses){
-                        if(data.tilePos == pos) data.isTileEmpty = 0;
+                    for (tower1& tower : placedTowers){
+                        if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                     }
                     if(data.isTileEmpty){
                         TraceLog(LOG_INFO, "BLOK KOYULDU");
-                        placedPosses.push_back(data.tilePos);
+                        placedTowers.emplace_back(tower1Text, mapMan1.getRealPos(data.tilePos));
                         selectedBut = 0;
                     }
                 }
@@ -123,7 +137,6 @@ int main(void) {
             }
         }
     }
-
     
     CloseWindow();
     return 0;

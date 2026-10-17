@@ -1,6 +1,8 @@
 #pragma once
 #include <raylib.h>
 #include <string>
+#include <memory>
+#include "towers/bullet.hpp"
 
 enum TowerType{
     T_NOTOWER, T_TOWER1, T_TOWER2, T_TOWER3, T_TOWER4, T_TOWER5,
@@ -8,13 +10,19 @@ enum TowerType{
 
 class tower1{
 private:
-    Vector2 pos;
-    Texture2D text;
+    Vector2 pos{};
+    const Texture2D* text;
+    float range=150.f;
 public:
-    tower1(const std::string& path);
-    ~tower1();
+    tower1(const Texture2D& text, Vector2 pos);
+    ~tower1() = default;
 
-    Texture2D getTexture() {return text;};
+    Vector2 getPos() {return pos;};
+    float getRange() {return range;};
+    Vector2 getCenter() {return {pos.x+16, pos.y+16};};
 
+    bullet createBullet(Vector2 startPos, Vector2 endPos);
+
+    void draw();
     void drawEx(Vector2 pos);
 };
