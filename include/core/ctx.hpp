@@ -6,6 +6,11 @@
 struct Vector2i{
     int x;
     int y;
+
+    bool operator==(const Vector2i& other) const {
+        return x == other.x &&
+               y == other.y;
+    }
 };
 
 

@@ -1,7 +1,7 @@
+#pragma once
+
 #include <raylib.h>
 #include <string>
-
-
 
 namespace gui{
     class button{

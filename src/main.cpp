@@ -1,12 +1,14 @@
 #include <raylib.h>
-#include <iostream>
+#include <vector>
+#include <ostream>
 
 #include "core/ctx.hpp"
 
-#include "core/cute_tiled.h"
 #include "map/mapMan.hpp"
 #include "gui/buttons.hpp"
 #include "gui/textures.hpp"
+#include "towers/towers.hpp"
+#include "enemy/enemys.hpp"
 
 int main(void) {
     ctx GData;
@@ -26,16 +28,19 @@ int main(void) {
     camera.zoom = 1.0f;
 
     // Selected
+    bool towerOn = false;
     int selectedBut = 0;
 
     // Button
     gui::button buton1("data/gui/but1.png", {1100,0});
 
     gui::texture texture1("data/gui/LMenu.png", {1000,0});
-    gui::texture select1("data/gui/item1.png", {1000,0});
 
-    bool placed = false;
-    Vector2i placedPos;
+    tower1 tower("data/gui/item1.png");
+
+    enemys enemy1("data/enemy.png", {-32,96});
+
+    std::vector<Vector2i> placedPosses;
 
     // Ana loop
     while (!WindowShouldClose()){
@@ -65,46 +70,56 @@ int main(void) {
                 mapMan1.draw();
 
 
-                if(selectedBut!=0){
+                if(selectedBut==1){
                     Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-                    Vector2 newPos = { worldPos.x-select1.getTexture().height/2, 
-                                       worldPos.y-select1.getTexture().width/2 };
-                    select1.drawEx(newPos, camera.zoom);
+                    Vector2 newPos = { worldPos.x-tower.getTexture().height/2, 
+                                       worldPos.y-tower.getTexture().width/2 };
+                    tower.drawEx(newPos);
                 }
 
-                if(placed){
-                    TraceLog(LOG_INFO, "TRUEEE");
-                    select1.drawEx(mapMan1.getRealPos(placedPos), camera.zoom);
+                for (Vector2i pos : placedPosses){
+                    Vector2 realPos = mapMan1.getRealPos(pos);
+                    tower.drawEx(realPos);
+                    DrawCircleV({realPos.x+16, realPos.y+16}, 150.f, Color{0,100,0,100});
                 }
+
+                enemy1.draw();
 
             EndMode2D();
 
             texture1.draw();
             buton1.draw();
 
-
         EndDrawing();
+        
+        enemy1.aiLoop(mapMan1);
+        enemy1.move();
 
         Vector2 mousePos = GetMousePosition();
 
-        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && selectedBut!=0){
-            TraceLog(LOG_INFO, "Koyuldu");
-            Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-            TileData data = mapMan1.getTileByPos(worldPos);
-            if (data.trueVal) std::cout << data.type << ": " << data.tilePos.x << "," << data.tilePos.y << std::endl;
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            if(selectedBut!=0){
+                Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+                TileData data = mapMan1.getTileByPos(worldPos);
 
-            placed = 1;
-            TraceLog(LOG_INFO, "Veri : %d", placed);
-            placedPos = data.tilePos;
-            selectedBut = 0;
-        }
+                if(data.type==1){
+                    for (Vector2i pos : placedPosses){
+                        if(data.tilePos == pos) data.isTileEmpty = 0;
+                    }
+                    if(data.isTileEmpty){
+                        TraceLog(LOG_INFO, "BLOK KOYULDU");
+                        placedPosses.push_back(data.tilePos);
+                        selectedBut = 0;
+                    }
+                }
+            }
 
-        if(buton1.isClicked(mousePos) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            TraceLog(LOG_INFO, "buton1");
-            if(selectedBut==1){
-                selectedBut = 0;
-            } else {
-                selectedBut = 1;
+            if(buton1.isClicked(mousePos)){
+                if(selectedBut==1){
+                    selectedBut = 0;
+                } else {
+                    selectedBut = 1;
+                }
             }
         }
     }

@@ -72,3 +72,42 @@ TileData mapMan::getTileByPos(Vector2 mousePos){
     }
     return out;
 }
+
+bool mapMan::isInCollionWithID(Vector2 objPos, Vector2 objSize, int selectedID){
+    Rectangle ObjRec = {objPos.x, objPos.y, objSize.x, objSize.y};
+    Vector2i StartPos = {
+        ((int)objPos.x/(int)TILESIZE), 
+        ((int)objPos.y/(int)TILESIZE)};
+    Vector2i EndPos = {
+        ((int)(objPos.x+objSize.x)/(int)TILESIZE), 
+        ((int)(objPos.y+objSize.y)/(int)TILESIZE)};
+
+    cute_tiled_layer_t* layer =  cuteMap->layers;
+
+    if (!layer || !layer->data)
+        return false;
+    // --------------------------------------------------------------
+    int size = 2;
+    for (int y = StartPos.y-size; y <= EndPos.y+size; y++) {
+        for (int x = StartPos.x-size; x <= EndPos.x+size; x++) {
+
+            //! Hata ayıklama
+            if (x < 0 || y < 0 || x >= layer->width || y >= layer->height) continue;
+            
+            int indx = y * layer->width + x;
+            int data = layer->data[indx];
+
+            Rectangle tileRec = {x*TILESIZE, y*TILESIZE, TILESIZE, TILESIZE};
+
+
+            if(data==selectedID && CheckCollisionRecs(ObjRec, tileRec)){
+                //TraceLog(LOG_INFO, "selectedID=%d, data=%d, x=%d, y=%d", selectedID, data, x, y);
+                //TraceLog(LOG_INFO, "%i Tile: {%f, %f} TileTilePos: {%i, %i}",data,  tileRec.x, tileRec.y ,x, y);
+                return true;
+                
+            }
+        }
+    }
+
+    return false;
+}

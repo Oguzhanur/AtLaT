@@ -1,3 +1,5 @@
+#pragma once
+
 #include <raylib.h>
 #include <string>
 
@@ -11,7 +13,7 @@ namespace gui{
         ~texture();
 
         Texture2D getTexture() {return text;};
-
+        
         void draw();
         void drawEx(Vector2 pos, float scale);
     };
