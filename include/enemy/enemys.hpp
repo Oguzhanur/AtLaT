@@ -15,7 +15,7 @@ private:
     Texture2D text;
     int lastDir = -1;
     Vector2 direction = {0.f,0.f};
-    float speed = 4.f;
+    float speed = 4.f ;
 public:
     enemys(const std::string& path, Vector2 pos);
     ~enemys();
@@ -24,6 +24,6 @@ public:
     Vector2 getPos() {return pos;};
 
     void aiLoop(mapMan& man);
-    void move();
+    void move(float dt);
     void draw();
 };

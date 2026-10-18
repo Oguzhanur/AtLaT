@@ -14,7 +14,3 @@ void tower1::drawEx(Vector2 pos){
     pos = pos;
     DrawTextureEx(*text, pos, 0.f, 1.f, WHITE);
 }
-
-bullet tower1::createBullet(Vector2 startPos, Vector2 endPos){
-    // ..........
-}

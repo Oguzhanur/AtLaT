@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <vector>
 #include <ostream>
+#include <algorithm>
 
 #include "core/ctx.hpp"
 
@@ -9,6 +10,7 @@
 #include "gui/textures.hpp"
 #include "towers/towers.hpp"
 #include "enemy/enemys.hpp"
+
 
 int main(void) {
     ctx GData;
@@ -32,6 +34,7 @@ int main(void) {
     int selectedBut = 0;
 
     Color BColor{0,100,0,100};
+    bool isAnyBullet = 0;
 
     // Button
     gui::button buton1("data/gui/but1.png", {1100,0});
@@ -44,9 +47,11 @@ int main(void) {
     enemys enemy1("data/enemy.png", {-32,96});
 
     std::vector<tower1> placedTowers;
+    std::vector<Bullet> bullets;
 
     // Ana loop
     while (!WindowShouldClose()){
+        float dt = GetFrameTime();
         // Kamera hareketleri
         if(IsKeyDown(KEY_Q) && camera.zoom < 2.f){
             camera.zoom += 0.01f;
@@ -86,6 +91,17 @@ int main(void) {
                     DrawCircleV(tower.getCenter(), tower.getRange(), BColor);
                 }
 
+                for (Bullet& bul : bullets){
+                    if(bul.getActive()){ 
+                        bul.updateBullet(dt);
+
+                        bul.draw();
+                    }
+                }
+                bullets.erase(
+                    std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
+                );
+
                 enemy1.draw();
 
             EndMode2D();
@@ -96,16 +112,11 @@ int main(void) {
         EndDrawing();
         
         enemy1.aiLoop(mapMan1);
-        enemy1.move();
+        enemy1.move(dt);
 
         for (tower1& tower : placedTowers){
-            Vector2 center = {tower.getPos().x + tower.getRange(), tower.getPos().y + tower.getRange()};
             if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy1.getRec())){
-                TraceLog(LOG_INFO, "HEDEF VAR!!!");
-                //tower.createBullet(center, enemy1.getPos());
-                BColor = {100,0,0,100};
-            } else {
-                BColor = {0,100,0,100};
+                bullets.push_back(Bullet{tower.getCenter(), enemy1.getPos(), 25.f});
             }
         }
 

@@ -11,7 +11,7 @@ enemys::~enemys(){
 void enemys::aiLoop(mapMan& man){
     if(direction.x == 0 && direction.y == 0){
         Vector2 newPos = pos;
-        int movementSpeed = 32;
+        float movementSpeed = 32;
         int size = 0;
 
         newPos.x+=size+movementSpeed;
@@ -45,26 +45,27 @@ void enemys::aiLoop(mapMan& man){
     }
 }
 
-void enemys::move(){
-    if(direction.x >= speed ){
-        pos.x += speed;
-        direction.x -= speed;
+void enemys::move(float dt){
+    dt=1.f; //! dt ile işlevsel çalışsın ve bunu kaldır.
+    if(direction.x >= speed*dt ){
+        pos.x += speed*dt;
+        direction.x -= speed*dt;
         lastDir = DIR_RIGHT;
-    } else if (direction.x <= -speed) {
-        pos.x -= speed;
-        direction.x += speed;
+    } else if (direction.x <= -speed*dt) {
+        pos.x -= speed*dt;
+        direction.x += speed*dt;
         lastDir = DIR_LEFT;
     } else { 
         direction.x = 0;
     }
 
-    if(direction.y >= speed){
-        pos.y += speed;
-        direction.y -= speed;
+    if(direction.y >= speed*dt){
+        pos.y += speed*dt;
+        direction.y -= speed*dt;
         lastDir = DIR_DOWN;
-    } else if (direction.y <= -speed) {
-        pos.y -= speed;
-        direction.y += speed;
+    } else if (direction.y <= -speed*dt) {
+        pos.y -= speed*dt;
+        direction.y += speed*dt;
         lastDir = DIR_UP;
     } else { 
         direction.y = 0;

@@ -21,8 +21,6 @@ public:
     float getRange() {return range;};
     Vector2 getCenter() {return {pos.x+16, pos.y+16};};
 
-    bullet createBullet(Vector2 startPos, Vector2 endPos);
-
     void draw();
     void drawEx(Vector2 pos);
 };
