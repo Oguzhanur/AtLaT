@@ -30,11 +30,9 @@ int main(void) {
     camera.zoom = 1.0f;
 
     // Selected
-    bool towerOn = false;
     int selectedBut = 0;
 
     Color BColor{0,100,0,100};
-    bool isAnyBullet = 0;
 
     // Button
     gui::button buton1("data/gui/but1.png", {1100,0});
@@ -44,10 +42,15 @@ int main(void) {
     gui::texture mainTower("data/gui/item1.png", {0,0});
 
     Texture2D tower1Text = LoadTexture("data/gui/item1.png");
-    enemys enemy1("data/enemy.png", {-32,96});
+    Texture2D enemy1Text = LoadTexture("data/enemy.png");
 
     std::vector<tower1> placedTowers;
+    std::vector<enemys> enemysComming;
     std::vector<Bullet> bullets;
+
+    enemysComming.emplace_back(enemy1Text, Vector2{-32, 96});
+
+    enemysComming.emplace_back(enemy1Text, Vector2{0, 96});
 
     // Ana loop
     while (!WindowShouldClose()){
@@ -89,6 +92,14 @@ int main(void) {
                     tower.draw();
                     //TraceLog(LOG_INFO, "TowerDraww: %i: {%f, %f}", tower.getTexture()->id, tower.getPos().x, tower.getPos().y);
                     DrawCircleV(tower.getCenter(), tower.getRange(), BColor);
+
+                    for (enemys& enemy : enemysComming){
+                        if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy.getRec())){
+                            bullets.push_back(Bullet{tower.getCenter(), enemy.getPosPtr(), 25.f});
+
+                            break;
+                        }
+                    }
                 }
 
                 for (Bullet& bul : bullets){
@@ -96,13 +107,30 @@ int main(void) {
                         bul.updateBullet(dt);
 
                         bul.draw();
+
+                        for (enemys& enemy : enemysComming){
+                            if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 3.0f) && enemy.getActive()){
+                                bul.killBullet();
+                                enemy.attack(bul.getDamage());
+                            }
+                        }
                     }
                 }
+
                 bullets.erase(
                     std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
                 );
+                enemysComming.erase(
+                    std::remove_if(enemysComming.begin(), enemysComming.end(), [](const enemys& enemy) {return !enemy.getActive();}), enemysComming.end()
+                );
 
-                enemy1.draw();
+                for (enemys& enemy : enemysComming){
+                    enemy.draw();
+
+                    enemy.aiLoop(mapMan1);
+                    enemy.move(dt);
+                }
+
 
             EndMode2D();
 
@@ -111,15 +139,7 @@ int main(void) {
 
         EndDrawing();
         
-        enemy1.aiLoop(mapMan1);
-        enemy1.move(dt);
-
-        for (tower1& tower : placedTowers){
-            if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy1.getRec())){
-                bullets.push_back(Bullet{tower.getCenter(), enemy1.getPos(), 25.f});
-            }
-        }
-
+        
         Vector2 mousePos = GetMousePosition();
 
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){

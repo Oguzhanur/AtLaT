@@ -1,8 +1,5 @@
 #include "towers/towers.hpp"
 
-tower1::tower1(const Texture2D& text, Vector2 pos) : pos(pos), text(&text){
-}
-
 void tower1::draw(){
     if (text->id == 0) {
         TraceLog(LOG_ERROR, "Texture yuklenemedi!");

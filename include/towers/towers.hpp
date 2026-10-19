@@ -14,7 +14,7 @@ private:
     const Texture2D* text;
     float range=150.f;
 public:
-    tower1(const Texture2D& text, Vector2 pos);
+    tower1(const Texture2D& text, Vector2 pos) : pos(pos), text(&text) {};
     ~tower1() = default;
 
     Vector2 getPos() {return pos;};
