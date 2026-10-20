@@ -8,6 +8,8 @@
 #include "map/mapMan.hpp"
 #include "gui/buttons.hpp"
 #include "gui/textures.hpp"
+#include "gui/healthBar.hpp"
+
 #include "towers/towers.hpp"
 #include "enemy/enemys.hpp"
 
@@ -21,6 +23,11 @@ int main(void) {
     SetTargetFPS(60);
 
     mapMan mapMan1;
+
+    // Base
+    int money = 1000;
+    float baseHealth = 100.f;
+    healthBar hBar({20,20}, {400,50}, baseHealth);
 
     // Kamera
     Camera2D camera = { 0 };
@@ -48,13 +55,13 @@ int main(void) {
     std::vector<enemys> enemysComming;
     std::vector<Bullet> bullets;
 
-    enemysComming.emplace_back(enemy1Text, Vector2{-32, 96});
+    enemysComming.emplace_back(enemy1Text, Vector2{-32, 96}, 24.f);
 
-    enemysComming.emplace_back(enemy1Text, Vector2{0, 96});
+    enemysComming.emplace_back(enemy1Text, Vector2{0, 96}, 128.f);
 
     // Ana loop
     while (!WindowShouldClose()){
-        float dt = GetFrameTime();
+        float frameTime = GetFrameTime();
         // Kamera hareketleri
         if(IsKeyDown(KEY_Q) && camera.zoom < 2.f){
             camera.zoom += 0.01f;
@@ -72,6 +79,54 @@ int main(void) {
             camera.target.x +=  5;
         }
 
+        // Ai ve arka sistemler
+        for (enemys& enemy : enemysComming){
+            enemy.aiLoop(mapMan1);
+            enemy.move(frameTime);
+                    
+            if(enemy.getEndData()==1){
+                baseHealth-=enemy.getHealth();
+                enemy.kill();
+            }
+        }
+
+
+        for (Bullet& bul : bullets){
+            if(bul.getActive()){ 
+                bul.updateBullet(frameTime);
+
+                for (enemys& enemy : enemysComming){
+                    if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){
+                        bul.killBullet();
+                        enemy.attack(bul.getDamage());
+                    }
+                }
+            }
+        }
+
+
+        for (tower1& tower : placedTowers){
+            if(!tower.getBulletIsReady(GetTime())) continue;
+
+            for (int x=enemysComming.size()-1; x>=0; x--){
+                if (!enemysComming[x].getActive()) continue;
+
+                if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemysComming[x].getRec())){
+                    bullets.push_back(Bullet{tower.getCenter(), enemysComming[x].getPosPtr(), 2500.f, tower.getDamage()});
+                    tower.setTimer(GetTime());
+                    break;
+                }
+            }
+        }
+
+        // Temizlik
+        bullets.erase(
+            std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
+        );
+        enemysComming.erase(
+            std::remove_if(enemysComming.begin(), enemysComming.end(), [](const enemys& enemy) {return !enemy.getActive();}), enemysComming.end()
+        );
+
         // Çizimler
         BeginDrawing();
 
@@ -79,7 +134,6 @@ int main(void) {
             BeginMode2D(camera);
 
                 mapMan1.draw();
-
 
                 if(selectedBut==1){
                     Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
@@ -90,52 +144,19 @@ int main(void) {
 
                 for (tower1& tower : placedTowers){
                     tower.draw();
-                    //TraceLog(LOG_INFO, "TowerDraww: %i: {%f, %f}", tower.getTexture()->id, tower.getPos().x, tower.getPos().y);
-                    DrawCircleV(tower.getCenter(), tower.getRange(), BColor);
-
-                    for (enemys& enemy : enemysComming){
-                        if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy.getRec())){
-                            bullets.push_back(Bullet{tower.getCenter(), enemy.getPosPtr(), 25.f});
-
-                            break;
-                        }
-                    }
-                }
+                    DrawCircleV(tower.getCenter(), tower.getRange(), BColor);}
 
                 for (Bullet& bul : bullets){
-                    if(bul.getActive()){ 
-                        bul.updateBullet(dt);
+                    if (bul.getActive()) bul.draw();}
 
-                        bul.draw();
-
-                        for (enemys& enemy : enemysComming){
-                            if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 3.0f) && enemy.getActive()){
-                                bul.killBullet();
-                                enemy.attack(bul.getDamage());
-                            }
-                        }
-                    }
-                }
-
-                bullets.erase(
-                    std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
-                );
-                enemysComming.erase(
-                    std::remove_if(enemysComming.begin(), enemysComming.end(), [](const enemys& enemy) {return !enemy.getActive();}), enemysComming.end()
-                );
-
-                for (enemys& enemy : enemysComming){
-                    enemy.draw();
-
-                    enemy.aiLoop(mapMan1);
-                    enemy.move(dt);
-                }
-
+                for (enemys& enemy : enemysComming){ 
+                    if (enemy.getActive()) enemy.draw();}
 
             EndMode2D();
 
             texture1.draw();
             buton1.draw();
+            hBar.draw(baseHealth);
 
         EndDrawing();
         
@@ -152,7 +173,6 @@ int main(void) {
                         if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                     }
                     if(data.isTileEmpty){
-                        TraceLog(LOG_INFO, "BLOK KOYULDU");
                         placedTowers.emplace_back(tower1Text, mapMan1.getRealPos(data.tilePos));
                         selectedBut = 0;
                     }

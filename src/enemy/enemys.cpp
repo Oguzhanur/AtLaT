@@ -31,6 +31,7 @@ void enemys::aiLoop(mapMan& man){
                     } else {
                         //* ------- HAREKET YOKKK -------
                         direction = {0,0};
+                        //endData = 1;
                     }
                 }
             }
@@ -38,31 +39,40 @@ void enemys::aiLoop(mapMan& man){
     }
 }
 
-void enemys::move(float dt){
-    dt=1.f; //! dt ile işlevsel çalışsın ve bunu kaldır.
-    if(direction.x >= speed*dt ){
-        pos.x += speed*dt;
-        direction.x -= speed*dt;
+void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı değerler yuvarlanıyor!!!!
+    TraceLog(LOG_INFO, "Movement OLD: {%f,%f} -> {%f, %f}",direction.x, direction.y, pos.x, pos.y);
+    if(direction.x > 0.001f){ //* X pozitifse
+        float step = std::min(direction.x, speed*dt);
+        pos.x+=step;
+        direction.x-=step;
         lastDir = DIR_RIGHT;
-    } else if (direction.x <= -speed*dt) {
-        pos.x -= speed*dt;
-        direction.x += speed*dt;
+    } else if (direction.x < -0.001f) { //* X negatifse
+        float step = std::min(-direction.x, speed*dt);
+        pos.x-=step;
+        direction.x+=step;
         lastDir = DIR_LEFT;
-    } else { 
+    } else {  //* X 0sa
         direction.x = 0;
+        pos.x += direction.x;
+        pos.x = std::round(pos.x);
     }
 
-    if(direction.y >= speed*dt){
-        pos.y += speed*dt;
-        direction.y -= speed*dt;
+    if(direction.y > 0.001f){ //* y = +
+        float step = std::min(direction.y, speed*dt);
+        pos.y+=step;
+        direction.y-=step;
         lastDir = DIR_DOWN;
-    } else if (direction.y <= -speed*dt) {
-        pos.y -= speed*dt;
-        direction.y += speed*dt;
+    } else if (direction.y < -0.001f) { //* y = -
+        float step = std::min(-direction.y, speed*dt);
+        pos.y-=step;
+        direction.y+=step;
         lastDir = DIR_UP;
-    } else { 
+    } else { //* y = 0
         direction.y = 0;
+        pos.y += direction.y;
+        pos.y = std::round(pos.y);
     }
+    TraceLog(LOG_INFO, "Movement OLD: {%f,%f} -> {%f, %f}",direction.x, direction.y, pos.x, pos.y);
 }
 
 
