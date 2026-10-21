@@ -2,6 +2,8 @@
 #include <vector>
 #include <ostream>
 #include <algorithm>
+#include <cmath>
+#include <format>
 
 #include "core/ctx.hpp"
 
@@ -28,7 +30,7 @@ int main(void) {
     mapMan mapMan1;
 
     // Base
-    int money = 1000;
+    int money = 300;
     float baseHealth = 100.f;
     healthBar hBar({20,20}, {400,50}, baseHealth);
 
@@ -54,6 +56,7 @@ int main(void) {
     gui::font mainFont("data/font/Bungee-Regular.ttf", 32.f);
 
     // Kule 1
+    float tower1Cost = 150.f;
     gui::button tower1button("data/gui/item1But.png", {1100,0});
     gui::texture tower1Tower("data/gui/item1.png", {0,0});
     Texture2D tower1Text = LoadTexture("data/gui/item1.png");
@@ -64,17 +67,21 @@ int main(void) {
     std::vector<enemys> enemysComming;
     std::vector<Bullet> bullets;
 
-    enemysComming.emplace_back(enemy1Text, Vector2{-32, 192}, 24.f);
-
-    enemysComming.emplace_back(enemy1Text, Vector2{0, 192}, 128.f);
-
     // Wawe
-    std::vector<wawe> wawes{
-        {3, T_TOWER1, 1},
-        {6, T_TOWER1, 1},
-        {9, T_TOWER1, 1},
-        {10, T_TOWER1, 1},
-        {11, T_TOWER1, 1}
+    std::vector<wawe> wawes{ // Geleceği frame / Kule / Sayısı
+        {1   , T_TOWER1, 100},
+        {2   , T_TOWER1, 1},
+        {4   , T_TOWER1, 1},
+        {5.0 , T_TOWER1, 7},
+        {6.5 , T_TOWER1, 9},
+        {7.8 , T_TOWER1, 12},
+        {9.2 , T_TOWER1, 15},
+        {11.4, T_TOWER1, 18},
+        {11.8, T_TOWER1, 32},
+        {12.1, T_TOWER1, 64},
+        {12.5, T_TOWER1, 98},
+        {12.9, T_TOWER1, 120},
+        {13.8, T_TOWER1, 138},
     };
 
     // Ana loop
@@ -118,6 +125,9 @@ int main(void) {
                     if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
+                        money += bul.getDamage();
+
+                        break;
                     }
                 }
             }
@@ -127,11 +137,11 @@ int main(void) {
         for (tower1& tower : placedTowers){
             if(!tower.getBulletIsReady(TimeAsFrame)) continue;
 
-            for (int x=enemysComming.size()-1; x>=0; x--){
-                if (!enemysComming[x].getActive()) continue;
+            for (enemys& enemy : enemysComming){
+                if (!enemy.getActive()) continue;
 
-                if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemysComming[x].getRec())){
-                    bullets.push_back(Bullet{tower.getCenter(), enemysComming[x].getPosPtr(), 2500.f, tower.getDamage()});
+                if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy.getRec())){
+                    bullets.push_back(Bullet{tower.getCenter(), enemy.getPosPtr(), 2500.f, tower.getDamage()});
                     tower.setTimer(TimeAsFrame);
                     break;
                 }
@@ -140,7 +150,7 @@ int main(void) {
 
         // Wawe'ler
         for (wawe& w : wawes){
-            if(w.getActive() && w.getTimeAsFrame()==std::round(TimeAsFrame)){
+            if(w.getActive() && std::abs(w.getTimeAsFrame()-TimeAsFrame)<=0.1){
                 enemysComming.emplace_back(enemy1Text, Vector2{0, 192}, 128.f);
                 w.countN();
             }
@@ -190,6 +200,9 @@ int main(void) {
 
             gui::drawText(hBar.getAsText(baseHealth), {hPos.x, hPos.y+hSize.y+10}, mainFont, WHITE);
 
+            std::string moneyText = "Money: " + std::to_string(money);
+            gui::drawText(moneyText, {1000-200,20}, mainFont, Color{255,215,0,255});
+
         EndDrawing();
         
         
@@ -204,9 +217,10 @@ int main(void) {
                     for (tower1& tower : placedTowers){
                         if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                     }
-                    if(data.isTileEmpty){
+                    if(data.isTileEmpty && tower1Cost<=money){
                         placedTowers.emplace_back(tower1Text, mapMan1.getRealPos(data.tilePos));
                         selectedBut = 0;
+                        money -= tower1Cost;
                     }
                 }
             }

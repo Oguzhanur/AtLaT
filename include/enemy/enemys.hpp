@@ -12,6 +12,8 @@ enum Dir{
 
 class enemys{
 private:
+    float waitTime = 0.5f;
+    float timeBackup = 0.f;
     float maxHealth = 25.f;
     float health = 25.f;
     Vector2 pos;

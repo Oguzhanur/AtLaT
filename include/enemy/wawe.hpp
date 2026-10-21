@@ -1,13 +1,13 @@
 
 class wawe{
 private:
-    int timeAsFrame;
+    float timeAsFrame;
     int towerType;
     int count;
 public:
-    wawe(int timeAsFrame, int towerType, int count) : timeAsFrame(timeAsFrame), towerType(towerType), count(count) {}
+    wawe(float timeAsFrame, int towerType, int count) : timeAsFrame(timeAsFrame), towerType(towerType), count(count) {}
 
-    int getTimeAsFrame() const {return timeAsFrame;};
+    float getTimeAsFrame() const {return timeAsFrame;};
     int getTowerType() const {return towerType;};
     bool getActive() const {return count>0;};
     
