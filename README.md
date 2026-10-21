@@ -1,6 +1,9 @@
-## Using libs:
-raylib
-cute_tiled
+# AtLaT Game
 
-## Using
-[Bungee Font][https://fonts.google.com/specimen/Bungee]
+## Using librarys
+- raylib
+- cute_tiled
+
+## Using materials
+- [Bungee Font](https://fonts.google.com/specimen/Bungee)
+
