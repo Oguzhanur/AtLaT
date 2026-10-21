@@ -40,7 +40,6 @@ void enemys::aiLoop(mapMan& man){
 }
 
 void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı değerler yuvarlanıyor!!!!
-    TraceLog(LOG_INFO, "Movement OLD: {%f,%f} -> {%f, %f}",direction.x, direction.y, pos.x, pos.y);
     if(direction.x > 0.001f){ //* X pozitifse
         float step = std::min(direction.x, speed*dt);
         pos.x+=step;
@@ -54,8 +53,7 @@ void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı d
     } else {  //* X 0sa
         direction.x = 0;
         pos.x += direction.x;
-        pos.x = std::round(pos.x);
-    }
+        pos.x = std::round(pos.x);}
 
     if(direction.y > 0.001f){ //* y = +
         float step = std::min(direction.y, speed*dt);
@@ -72,7 +70,6 @@ void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı d
         pos.y += direction.y;
         pos.y = std::round(pos.y);
     }
-    TraceLog(LOG_INFO, "Movement OLD: {%f,%f} -> {%f, %f}",direction.x, direction.y, pos.x, pos.y);
 }
 
 

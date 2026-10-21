@@ -23,9 +23,9 @@ public:
     Vector2 getPos() const {return pos;};
     float getRange() const {return range;};
     Vector2 getCenter() {return {pos.x+16, pos.y+16};};
-    bool getBulletIsReady(float dt) {return dataBackup+attackSpeed<=dt;};
     float getDamage() const {return damage;};
 
+    bool getBulletIsReady(float dt) {return dataBackup+attackSpeed<=dt;};
     void setTimer(float dt) {dataBackup = dt;};
 
     void draw();

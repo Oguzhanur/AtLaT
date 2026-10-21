@@ -10,8 +10,4 @@ void healthBar::draw(float health){
         size.y-20,
         RED
     );
-
-    std::string uText = "Health:" + std::to_string(static_cast<int>(health)) + "/" + std::to_string(static_cast<int>(maxHealth));
-
-    DrawText(uText.c_str(), pos.x, pos.y+size.y+10, 32, BLACK);
 }

@@ -9,9 +9,12 @@
 #include "gui/buttons.hpp"
 #include "gui/textures.hpp"
 #include "gui/healthBar.hpp"
+#include "gui/text.hpp"
 
 #include "towers/towers.hpp"
 #include "enemy/enemys.hpp"
+
+#include "enemy/wawe.hpp"
 
 
 int main(void) {
@@ -37,31 +40,47 @@ int main(void) {
     camera.zoom = 1.0f;
 
     // Selected
+    float frameTime = 0.f;
+    float TimeAsFrame = 0.f;
     int selectedBut = 0;
 
     Color BColor{0,100,0,100};
 
-    // Button
-    gui::button buton1("data/gui/but1.png", {1100,0});
+    // Arayüz
 
     gui::texture texture1("data/gui/LMenu.png", {1000,0});
 
-    gui::texture mainTower("data/gui/item1.png", {0,0});
 
+    gui::font mainFont("data/font/Bungee-Regular.ttf", 32.f);
+
+    // Kule 1
+    gui::button tower1button("data/gui/item1But.png", {1100,0});
+    gui::texture tower1Tower("data/gui/item1.png", {0,0});
     Texture2D tower1Text = LoadTexture("data/gui/item1.png");
+
     Texture2D enemy1Text = LoadTexture("data/enemy.png");
 
     std::vector<tower1> placedTowers;
     std::vector<enemys> enemysComming;
     std::vector<Bullet> bullets;
 
-    enemysComming.emplace_back(enemy1Text, Vector2{-32, 96}, 24.f);
+    enemysComming.emplace_back(enemy1Text, Vector2{-32, 192}, 24.f);
 
-    enemysComming.emplace_back(enemy1Text, Vector2{0, 96}, 128.f);
+    enemysComming.emplace_back(enemy1Text, Vector2{0, 192}, 128.f);
+
+    // Wawe
+    std::vector<wawe> wawes{
+        {3, T_TOWER1, 1},
+        {6, T_TOWER1, 1},
+        {9, T_TOWER1, 1},
+        {10, T_TOWER1, 1},
+        {11, T_TOWER1, 1}
+    };
 
     // Ana loop
     while (!WindowShouldClose()){
-        float frameTime = GetFrameTime();
+        frameTime = GetFrameTime();
+        TimeAsFrame += frameTime;
         // Kamera hareketleri
         if(IsKeyDown(KEY_Q) && camera.zoom < 2.f){
             camera.zoom += 0.01f;
@@ -106,16 +125,24 @@ int main(void) {
 
 
         for (tower1& tower : placedTowers){
-            if(!tower.getBulletIsReady(GetTime())) continue;
+            if(!tower.getBulletIsReady(TimeAsFrame)) continue;
 
             for (int x=enemysComming.size()-1; x>=0; x--){
                 if (!enemysComming[x].getActive()) continue;
 
                 if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemysComming[x].getRec())){
                     bullets.push_back(Bullet{tower.getCenter(), enemysComming[x].getPosPtr(), 2500.f, tower.getDamage()});
-                    tower.setTimer(GetTime());
+                    tower.setTimer(TimeAsFrame);
                     break;
                 }
+            }
+        }
+
+        // Wawe'ler
+        for (wawe& w : wawes){
+            if(w.getActive() && w.getTimeAsFrame()==std::round(TimeAsFrame)){
+                enemysComming.emplace_back(enemy1Text, Vector2{0, 192}, 128.f);
+                w.countN();
             }
         }
 
@@ -137,9 +164,9 @@ int main(void) {
 
                 if(selectedBut==1){
                     Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-                    Vector2 newPos = { worldPos.x-mainTower.getSize().x/2, 
-                                       worldPos.y-mainTower.getSize().y/2 };
-                    mainTower.drawEx(newPos, 1.f);
+                    Vector2 newPos = { worldPos.x-tower1Tower.getSize().x/2, 
+                                       worldPos.y-tower1Tower.getSize().y/2 };
+                    tower1Tower.drawEx(newPos, 1.f);
                 }
 
                 for (tower1& tower : placedTowers){
@@ -155,8 +182,13 @@ int main(void) {
             EndMode2D();
 
             texture1.draw();
-            buton1.draw();
+            tower1button.draw();
             hBar.draw(baseHealth);
+
+            Vector2 hPos = hBar.getPos();
+            Vector2 hSize = hBar.getSize();
+
+            gui::drawText(hBar.getAsText(baseHealth), {hPos.x, hPos.y+hSize.y+10}, mainFont, WHITE);
 
         EndDrawing();
         
@@ -179,7 +211,7 @@ int main(void) {
                 }
             }
 
-            if(buton1.isClicked(mousePos)){
+            if(tower1button.isClicked(mousePos)){
                 if(selectedBut==1){
                     selectedBut = 0;
                 } else {
