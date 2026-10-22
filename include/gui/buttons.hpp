@@ -7,11 +7,11 @@ namespace gui{
     class button{
     private:
         Vector2 pos;
-        Texture2D texture;
+        Texture2D* text;
         Rectangle buttonRec;
     public:
-        button(const std::string& path, Vector2 pos);
-        ~button();
+        button(Texture2D& text, Vector2 pos): pos(pos), text(&text){}
+        ~button() = default;
 
         bool isClicked(Vector2 mousePos);
         void draw();

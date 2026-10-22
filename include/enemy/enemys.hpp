@@ -10,9 +10,12 @@ enum Dir{
     DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_UP
 };
 
+enum EnemyList{
+    E_NULL, E_1
+};
+
 class enemys{
 private:
-    float waitTime = 0.5f;
     float timeBackup = 0.f;
     float maxHealth = 25.f;
     float health = 25.f;
@@ -47,7 +50,7 @@ public:
         }
     };
 
-    void aiLoop(mapMan& man);
+    void aiLoop(mapMan& man, const float dt);
     void move(float dt);
     void draw();
 };

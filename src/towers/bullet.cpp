@@ -19,5 +19,8 @@ void Bullet::updateBullet(float dt){
 }
 
 void Bullet::draw(){
-    if(active) DrawRectangleV(pos, {10,10}, bColor);
+    if(active){
+        DrawTexture(*text, pos.x, pos.y, WHITE);
+        //DrawRectangleV(pos, {10,10}, bColor);
+    } 
 }

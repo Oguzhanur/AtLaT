@@ -55,12 +55,40 @@ int main(void) {
 
     gui::font mainFont("data/font/Bungee-Regular.ttf", 32.f);
 
-    // Kule 1
-    float tower1Cost = 150.f;
-    gui::button tower1button("data/gui/item1But.png", {1100,0});
-    gui::texture tower1Tower("data/gui/item1.png", {0,0});
-    Texture2D tower1Text = LoadTexture("data/gui/item1.png");
+    // Kuleler
+    std::vector<int> tList = {1,2};
 
+    // Kuleler
+    std::vector<towerStats> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
+        {5.f, 150.f, 0.5f, 150},
+        {25.f, 300.f, 2.0f, 200}
+    };
+
+    std::vector<gui::button> towerButtons;
+
+    std::vector<Texture2D> towerTextures;
+    std::vector<Texture2D> towerBulletTextures;
+
+    // Kule 1
+    Texture2D tower1BText = LoadTexture("data/items/item1But.png");
+    towerTextures.push_back(LoadTexture("data/items/item1.png"));
+    towerBulletTextures.push_back(LoadTexture("data/items/item1Bul.png"));
+
+    towerButtons.push_back(gui::button{tower1BText, {1100,0}});
+
+
+    // Kule 2
+    Texture2D tower2BText = LoadTexture("data/items/item2But.png");
+    towerButtons.emplace_back(gui::button{tower2BText, {1000,0}});
+
+    towerTextures.push_back(LoadTexture("data/items/item2.png"));
+    towerBulletTextures.push_back(LoadTexture("data/items/item2Bul.png"));
+
+    //gui::texture tower2Tower("data/items/item2.png", {0,0});
+
+
+
+    // Düşmanlar
     Texture2D enemy1Text = LoadTexture("data/enemy.png");
 
     std::vector<tower1> placedTowers;
@@ -68,20 +96,11 @@ int main(void) {
     std::vector<Bullet> bullets;
 
     // Wawe
-    std::vector<wawe> wawes{ // Geleceği frame / Kule / Sayısı
-        {1   , T_TOWER1, 100},
-        {2   , T_TOWER1, 1},
-        {4   , T_TOWER1, 1},
-        {5.0 , T_TOWER1, 7},
-        {6.5 , T_TOWER1, 9},
-        {7.8 , T_TOWER1, 12},
-        {9.2 , T_TOWER1, 15},
-        {11.4, T_TOWER1, 18},
-        {11.8, T_TOWER1, 32},
-        {12.1, T_TOWER1, 64},
-        {12.5, T_TOWER1, 98},
-        {12.9, T_TOWER1, 120},
-        {13.8, T_TOWER1, 138},
+    std::vector<wawe> wawes{ // Geleceği frame / Kule / Sayısı / Aralık
+        {1  , E_1, 30, 1},
+        {20 , E_1, 50, 0.5},
+        {45 , E_1, 10, 1},
+        {60 , E_1, 100, 0.01}
     };
 
     // Ana loop
@@ -107,7 +126,7 @@ int main(void) {
 
         // Ai ve arka sistemler
         for (enemys& enemy : enemysComming){
-            enemy.aiLoop(mapMan1);
+            enemy.aiLoop(mapMan1, frameTime);
             enemy.move(frameTime);
                     
             if(enemy.getEndData()==1){
@@ -126,7 +145,6 @@ int main(void) {
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
                         money += bul.getDamage();
-
                         break;
                     }
                 }
@@ -140,8 +158,9 @@ int main(void) {
             for (enemys& enemy : enemysComming){
                 if (!enemy.getActive()) continue;
 
-                if(CheckCollisionCircleRec(tower.getCenter(), tower.getRange(), enemy.getRec())){
-                    bullets.push_back(Bullet{tower.getCenter(), enemy.getPosPtr(), 2500.f, tower.getDamage()});
+                const towerStats& stats = tower.getStats();
+                if(CheckCollisionCircleRec(tower.getCenter(), stats.range, enemy.getRec())){
+                    bullets.push_back(Bullet{towerBulletTextures[tower.getType()-1], tower.getCenter(), enemy.getPosPtr(), 1500.f, stats.damage});
                     tower.setTimer(TimeAsFrame);
                     break;
                 }
@@ -150,7 +169,8 @@ int main(void) {
 
         // Wawe'ler
         for (wawe& w : wawes){
-            if(w.getActive() && std::abs(w.getTimeAsFrame()-TimeAsFrame)<=0.1){
+            if(w.getActive() && TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getTimeAsFrame()){
+                w.saveTime(TimeAsFrame);
                 enemysComming.emplace_back(enemy1Text, Vector2{0, 192}, 128.f);
                 w.countN();
             }
@@ -172,16 +192,17 @@ int main(void) {
 
                 mapMan1.draw();
 
-                if(selectedBut==1){
+                if(selectedBut>0 && selectedBut-1 < towerTextures.size()){
                     Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-                    Vector2 newPos = { worldPos.x-tower1Tower.getSize().x/2, 
-                                       worldPos.y-tower1Tower.getSize().y/2 };
-                    tower1Tower.drawEx(newPos, 1.f);
+                    Vector2 newPos = { worldPos.x-towerTextures[selectedBut-1].width/2, 
+                                       worldPos.y-towerTextures[selectedBut-1].height/2 };
+                    DrawTextureEx(towerTextures[selectedBut-1], newPos, 0.f, 1.f, WHITE);
+                    
                 }
 
                 for (tower1& tower : placedTowers){
                     tower.draw();
-                    DrawCircleV(tower.getCenter(), tower.getRange(), BColor);}
+                    DrawCircleV(tower.getCenter(), tower.getStats().range, BColor);}
 
                 for (Bullet& bul : bullets){
                     if (bul.getActive()) bul.draw();}
@@ -192,7 +213,11 @@ int main(void) {
             EndMode2D();
 
             texture1.draw();
-            tower1button.draw();
+            for(int x=1; x<=towerButtons.size(); x++){
+                towerButtons[x-1].draw();
+            }
+
+
             hBar.draw(baseHealth);
 
             Vector2 hPos = hBar.getPos();
@@ -213,23 +238,26 @@ int main(void) {
                 Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
                 TileData data = mapMan1.getTileByPos(worldPos);
 
-                if(data.type==1){
+                if(data.type>0){
                     for (tower1& tower : placedTowers){
                         if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                     }
-                    if(data.isTileEmpty && tower1Cost<=money){
-                        placedTowers.emplace_back(tower1Text, mapMan1.getRealPos(data.tilePos));
+
+                    if(data.isTileEmpty && TStats[selectedBut-1].cost<=money){
+                        placedTowers.emplace_back(towerTextures[selectedBut-1], mapMan1.getRealPos(data.tilePos), TStats[selectedBut-1], selectedBut);
+                        money -= TStats[selectedBut-1].cost;
                         selectedBut = 0;
-                        money -= tower1Cost;
                     }
                 }
             }
 
-            if(tower1button.isClicked(mousePos)){
-                if(selectedBut==1){
-                    selectedBut = 0;
-                } else {
-                    selectedBut = 1;
+            for(int x=1; x<=towerButtons.size(); x++){
+                if(towerButtons[x-1].isClicked(mousePos)){
+                    if(selectedBut==x){
+                        selectedBut = 0;
+                    } else {
+                        selectedBut = x;
+                    }
                 }
             }
         }

@@ -1,13 +1,15 @@
 #include "enemy/enemys.hpp"
 
 
-void enemys::aiLoop(mapMan& man){
+void enemys::aiLoop(mapMan& man, const float dt){
     if(direction.x == 0 && direction.y == 0){
         Vector2 newPos = pos;
         float movementSpeed = 32;
         int size = 0;
 
         newPos.x+=size+movementSpeed;
+
+        if (direction.x != 0 || direction.y != 0) timeBackup = 0.0f;
 
         if (man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 1) && lastDir != DIR_LEFT && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 2)){
             //* ------- SAĞ -------
@@ -31,7 +33,10 @@ void enemys::aiLoop(mapMan& man){
                     } else {
                         //* ------- HAREKET YOKKK -------
                         direction = {0,0};
-                        //endData = 1;
+                        timeBackup += dt;
+                        if(timeBackup>=0.5f){
+                            endData = 1;
+                        }
                     }
                 }
             }
