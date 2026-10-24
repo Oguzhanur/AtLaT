@@ -30,7 +30,7 @@ int main(void) {
     mapMan mapMan1;
 
     // Base
-    int money = 300;
+    int money = 999;
     float baseHealth = 100.f;
     healthBar hBar({20,20}, {400,50}, baseHealth);
 
@@ -45,15 +45,19 @@ int main(void) {
     float frameTime = 0.f;
     float TimeAsFrame = 0.f;
     int selectedBut = 0;
+    int selectedTower = 0;
 
     Color BColor{0,100,0,100};
 
     // Arayüz
+    gui::texture towerInfoMenu("data/gui/towerInfoMenu.png", {0,125});
+    Texture2D tUpdateM = LoadTexture("data/gui/towerUpgrade.png");
+    gui::button towerUpdateButton(tUpdateM, {20, 650});
 
-    gui::texture texture1("data/gui/LMenu.png", {1000,0});
 
-
+    gui::texture rightMenu("data/gui/RMenu.png", {1000,0});
     gui::font mainFont("data/font/Bungee-Regular.ttf", 32.f);
+    gui::font smallFont("data/font/Bungee-Regular.ttf", 24.f);
 
     // Kuleler
     std::vector<int> tList = {1,2};
@@ -62,6 +66,11 @@ int main(void) {
     std::vector<towerStats> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
         {5.f, 150.f, 0.5f, 150},
         {25.f, 300.f, 2.0f, 200}
+    };
+
+    std::vector<towerStats> TUpdataStats = { //? Yeni -> Hasar, Alan, Saldırı Hızı, Maliyet
+        {5.f, 150.f, 0.1f, 201},
+        {25.f, 600.f, 4.0f, 102}
     };
 
     std::vector<gui::button> towerButtons;
@@ -151,7 +160,7 @@ int main(void) {
             }
         }
 
-
+        // --------------------------- KULE -------------------
         for (tower1& tower : placedTowers){
             if(!tower.getBulletIsReady(TimeAsFrame)) continue;
 
@@ -166,6 +175,7 @@ int main(void) {
                 }
             }
         }
+
 
         // Wawe'ler
         for (wawe& w : wawes){
@@ -201,8 +211,7 @@ int main(void) {
                 }
 
                 for (tower1& tower : placedTowers){
-                    tower.draw();
-                    DrawCircleV(tower.getCenter(), tower.getStats().range, BColor);}
+                    tower.draw();}
 
                 for (Bullet& bul : bullets){
                     if (bul.getActive()) bul.draw();}
@@ -211,10 +220,27 @@ int main(void) {
                     if (enemy.getActive()) enemy.draw();}
 
             EndMode2D();
+            // Arayüz
+            rightMenu.draw();
 
-            texture1.draw();
             for(int x=1; x<=towerButtons.size(); x++){
                 towerButtons[x-1].draw();
+            }
+
+            if(selectedTower!=0){
+                towerInfoMenu.draw();
+                towerStats s = placedTowers[selectedTower-1].getStats();
+                gui::drawText("Saldırı Hızı: " + gui::floatToStr(s.attackSpeed), {10,150}, smallFont, BLACK);
+                gui::drawText("Saldırı Gücü: " + gui::floatToStr(s.damage), {10,200}, smallFont, BLACK);
+                gui::drawText("Saldırı Alanı: " + gui::floatToStr(s.range), {10,250}, smallFont, BLACK);
+                
+                DrawCircleV(placedTowers[selectedTower-1].getCenter(), placedTowers[selectedTower-1].getStats().range, BColor);
+                towerUpdateButton.draw();
+                if(placedTowers[selectedTower-1].isInMaxLevel()){
+                    gui::drawText("Maxsimum level", {20,760}, smallFont, BLACK);
+                } else {
+                    gui::drawText("Geliştirme: " + gui::floatToStr(TUpdataStats[selectedTower-1].cost), {20,760}, smallFont, BLACK);
+                }
             }
 
 
@@ -233,6 +259,8 @@ int main(void) {
         
         Vector2 mousePos = GetMousePosition();
 
+
+        // --------------------------- ---- -------------------
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(selectedBut!=0){
                 Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
@@ -244,13 +272,40 @@ int main(void) {
                     }
 
                     if(data.isTileEmpty && TStats[selectedBut-1].cost<=money){
-                        placedTowers.emplace_back(towerTextures[selectedBut-1], mapMan1.getRealPos(data.tilePos), TStats[selectedBut-1], selectedBut);
+                        placedTowers.emplace_back(towerTextures[selectedBut-1], mapMan1.getRealPos(data.tilePos), TStats[selectedBut-1], selectedBut, TUpdataStats[selectedBut-1]);
                         money -= TStats[selectedBut-1].cost;
-                        selectedBut = 0;
                     }
                 }
+                selectedBut = 0;
+                selectedTower = 0;
+            } else {
+                
+                // Kuleyi seçme
+                for(int x=1; x<=placedTowers.size(); x++){
+                    if(CheckCollisionPointRec(mousePos, placedTowers[x-1].getRec())){
+                        selectedTower = x;
+                        
+                        continue;
+                    }
+                }
+
+                //! Sonra tekrar dön
+                // Kule geliştime 
+                if(selectedTower!=0){
+                    towerStats newS = placedTowers[selectedTower-1].getNextStats();
+                    if(towerUpdateButton.isClicked(mousePos) && newS.cost<=money){
+                        placedTowers[selectedTower-1].updateLevel();
+                        money -= newS.cost;
+                        selectedTower=0;
+                    } else {
+                        //selectedTower = 0;
+                    }
+                }
+
             }
 
+
+            // Butondan towerı koymak için seçme
             for(int x=1; x<=towerButtons.size(); x++){
                 if(towerButtons[x-1].isClicked(mousePos)){
                     if(selectedBut==x){

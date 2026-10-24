@@ -1,6 +1,8 @@
 #include <raylib.h>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 namespace gui{
     class font{
@@ -17,4 +19,6 @@ namespace gui{
 
 
     void drawText(const std::string& data, Vector2 pos, const font& font, Color color);
+
+    std::string floatToStr(float f);
 };

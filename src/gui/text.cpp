@@ -39,3 +39,17 @@ gui::font::~font(){
 void gui::drawText(const std::string& data, Vector2 pos, const font& font, Color color) {
     DrawTextEx(font.getFontData(), data.c_str(), pos, font.getFontSize(), 2, color);
 }
+
+std::string gui::floatToStr(float f){ //! AI GENERATED
+    std::ostringstream stream;
+    stream << std::fixed << std::setprecision(1) << f;
+
+    std::string result = stream.str();
+
+    if (result.size() >= 2 &&
+        result.substr(result.size() - 2) == ".0") {
+        result.erase(result.size() - 2);
+    }
+
+    return result;
+}
