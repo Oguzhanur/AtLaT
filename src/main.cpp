@@ -46,6 +46,7 @@ int main(void) {
     float TimeAsFrame = 0.f;
     int selectedBut = 0;
     int selectedTower = 0;
+    int selectedTData = 0;
 
     Color BColor{0,100,0,100};
 
@@ -63,14 +64,9 @@ int main(void) {
     std::vector<int> tList = {1,2};
 
     // Kuleler
-    std::vector<towerStats> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {5.f, 150.f, 0.5f, 150},
-        {25.f, 300.f, 2.0f, 200}
-    };
-
-    std::vector<towerStats> TUpdataStats = { //? Yeni -> Hasar, Alan, Saldırı Hızı, Maliyet
-        {5.f, 150.f, 0.1f, 201},
-        {25.f, 600.f, 4.0f, 102}
+    std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
+        {{5.f, 150.f, 0.5f, 0},    {5.f, 150.f, 0.1f, 200}, {10.f, 150.f, 0.1f, 450} },
+        {{25.f, 300.f, 2.0f, 200}, {25.f, 600.f, 4.0f, 102}, {25.f, 600.f, 2.0f, 250}}
     };
 
     std::vector<gui::button> towerButtons;
@@ -92,10 +88,6 @@ int main(void) {
 
     towerTextures.push_back(LoadTexture("data/items/item2.png"));
     towerBulletTextures.push_back(LoadTexture("data/items/item2Bul.png"));
-
-    //gui::texture tower2Tower("data/items/item2.png", {0,0});
-
-
 
     // Düşmanlar
     Texture2D enemy1Text = LoadTexture("data/enemy.png");
@@ -239,7 +231,9 @@ int main(void) {
                 if(placedTowers[selectedTower-1].isInMaxLevel()){
                     gui::drawText("Maxsimum level", {20,760}, smallFont, BLACK);
                 } else {
-                    gui::drawText("Geliştirme: " + gui::floatToStr(TUpdataStats[selectedTower-1].cost), {20,760}, smallFont, BLACK);
+                    towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
+
+                    gui::drawText("Geliştirme: " + gui::floatToStr(nextStats.cost), {20,760}, smallFont, BLACK);
                 }
             }
 
@@ -262,6 +256,8 @@ int main(void) {
 
         // --------------------------- ---- -------------------
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            selectedTData = 0;
+
             if(selectedBut!=0){
                 Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
                 TileData data = mapMan1.getTileByPos(worldPos);
@@ -271,9 +267,9 @@ int main(void) {
                         if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                     }
 
-                    if(data.isTileEmpty && TStats[selectedBut-1].cost<=money){
-                        placedTowers.emplace_back(towerTextures[selectedBut-1], mapMan1.getRealPos(data.tilePos), TStats[selectedBut-1], selectedBut, TUpdataStats[selectedBut-1]);
-                        money -= TStats[selectedBut-1].cost;
+                    if(data.isTileEmpty && TStats[selectedBut-1][0].cost<=money){
+                        placedTowers.emplace_back(towerTextures[selectedBut-1], mapMan1.getRealPos(data.tilePos), TStats[selectedBut-1], selectedBut);
+                        money -= TStats[selectedBut-1][0].cost;
                     }
                 }
                 selectedBut = 0;
@@ -284,24 +280,27 @@ int main(void) {
                 for(int x=1; x<=placedTowers.size(); x++){
                     if(CheckCollisionPointRec(mousePos, placedTowers[x-1].getRec())){
                         selectedTower = x;
-                        
+                        selectedTData = 1;
                         continue;
                     }
                 }
 
-                //! Sonra tekrar dön
                 // Kule geliştime 
-                if(selectedTower!=0){
+                if(selectedTower!=0 && !placedTowers[selectedTower-1].isInMaxLevel()){
                     towerStats newS = placedTowers[selectedTower-1].getNextStats();
+
                     if(towerUpdateButton.isClicked(mousePos) && newS.cost<=money){
                         placedTowers[selectedTower-1].updateLevel();
                         money -= newS.cost;
-                        selectedTower=0;
+                    } else if (selectedTData==1){
+                        selectedTData = 1;
                     } else {
-                        //selectedTower = 0;
+                        selectedTData = 0;
                     }
                 }
 
+                if(!selectedTData) selectedTower = 0;
+                
             }
 
 

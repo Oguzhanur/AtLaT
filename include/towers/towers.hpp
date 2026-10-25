@@ -2,7 +2,9 @@
 #include <raylib.h>
 #include <string>
 #include <memory>
+#include <vector>
 #include "towers/bullet.hpp"
+#include <iostream>
 
 enum TowerType{
     T_NOTOWER, 
@@ -19,37 +21,36 @@ struct towerStats{
     float range;
     float attackSpeed;
     int cost;
+
+
+    bool test = 0;
 };
 
 class tower1{
 private:
     Vector2 pos{};
     const Texture2D* text;
-    towerStats stats;
-    towerStats upgrades;
+    std::vector<towerStats> stats;
     int type;
     int level = 0;
-    int maxLevel = 1;
+    int maxLevel = 2;
     float dataBackup=0.f;
 public:
-    tower1(const Texture2D& text, Vector2 pos, towerStats stats, int type, towerStats upgrades) : pos(pos), text(&text), stats(stats), type(type), upgrades(upgrades) {};
+    tower1(const Texture2D& text, Vector2 pos, std::vector<towerStats> stats, int type) : pos(pos), text(&text), stats(stats), type(type) {};
     ~tower1() = default;
 
     Vector2 getPos() const {return pos;};
     Vector2 getCenter() {return {pos.x+16, pos.y+16};};
-    towerStats getStats() const {return stats;};
-    towerStats getNextStats() const {return upgrades;};
+    towerStats getStats() const {return stats[level];};
+    towerStats getNextStats() const { return stats[level+1]; };
     int getType() const {return type;};
     int getLevel() const {return level;};
     Rectangle getRec() const {return {pos.x, pos.y, (float)text->width, (float)text->height};};
 
-    bool getBulletIsReady(float dt) {return dataBackup+stats.attackSpeed<=dt;};
+    bool getBulletIsReady(float dt) {return dataBackup+stats[level].attackSpeed<=dt;};
     void setTimer(float dt) {dataBackup = dt;};
     void updateLevel() {
-        TraceLog(LOG_INFO, "LEVEL %i : %f Cost -> %f attack * %f", level, upgrades.cost, upgrades.attackSpeed, upgrades.range);
-        if(maxLevel>=level+1){
-             level++; stats = upgrades;
-            }
+        level++;
     };
 
     bool isInMaxLevel() const {return !(maxLevel>=level+1);};
