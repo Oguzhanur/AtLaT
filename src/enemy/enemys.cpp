@@ -46,12 +46,12 @@ void enemys::aiLoop(mapMan& man, const float dt){
 
 void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı değerler yuvarlanıyor!!!!
     if(direction.x > 0.001f){ //* X pozitifse
-        float step = std::min(direction.x, speed*dt);
+        float step = std::min(direction.x, stats.speed*dt);
         pos.x+=step;
         direction.x-=step;
         lastDir = DIR_RIGHT;
     } else if (direction.x < -0.001f) { //* X negatifse
-        float step = std::min(-direction.x, speed*dt);
+        float step = std::min(-direction.x, stats.speed*dt);
         pos.x-=step;
         direction.x+=step;
         lastDir = DIR_LEFT;
@@ -61,12 +61,12 @@ void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı d
         pos.x = std::round(pos.x);}
 
     if(direction.y > 0.001f){ //* y = +
-        float step = std::min(direction.y, speed*dt);
+        float step = std::min(direction.y, stats.speed*dt);
         pos.y+=step;
         direction.y-=step;
         lastDir = DIR_DOWN;
     } else if (direction.y < -0.001f) { //* y = -
-        float step = std::min(-direction.y, speed*dt);
+        float step = std::min(-direction.y, stats.speed*dt);
         pos.y-=step;
         direction.y+=step;
         lastDir = DIR_UP;

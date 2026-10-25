@@ -53,7 +53,9 @@ int main(void) {
     // Arayüz
     gui::texture towerInfoMenu("data/gui/towerInfoMenu.png", {0,125});
     Texture2D tUpdateM = LoadTexture("data/gui/towerUpgrade.png");
-    gui::button towerUpdateButton(tUpdateM, {20, 650});
+    Texture2D tDeleteM = LoadTexture("data/gui/towerRemove.png");
+    gui::button towerUpdateButton(tUpdateM, {20, 550});
+    gui::button towerRemoveButton(tDeleteM, {20, 675});
 
 
     gui::texture rightMenu("data/gui/RMenu.png", {1000,0});
@@ -65,7 +67,7 @@ int main(void) {
 
     // Kuleler
     std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {{5.f, 150.f, 0.5f, 0},    {5.f, 150.f, 0.1f, 200}, {10.f, 150.f, 0.1f, 450} },
+        {{5.f, 150.f, 0.5f, 150},    {5.f, 150.f, 0.1f, 200}, {10.f, 150.f, 0.1f, 450} },
         {{25.f, 300.f, 2.0f, 200}, {25.f, 600.f, 4.0f, 102}, {25.f, 600.f, 2.0f, 250}}
     };
 
@@ -90,7 +92,14 @@ int main(void) {
     towerBulletTextures.push_back(LoadTexture("data/items/item2Bul.png"));
 
     // Düşmanlar
-    Texture2D enemy1Text = LoadTexture("data/enemy.png");
+    std::vector<Texture2D> enemyTextures;
+    enemyTextures.push_back(LoadTexture("data/enemys/enemy.png"));
+    enemyTextures.push_back(LoadTexture("data/enemys/enemySpeed.png"));
+
+    std::vector<enemyStats> eStats = {
+        {25.f, 25.f, 28.f},
+        {10.f, 10.f, 200.f}
+    };
 
     std::vector<tower1> placedTowers;
     std::vector<enemys> enemysComming;
@@ -98,10 +107,12 @@ int main(void) {
 
     // Wawe
     std::vector<wawe> wawes{ // Geleceği frame / Kule / Sayısı / Aralık
-        {1  , E_1, 30, 1},
+        {1  , E_2, 999999999, 0.1},
+        {1  , E_1, 30, 1.5},
         {20 , E_1, 50, 0.5},
         {45 , E_1, 10, 1},
-        {60 , E_1, 100, 0.01}
+        {60 , E_1, 100, 0.01},
+        {75 , E_1, 250, 0.01}
     };
 
     // Ana loop
@@ -131,7 +142,7 @@ int main(void) {
             enemy.move(frameTime);
                     
             if(enemy.getEndData()==1){
-                baseHealth-=enemy.getHealth();
+                baseHealth-=enemy.getStats().health;
                 enemy.kill();
             }
         }
@@ -173,7 +184,7 @@ int main(void) {
         for (wawe& w : wawes){
             if(w.getActive() && TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getTimeAsFrame()){
                 w.saveTime(TimeAsFrame);
-                enemysComming.emplace_back(enemy1Text, Vector2{0, 192}, 128.f);
+                enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, eStats[w.getTowerType()-1]);
                 w.countN();
             }
         }
@@ -182,8 +193,13 @@ int main(void) {
         bullets.erase(
             std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
         );
+
         enemysComming.erase(
             std::remove_if(enemysComming.begin(), enemysComming.end(), [](const enemys& enemy) {return !enemy.getActive();}), enemysComming.end()
+        );
+
+        placedTowers.erase(
+            std::remove_if(placedTowers.begin(), placedTowers.end(), [](const tower1& tower) {return !tower.getActive();}), placedTowers.end()
         );
 
         // Çizimler
@@ -212,6 +228,7 @@ int main(void) {
                     if (enemy.getActive()) enemy.draw();}
 
             EndMode2D();
+        //* --------------------------- ÇİZİM BAŞLADI ---------------------------------------
             // Arayüz
             rightMenu.draw();
 
@@ -220,21 +237,25 @@ int main(void) {
             }
 
             if(selectedTower!=0){
+                DrawCircleV(placedTowers[selectedTower-1].getCenter(), placedTowers[selectedTower-1].getStats().range, BColor);
+                
                 towerInfoMenu.draw();
                 towerStats s = placedTowers[selectedTower-1].getStats();
                 gui::drawText("Saldırı Hızı: " + gui::floatToStr(s.attackSpeed), {10,150}, smallFont, BLACK);
                 gui::drawText("Saldırı Gücü: " + gui::floatToStr(s.damage), {10,200}, smallFont, BLACK);
                 gui::drawText("Saldırı Alanı: " + gui::floatToStr(s.range), {10,250}, smallFont, BLACK);
                 
-                DrawCircleV(placedTowers[selectedTower-1].getCenter(), placedTowers[selectedTower-1].getStats().range, BColor);
                 towerUpdateButton.draw();
+                towerRemoveButton.draw();
+                
                 if(placedTowers[selectedTower-1].isInMaxLevel()){
-                    gui::drawText("Maxsimum level", {20,760}, smallFont, BLACK);
+                    gui::drawText("Maxsimum level", {20,520}, smallFont, BLACK);
                 } else {
                     towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
-                    gui::drawText("Geliştirme: " + gui::floatToStr(nextStats.cost), {20,760}, smallFont, BLACK);
+                    gui::drawText("Geliştirme: " + gui::floatToStr(nextStats.cost), {22,520}, smallFont, BLACK);
                 }
+
             }
 
 
@@ -249,7 +270,7 @@ int main(void) {
             gui::drawText(moneyText, {1000-200,20}, mainFont, Color{255,215,0,255});
 
         EndDrawing();
-        
+        //* --------------------------- ÇİZİM BİTTİ ---------------------------------------
         
         Vector2 mousePos = GetMousePosition();
 
@@ -297,6 +318,14 @@ int main(void) {
                     } else {
                         selectedTData = 0;
                     }
+                }
+
+                // Kule Silme
+                if(towerRemoveButton.isClicked(mousePos)){
+                    money += placedTowers[selectedTower-1].getStats().cost / 2;
+
+                    placedTowers[selectedTower-1].kill();
+                    selectedTower = 0;
                 }
 
                 if(!selectedTData) selectedTower = 0;

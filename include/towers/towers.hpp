@@ -35,6 +35,7 @@ private:
     int level = 0;
     int maxLevel = 2;
     float dataBackup=0.f;
+    bool active = 1;
 public:
     tower1(const Texture2D& text, Vector2 pos, std::vector<towerStats> stats, int type) : pos(pos), text(&text), stats(stats), type(type) {};
     ~tower1() = default;
@@ -46,6 +47,9 @@ public:
     int getType() const {return type;};
     int getLevel() const {return level;};
     Rectangle getRec() const {return {pos.x, pos.y, (float)text->width, (float)text->height};};
+    bool getActive() const {return active;};
+
+    void kill() {active=0;};
 
     bool getBulletIsReady(float dt) {return dataBackup+stats[level].attackSpeed<=dt;};
     void setTimer(float dt) {dataBackup = dt;};
