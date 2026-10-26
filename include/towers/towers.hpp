@@ -15,13 +15,18 @@ enum TowerType{
     T_TOWER5
 };
 
+struct towerTexturesData{
+    Texture2D buttonTexture;
+    Texture2D towerTexture;
+    Texture2D bulletTexture;
+};
+
 
 struct towerStats{
     float damage;
     float range;
     float attackSpeed;
     int cost;
-
 
     bool test = 0;
 };

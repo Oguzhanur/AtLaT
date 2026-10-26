@@ -16,4 +16,5 @@ struct Vector2i{
 
 struct ctx{
     Vector2 ScreenSize = {1200,800};
+    float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 };
