@@ -1,5 +1,22 @@
 #include "enemy/enemys.hpp"
 
+void enemys::effectsLoop(const float dt){
+    speedEffect = 1.f;
+    for(Effects& e : effectList){
+        e.timer += dt;
+        switch (e.type){
+            case EFFECT_SLOW: 
+                speedEffect = .5f;
+            default:
+                break;
+        }
+    }
+
+    
+    effectList.erase(
+        std::remove_if(effectList.begin(), effectList.end(), [](const Effects& e) {return e.timer>= e.duration;}), effectList.end()
+    );
+}
 
 void enemys::aiLoop(mapMan& man, const float dt){
     if(direction.x == 0 && direction.y == 0){
@@ -46,12 +63,12 @@ void enemys::aiLoop(mapMan& man, const float dt){
 
 void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı değerler yuvarlanıyor!!!!
     if(direction.x > 0.001f){ //* X pozitifse
-        float step = std::min(direction.x, stats.speed*dt);
+        float step = std::min(direction.x, stats.speed*dt*speedEffect);
         pos.x+=step;
         direction.x-=step;
         lastDir = DIR_RIGHT;
     } else if (direction.x < -0.001f) { //* X negatifse
-        float step = std::min(-direction.x, stats.speed*dt);
+        float step = std::min(-direction.x, stats.speed*dt*speedEffect);
         pos.x-=step;
         direction.x+=step;
         lastDir = DIR_LEFT;
@@ -61,12 +78,12 @@ void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı d
         pos.x = std::round(pos.x);}
 
     if(direction.y > 0.001f){ //* y = +
-        float step = std::min(direction.y, stats.speed*dt);
+        float step = std::min(direction.y, stats.speed*dt*speedEffect);
         pos.y+=step;
         direction.y-=step;
         lastDir = DIR_DOWN;
     } else if (direction.y < -0.001f) { //* y = -
-        float step = std::min(-direction.y, stats.speed*dt);
+        float step = std::min(-direction.y, stats.speed*dt*speedEffect);
         pos.y-=step;
         direction.y+=step;
         lastDir = DIR_UP;

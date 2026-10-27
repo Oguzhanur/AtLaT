@@ -15,6 +15,12 @@ enum TowerType{
     T_TOWER5
 };
 
+enum TowerSpecials{
+    TS_NULL,
+    TS_MULTIPLE,
+    TS_SLOW
+};
+
 struct towerTexturesData{
     Texture2D buttonTexture;
     Texture2D towerTexture;
@@ -28,7 +34,7 @@ struct towerStats{
     float attackSpeed;
     int cost;
 
-    bool test = 0;
+    std::vector<int> specials;
 };
 
 class tower1{

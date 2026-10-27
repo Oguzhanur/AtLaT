@@ -30,7 +30,7 @@ int main(void) {
     mapMan mapMan1;
 
     // Base
-    int money = 999;
+    int money = 9999;
     float baseHealth = 100.f;
     healthBar hBar({20,20}, {400,50}, baseHealth);
 
@@ -74,8 +74,21 @@ int main(void) {
 
     // ---------------------------------- KULELER ----------------------------------
     std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {{5.f, 150.f, 0.5f, 150},    {5.f, 150.f, 0.1f, 200}, {10.f, 150.f, 0.1f, 450} },
-        {{25.f, 300.f, 2.0f, 200}, {25.f, 600.f, 4.0f, 102}, {25.f, 600.f, 2.0f, 250}}
+        {   { 5.f, 150.f, 0.5f, 150, {TS_NULL}},
+            { 5.f, 150.f, 0.1f, 200, {TS_NULL}},
+            {10.f, 150.f, 0.1f, 450, {TS_NULL}}},
+
+        {   {15.f, 300.f, 2.0f, 200, {TS_NULL}},
+            {25.f, 600.f, 4.0f, 100, {TS_NULL}},
+            {50.f, 600.f, 2.0f, 250, {TS_NULL}}},
+
+        {   {10.f, 150.f, 2.0f, 500, {TS_MULTIPLE}},
+            {15.f, 200.f, 4.0f, 250, {TS_MULTIPLE}},
+            {30.f, 300.f, 2.0f, 700, {TS_MULTIPLE}}},
+
+        {   { 2.f, 150.f, 2.0f, 250, {TS_SLOW}},
+            {15.f, 200.f, 1.0f, 100, {TS_SLOW}},
+            {30.f, 300.f, 0.5f, 100, {TS_SLOW}}}
     };
 
 
@@ -83,17 +96,18 @@ int main(void) {
 
     std::vector<gui::button> towerButtons;
 
-    //* Kule 1
+    //* Kule 1 - Normal
     towerTexturesData t1;
     t1.buttonTexture = LoadTexture("data/items/item1But.png");
     t1.towerTexture = LoadTexture("data/items/item1.png");
     t1.bulletTexture = LoadTexture("data/items/item1Bul.png");
+    //TODO: Bullet png'si ile oynayan kullanıcı direk oyuna etki edemesin.
 
     towerButtons.emplace_back(gui::button{t1.buttonTexture, {1100,0}});
 
     towerTexture.push_back(t1);
 
-    //* Kule 2
+    //* Kule 2 - Büyük range / Yüksek hasar
     towerTexturesData t2;
     t2.buttonTexture = LoadTexture("data/items/item2But.png");
     t2.towerTexture = LoadTexture("data/items/item2.png");
@@ -102,6 +116,27 @@ int main(void) {
     towerButtons.emplace_back(gui::button{t2.buttonTexture, {1000,0}});
 
     towerTexture.push_back(t2);
+
+    //* Kule 3 - Alan hasarı / orta hasar
+    towerTexturesData t3;
+    t3.buttonTexture = LoadTexture("data/items/item3But.png");
+    t3.towerTexture = LoadTexture("data/items/item3.png");
+    t3.bulletTexture = LoadTexture("data/items/item3Bul.png");
+
+    towerButtons.emplace_back(gui::button{t3.buttonTexture, {1000,100}});
+
+    towerTexture.push_back(t3);
+
+    //* Kule 3 - Yavaşlatma
+    towerTexturesData t4;
+    t4.buttonTexture = LoadTexture("data/items/item4But.png");
+    t4.towerTexture = LoadTexture("data/items/item4.png");
+    t4.bulletTexture = LoadTexture("data/items/item4Bul.png");
+
+    towerButtons.emplace_back(gui::button{t4.buttonTexture, {1100,100}});
+
+    towerTexture.push_back(t4);
+
 
     // ---------------------------------- DÜŞMANLAR ----------------------------------
     std::vector<Texture2D> enemyTextures;
@@ -122,7 +157,8 @@ int main(void) {
     int currentWawe = 0;
     bool waweIsReady = 1;
     std::vector<wawe> wawes{ // Olduğu Wawe / Wawe başlayınca geçen süre / Kule / Sayısı / Aralık
-        {1, 1.f , E_2, 3, 0.1},
+        {0, 1.f , E_2, 1, 0.1},
+        {1, 1.f , E_2, 10, 0.1},
         {1, 1.f , E_1, 5, .5},
         {2, 1.f , E_2, 50, 0.1},
         {2, 1.f , E_1, 10, 1},
@@ -155,6 +191,7 @@ int main(void) {
 
         // Ai ve arka sistemler
         for (enemys& enemy : enemysComming){
+            enemy.effectsLoop(frameTime);
             enemy.aiLoop(mapMan1, frameTime);
             enemy.move(frameTime);
                     
@@ -169,6 +206,7 @@ int main(void) {
 
         for (Bullet& bul : bullets){
             if(bul.getActive()){ 
+                std::vector<int> specials = bul.getSpecials();
                 bul.updateBullet(frameTime);
 
                 for (enemys& enemy : enemysComming){
@@ -176,7 +214,21 @@ int main(void) {
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
                         money += bul.getDamage();
-                        break;
+
+
+                        // Çoklu hasar
+                        bool isMult = 0, isSlow = 1;
+                        for(int s : specials){
+                            if(s == TS_MULTIPLE){
+                                isMult = 1;
+                            } else if (s == TS_SLOW){
+                                isSlow = 1;
+                            }
+                        }
+
+                        if(isSlow) enemy.addEffect({EFFECT_SLOW, 5.f, 0.f});
+
+                        if(!isMult) break;
                     }
                 }
             }
@@ -191,7 +243,7 @@ int main(void) {
 
                 const towerStats& stats = tower.getStats();
                 if(CheckCollisionCircleRec(tower.getCenter(), stats.range, enemy.getRec())){
-                    bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemy.getPosPtr(), 1500.f, stats.damage});
+                    bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemy.getPosPtr(), 1500.f, stats.damage, tower.getStats().specials});
                     tower.setTimer(TimeAsFrame);
                     break;
                 }
@@ -220,7 +272,6 @@ int main(void) {
         if(baseHealth<=0.f){
             endStatus = -1;
         }
-        TraceLog(LOG_INFO, "endStatus: %i", endStatus);
 
         // Temizlik
         bullets.erase(

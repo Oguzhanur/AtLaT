@@ -3,6 +3,8 @@
 #include <raylib.h>
 #include <string>
 #include <cmath>
+#include <vector>
+#include <algorithm>
 
 #include "map/mapMan.hpp"
 
@@ -20,6 +22,20 @@ struct enemyStats{
     float speed;
 };
 
+enum EffectType{
+    EFFECT_NULL,
+    EFFECT_SLOW
+};
+
+struct Effects{
+    int type;
+
+    float duration;
+    float timer;
+
+};
+
+
 class enemys{
 private:
     enemyStats stats;
@@ -30,6 +46,9 @@ private:
     bool active = true;
     int lastDir = -1;
     Vector2 direction = {0.f,0.f};
+
+    std::vector<Effects> effectList;
+    float speedEffect = 1.f;
 public:
     enemys(const Texture2D& text, Vector2 pos, enemyStats stats) : pos(pos), text(&text), stats(stats) {};
     ~enemys() = default;
@@ -53,6 +72,9 @@ public:
         }
     };
 
+    void addEffect(Effects e) {effectList.push_back(e);};
+
+    void effectsLoop(const float dt);
     void aiLoop(mapMan& man, const float dt);
     void move(float dt);
     void draw();
