@@ -50,6 +50,7 @@ int main(void) {
 
     // ---------------------------------- EKRANLAR ----------------------------------
 
+    //TODO: Her ekran bir class olsun
 
     // ---------------------------------- ARAYÜZ ----------------------------------
     Color BColor{0,100,0,100};
@@ -87,8 +88,8 @@ int main(void) {
             {30.f, 300.f, 2.0f, 700, {TS_MULTIPLE}}},
 
         {   { 2.f, 150.f, 2.0f, 250, {TS_SLOW}},
-            {15.f, 200.f, 1.0f, 100, {TS_SLOW}},
-            {30.f, 300.f, 0.5f, 100, {TS_SLOW}}}
+            { 2.f, 200.f, 1.0f, 100, {TS_SLOW}},
+            { 2.f, 300.f, 0.5f, 100, {TS_SLOW}}}
     };
 
 
@@ -140,12 +141,14 @@ int main(void) {
 
     // ---------------------------------- DÜŞMANLAR ----------------------------------
     std::vector<Texture2D> enemyTextures;
-    enemyTextures.push_back(LoadTexture("data/enemys/enemy.png"));
-    enemyTextures.push_back(LoadTexture("data/enemys/enemySpeed.png"));
+    enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemy.png"));
+    enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemySpeed.png"));
+    enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemyHeavy.png"));
 
-    std::vector<enemyStats> eStats = {
-        {25.f, 25.f, 28.f},
-        {10.f, 10.f, 200.f}
+    std::vector<EnemyStats> eStats = { //? Maksimum can, can, hız
+        { 25.f,  25.f, 100.f, {ES_NULL}},
+        { 10.f,  10.f, 200.f, {ES_NULL}},
+        {100.f, 100.f,  50.f, {ES_NULL}}
     };
 
     std::vector<tower1> placedTowers;
@@ -156,12 +159,12 @@ int main(void) {
     int endStatus = 0;
     int currentWawe = 0;
     bool waweIsReady = 1;
-    std::vector<wawe> wawes{ // Olduğu Wawe / Wawe başlayınca geçen süre / Kule / Sayısı / Aralık
-        {0, 1.f , E_2, 1, 0.1},
+    std::vector<wawe> wawes{ //? Olduğu Wawe / Wawe başlayınca geçen süre / Kule / Sayısı / Aralık
         {1, 1.f , E_2, 10, 0.1},
         {1, 1.f , E_1, 5, .5},
         {2, 1.f , E_2, 50, 0.1},
         {2, 1.f , E_1, 10, 1},
+        {2, 1.f , E_3, 50, 0.5},
         {3, 1.f , E_1, 100, 0.01},
         {3, 3.f , E_1, 250, 0.01}
     };
@@ -210,7 +213,7 @@ int main(void) {
                 bul.updateBullet(frameTime);
 
                 for (enemys& enemy : enemysComming){
-                    if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){
+                    if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){ // Mermi düşmana değerse
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
                         money += bul.getDamage();
