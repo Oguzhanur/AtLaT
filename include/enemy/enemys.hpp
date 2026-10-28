@@ -13,11 +13,14 @@ enum Dir{
 };
 
 enum EnemyList{
-    E_NULL, E_1, E_2, E_3
+    E_NULL, 
+    E_Normal, E_Speed, E_Heavy, 
+    E_LLight, E_LHeavy, E_LBoss
 };
 
 enum EnemySpecials{
-    ES_NULL
+    ES_NULL,
+    ES_BOSS
 };
 
 struct EnemyStats{

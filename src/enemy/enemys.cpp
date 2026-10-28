@@ -11,7 +11,6 @@ void enemys::effectsLoop(const float dt){
                 break;
         }
     }
-
     
     effectList.erase(
         std::remove_if(effectList.begin(), effectList.end(), [](const Effects& e) {return e.timer>= e.duration;}), effectList.end()

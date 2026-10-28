@@ -11,7 +11,6 @@ namespace gui{
         Rectangle buttonRec;
     public:
         button(Texture2D& text, Vector2 pos): pos(pos), text(&text){}
-        ~button() = default;
 
         virtual bool isClicked(Vector2 mousePos);
         virtual void draw();

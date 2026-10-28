@@ -26,6 +26,8 @@ public:
     bool getSpeed() const {return speed;};
     std::vector<int> getSpecials() const {return specials;};
 
+    const Texture2D* getText() const {return text;};
+
     void killBullet() {active=0;};
 
     void updateBullet(float dt);
