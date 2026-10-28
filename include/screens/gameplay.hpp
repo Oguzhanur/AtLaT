@@ -1,15 +1,5 @@
 #include "screens/base.hpp"
 
-#include "map/mapMan.hpp"
-#include "gui/buttons.hpp"
-#include "gui/textures.hpp"
-#include "gui/healthBar.hpp"
-#include "gui/text.hpp"
-
-#include "towers/towers.hpp"
-#include "enemy/enemys.hpp"
-
-#include "enemy/wawe.hpp"
 
 class gameplayScreen : public baseScreen{
 private:

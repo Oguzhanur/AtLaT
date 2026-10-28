@@ -4,6 +4,16 @@
 #include <raymath.h>
 #include "core/ctx.hpp"
 
+#include "gui/textures.hpp"
+#include "gui/healthBar.hpp"
+#include "gui/text.hpp"
+#include "gui/buttons.hpp"
+
+#include "towers/towers.hpp"
+#include "enemy/enemys.hpp"
+
+#include "enemy/wawe.hpp"
+
 class baseScreen{
 protected:
     bool debugMode=0;
