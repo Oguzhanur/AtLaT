@@ -18,7 +18,7 @@ private:
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu;
     Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM;
-    gui::button towerUpdateButton, towerRemoveButton;
+    gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::switchButton waweBut;
     gui::font mainFont, smallFont;
     healthBar hBar, ehBar;
@@ -68,8 +68,8 @@ private:
     bool waweIsReady = 1;
     std::vector<wawe> wawes{ //? Olduğu Wawe / Wawe başlayınca geçen süre / Kule / Sayısı / Aralık
         {0, 1.f , E_LBoss, 1, 0.1},
-        {1, 1.f , E_Speed, 10, 0.1},
-        {1, 1.f , E_Normal, 5, .5},
+        {1, 1.f , E_Speed, 1, 0.1},
+        {2, 1.f , E_Normal, 5, .5},
         {2, 1.f , E_Speed, 50, 0.1},
         {2, 1.f , E_Normal, 10, 1},
         {2, 1.f , E_Heavy, 50, 0.5},
@@ -83,8 +83,9 @@ public:
         towerInfoMenu("data/gui/towerInfoMenu.png", {0,125}),
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
-        towerUpdateButton(tUpdateM, {20,550}),
-        towerRemoveButton(tDeleteM, {20,675}),
+        towerUpdateButton(tUpdateM, {20, 550}),
+        towerRemoveButton(tDeleteM, {20, 675}),
+        towerTargetButton(tDeleteM, {20, 350}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
         waweBut(startButtonM, stopButtonM, {1000,550}),

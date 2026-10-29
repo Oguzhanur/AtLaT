@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include <raymath.h>
 #include <string>
 #include <cmath>
 #include <vector>
@@ -55,6 +56,7 @@ private:
     bool active = true;
     int lastDir = -1;
     Vector2 direction = {0.f,0.f};
+    Vector2 takenPath = {0.f,0.f};
 
     std::vector<Effects> effectList;
     float speedEffect = 1.f;
@@ -64,6 +66,8 @@ public:
 
     Rectangle getRec() const {return {pos.x, pos.y, (float)text->width, (float)text->height};};
     Vector2 getPos() const {return pos;};
+    Vector2 getTakedPos() const {return takenPath;};
+    float getTakedPosFloat() const {return takenPath.x+takenPath.y;};
     Vector2* getPosPtr() {return &pos;};
 
     EnemyStats getStats() const {return stats;};

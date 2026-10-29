@@ -21,6 +21,15 @@ enum TowerSpecials{
     TS_SLOW
 };
 
+enum TowerTarget{
+    TARGET_NULL,
+    
+    TARGET_FIRST,
+    TARGET_LAST,
+
+    TARGET_SIZE
+};
+
 struct towerTexturesData{
     Texture2D buttonTexture;
     Texture2D towerTexture;
@@ -47,6 +56,8 @@ private:
     int maxLevel = 2;
     float dataBackup=0.f;
     bool active = 1;
+
+    int targetSelect = TARGET_FIRST;
 public:
     tower1(const Texture2D& text, Vector2 pos, std::vector<towerStats> stats, int type) : pos(pos), text(&text), stats(stats), type(type) {};
     ~tower1() = default;
@@ -59,15 +70,18 @@ public:
     int getLevel() const {return level;};
     Rectangle getRec() const {return {pos.x, pos.y, (float)text->width, (float)text->height};};
     bool getActive() const {return active;};
+    int getTargetSelect() const {return targetSelect;};
 
+    void setTarget(int x) {targetSelect = x;};
     void kill() {active=0;};
 
-    bool getBulletIsReady(float dt) {return dataBackup+stats[level].attackSpeed<=dt;};
+    
     void setTimer(float dt) {dataBackup = dt;};
     void updateLevel() {
         level++;
     };
 
+    bool getBulletIsReady(float dt) {return dataBackup+stats[level].attackSpeed<=dt;};
     bool isInMaxLevel() const {return !(maxLevel>=level+1);};
 
     void draw();

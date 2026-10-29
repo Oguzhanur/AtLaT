@@ -57,6 +57,9 @@ void enemys::aiLoop(mapMan& man, const float dt){
                 }
             }
         }
+
+        takenPath = {takenPath.x + std::abs(direction.x), 
+                        takenPath.y + std::abs(direction.y)};
     }
 }
 
@@ -65,11 +68,13 @@ void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı d
         float step = std::min(direction.x, stats.speed*dt*speedEffect);
         pos.x+=step;
         direction.x-=step;
+        takenPath.x+=step;
         lastDir = DIR_RIGHT;
     } else if (direction.x < -0.001f) { //* X negatifse
         float step = std::min(-direction.x, stats.speed*dt*speedEffect);
         pos.x-=step;
         direction.x+=step;
+        takenPath.x+=step;
         lastDir = DIR_LEFT;
     } else {  //* X 0sa
         direction.x = 0;
@@ -80,17 +85,21 @@ void enemys::move(float dt){ //? Hareketlerin uyumlu olması için 0.001 altı d
         float step = std::min(direction.y, stats.speed*dt*speedEffect);
         pos.y+=step;
         direction.y-=step;
+        takenPath.y+=step;
         lastDir = DIR_DOWN;
     } else if (direction.y < -0.001f) { //* y = -
         float step = std::min(-direction.y, stats.speed*dt*speedEffect);
         pos.y-=step;
         direction.y+=step;
+        takenPath.y+=step;
         lastDir = DIR_UP;
     } else { //* y = 0
         direction.y = 0;
         pos.y += direction.y;
         pos.y = std::round(pos.y);
     }
+
+
 }
 
 

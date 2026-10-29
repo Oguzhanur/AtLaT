@@ -38,6 +38,21 @@ void gameplayScreen::loop(){
                     }
                 }
 
+                // Kule hedef değiştirme
+                if(selectedTower!=0 && placedTowers[selectedTower-1].getTargetSelect()!=TARGET_NULL){
+                    int targetType = placedTowers[selectedTower-1].getTargetSelect();
+                    TraceLog(LOG_INFO, "Target: %i", targetType);
+
+                    if(towerTargetButton.isClicked(mousePos)){
+                        if(targetType < TARGET_SIZE-1){
+                            targetType++;
+                        } else {
+                            targetType=1;
+                        }
+                        placedTowers[selectedTower-1].setTarget(targetType);
+                    }
+                }
+
                 // Kule geliştime 
                 if(selectedTower!=0 && !placedTowers[selectedTower-1].isInMaxLevel()){
                     towerStats newS = placedTowers[selectedTower-1].getNextStats();
@@ -143,18 +158,47 @@ void gameplayScreen::loop(){
         for (tower1& tower : placedTowers){
             if(!tower.getBulletIsReady(TimeAsFrame)) continue;
 
+            const towerStats& stats = tower.getStats();
+            Vector2* enemyPosPtr = nullptr;
+            float enemyTakenPos = 0.f;
+
             for (enemys& enemy : enemysComming){
                 if (!enemy.getActive()) continue;
 
-                const towerStats& stats = tower.getStats();
                 if(CheckCollisionCircleRec(tower.getCenter(), stats.range, enemy.getRec())){
-                    bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemy.getPosPtr(), 1500.f, stats.damage, tower.getStats().specials});
-                    tower.setTimer(TimeAsFrame);
-                    break;
+                    switch (tower.getTargetSelect()){
+                        case TARGET_NULL:
+                            break;
+
+                        case TARGET_FIRST:
+                            if(enemyPosPtr==nullptr || enemyTakenPos < enemy.getTakedPosFloat()){
+                                enemyPosPtr = enemy.getPosPtr();
+                                enemyTakenPos = enemy.getTakedPosFloat();
+                                tower.setTimer(TimeAsFrame);
+                            }
+                            break;
+
+                        case TARGET_LAST:
+                            if(enemyPosPtr==nullptr || enemyTakenPos > enemy.getTakedPosFloat()){
+                                enemyPosPtr = enemy.getPosPtr();
+                                enemyTakenPos = enemy.getTakedPosFloat();
+                                tower.setTimer(TimeAsFrame);
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                    TraceLog(LOG_INFO, "TakenPath-(%i): Kordinat:{%f,%f} Alınan{%f}", enemy.getStats().specials[0] ,enemy.getPos().x, enemy.getPos().y, enemy.getTakedPosFloat());
                 }
+               
+            }
+
+            if(enemyPosPtr != nullptr){
+                bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemyPosPtr, 1500.f, stats.damage, tower.getStats().specials});
+                TraceLog(LOG_INFO, "ATTACK-> %f, %f", enemyPosPtr->x, enemyPosPtr->y);
             }
         }
-
 
         // Wawe'ler
         waweIsReady = 1;
@@ -250,6 +294,22 @@ void gameplayScreen::draw(){
             
             towerUpdateButton.draw();
             towerRemoveButton.draw();
+
+            std::string targetText = " ";
+            switch (placedTowers[selectedTower-1].getTargetSelect()){
+                case TARGET_NULL:
+                    targetText = "Hiçbiri";
+                    break;
+                case TARGET_FIRST:
+                    targetText = "EN ÖN";
+                    break;
+                case TARGET_LAST:
+                    targetText = "EN SON";
+                    break;
+            };
+
+            towerTargetButton.draw();
+            gui::drawText("Hedef: " + targetText, {20, 320}, smallFont, BLACK);
             
             if(placedTowers[selectedTower-1].isInMaxLevel()){
                 gui::drawText("Maxsimum level", {20,520}, smallFont, BLACK);
