@@ -8,6 +8,7 @@
 #include "gui/healthBar.hpp"
 #include "gui/text.hpp"
 #include "gui/buttons.hpp"
+#include "gui/timedTexture.hpp"
 
 #include "towers/towers.hpp"
 #include "enemy/enemys.hpp"

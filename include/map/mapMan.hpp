@@ -5,7 +5,8 @@
 #include "core/ctx.hpp"
 
 enum TileType{
-    Tile_GRASS, Tile_ROAD
+    Tile_ROAD,
+    Tile_GRASS
 };
 
 struct TileData{

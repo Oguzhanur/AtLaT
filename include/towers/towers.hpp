@@ -6,6 +6,7 @@
 #include "towers/bullet.hpp"
 #include <iostream>
 
+
 enum TowerType{
     T_NOTOWER, 
     T_TOWER1, 
@@ -17,7 +18,7 @@ enum TowerType{
 
 enum TowerSpecials{
     TS_NULL,
-    TS_MULTIPLE,
+    TS_BOMB,
     TS_SLOW
 };
 
@@ -43,7 +44,7 @@ struct towerStats{
     float attackSpeed;
     int cost;
 
-    std::vector<int> specials;
+    std::vector<TowerSpecial> specials;
     std::string data;
 };
 

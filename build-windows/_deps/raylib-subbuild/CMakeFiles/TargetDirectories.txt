@@ -1,3 +1,0 @@
-/home/coguz/Belgeler/cpp/raylib3 - Tank Arena/build-windows/_deps/raylib-subbuild/CMakeFiles/raylib-populate.dir
-/home/coguz/Belgeler/cpp/raylib3 - Tank Arena/build-windows/_deps/raylib-subbuild/CMakeFiles/edit_cache.dir
-/home/coguz/Belgeler/cpp/raylib3 - Tank Arena/build-windows/_deps/raylib-subbuild/CMakeFiles/rebuild_cache.dir

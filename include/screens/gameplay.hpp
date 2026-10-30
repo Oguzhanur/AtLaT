@@ -1,9 +1,10 @@
+#pragma once
 #include "screens/base.hpp"
 
 
 class gameplayScreen : public baseScreen{
 private:
-    int money = 500;
+    int money = 9999;
     float baseHealth = 100.f;
 
     // Map ve seçme değişkenleri
@@ -17,7 +18,7 @@ private:
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu;
-    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM;
+    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM, timedBomb64x64;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::switchButton waweBut;
     gui::font mainFont, smallFont;
@@ -25,21 +26,21 @@ private:
 
     // OYNANIŞ
     std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {   { 2.f, 150.f, 0.5f, 250, {TS_NULL}, "Basic Tower"}, // Normal
-            { 2.f, 200.f, 0.5f, 100, {TS_NULL}, "Range Update"}, 
-            { 4.f, 200.f, 0.3f, 200, {TS_NULL}, "Better guns"}},
+        {   { 2.f, 150.f, 0.5f, 250, {{TS_NULL}}, "Basic Tower"}, // Normal
+            { 2.f, 200.f, 0.5f, 100, {{TS_NULL}}, "Range Update"}, 
+            { 4.f, 200.f, 0.3f, 200, {{TS_NULL}}, "Better guns"}},
 
-        {   { 8.f, 250.f, 2.0f, 450, {TS_NULL}, "Strong & Slow tower"}, // yavaş ve güçlü
-            { 8.f, 400.f, 2.0f, 120, {TS_NULL}, "Range Update"},
-            {16.f, 400.f, 1.0f, 400, {TS_NULL}, "Faster & Strong reload"}},
+        {   { 8.f, 250.f, 2.0f, 450, {{TS_NULL}}, "Strong & Slow tower"}, // yavaş ve güçlü
+            { 8.f, 400.f, 2.0f, 120, {{TS_NULL}}, "Range Update"},
+            {16.f, 400.f, 1.0f, 400, {{TS_NULL}}, "Faster & Strong reload"}},
 
-        {   { 8.f, 150.f, 4.0f, 350, {TS_MULTIPLE}, "Range Attack Tower"}, // Alan vuran, yavaş
-            {16.f, 150.f, 4.0f, 250, {TS_MULTIPLE}, "Strong bomb"},
-            {16.f, 200.f, 2.5f, 550, {TS_MULTIPLE}, "Mobile bomb"}},
+        {   { 8.f, 150.f, 4.0f, 350, {{TS_BOMB, 6}}, "Range Attack Tower"}, // Alan vuran, yavaş
+            {16.f, 150.f, 4.0f, 250, {{TS_BOMB, 6}}, "Strong bomb"},
+            {16.f, 200.f, 2.5f, 550, {{TS_BOMB, 6}}, "Mobile bomb"}},
 
-        {   { 0.f, 150.f, 1.0f, 150, {TS_SLOW}, "Slowwer Tower"}, // Yavaşlatan
-            { 0.f, 300.f, 1.0f, 150, {TS_SLOW}, "Range Update"},
-            { 0.f, 300.f, 0.5f, 300, {TS_SLOW}, "Faster"}}
+        {   { 0.f, 150.f, 1.0f, 150, {{TS_SLOW, 3}}, "Slowwer Tower"}, // Yavaşlatan
+            { 0.f, 300.f, 1.0f, 150, {{TS_SLOW, 3}}, "Range Update"},
+            { 0.f, 300.f, 0.5f, 300, {{TS_SLOW, 5}}, "Faster"}}
     };
 
     std::vector<EnemyStats> eStats = { //? Maksimum can, can, hız
@@ -56,6 +57,7 @@ private:
         {2500.f, 2500.f,  100.f, {ES_BOSS}}  // Boss fight
     };
 
+    std::vector<gui::timedTexture> timedTextures;
     std::vector<towerTexturesData> towerTexture;
     std::vector<gui::button> towerButtons;
     std::vector<Texture2D> enemyTextures;
@@ -110,6 +112,7 @@ private:
 public:
     gameplayScreen(ctx* GData) : baseScreen(GData),
         towerInfoMenu("data/gui/towerInfoMenu.png", {0,125}),
+        timedBomb64x64(LoadTexture("data/gui/bomb64x64.png")),
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
         tChangeM(LoadTexture("data/gui/towerChange.png")),
