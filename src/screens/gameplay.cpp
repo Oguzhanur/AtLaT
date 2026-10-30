@@ -41,7 +41,6 @@ void gameplayScreen::loop(){
                 // Kule hedef değiştirme
                 if(selectedTower!=0 && placedTowers[selectedTower-1].getTargetSelect()!=TARGET_NULL){
                     int targetType = placedTowers[selectedTower-1].getTargetSelect();
-                    TraceLog(LOG_INFO, "Target: %i", targetType);
 
                     if(towerTargetButton.isClicked(mousePos)){
                         if(targetType < TARGET_SIZE-1){
@@ -189,30 +188,33 @@ void gameplayScreen::loop(){
                         default:
                             break;
                     }
-                    TraceLog(LOG_INFO, "TakenPath-(%i): Kordinat:{%f,%f} Alınan{%f}", enemy.getStats().specials[0] ,enemy.getPos().x, enemy.getPos().y, enemy.getTakedPosFloat());
+               
                 }
                
             }
 
             if(enemyPosPtr != nullptr){
                 bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemyPosPtr, 1500.f, stats.damage, tower.getStats().specials});
-                TraceLog(LOG_INFO, "ATTACK-> %f, %f", enemyPosPtr->x, enemyPosPtr->y);
             }
         }
 
         // Wawe'ler
         waweIsReady = 1;
         for (wawe& w : wawes){
-            if (w.getActive()){
-                endStatus = 0;
-                if(currentWawe == w.getWawe() && w.getActive()){
-                    waweIsReady = 0;
+            if(!w.getActive()) continue;
+            
 
-                    if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getTimeAsFrame()){
-                        w.saveTime(TimeAsFrame);
-                        enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, eStats[w.getTowerType()-1]);
-                        w.countN();
-                    }
+            endStatus = 0;
+
+            if(currentWawe == w.getWawe()){
+
+                if(w.getWaweStartTime()==0.f) w.setWaweStartTime(TimeAsFrame);
+                waweIsReady = 0;
+
+                if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
+                    w.saveTime(TimeAsFrame);
+                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, eStats[w.getTowerType()-1]);
+                    w.countN();
                 }
             }
         }
@@ -281,6 +283,7 @@ void gameplayScreen::draw(){
 
         for(int x=1; x<=towerButtons.size(); x++){
             towerButtons[x-1].draw();
+            gui::drawText(std::to_string(TStats[x-1][0].cost) + "$", Vector2Add(towerButtons[x-1].getPos(), {20,95}), smallFont, WHITE);
         }
 
         if(selectedTower!=0){
@@ -316,7 +319,8 @@ void gameplayScreen::draw(){
             } else {
                 towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
-                gui::drawText("Geliştirme: " + gui::floatToStr(nextStats.cost), {22,520}, smallFont, BLACK);
+                gui::drawText(nextStats.data + ": ", {22,500}, smallFont, BLACK);
+                gui::drawText(gui::floatToStr(nextStats.cost) + "$", {22,520}, smallFont, BLACK);
             }
 
         }

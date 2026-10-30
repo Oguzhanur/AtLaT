@@ -15,7 +15,7 @@ enum Dir{
 
 enum EnemyList{
     E_NULL, 
-    E_Normal, E_Speed, E_Heavy, 
+    E_Normal, E_Speed, E_Heavy, E_Boss,
     E_LLight, E_LHeavy, E_LBoss
 };
 

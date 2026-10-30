@@ -44,6 +44,7 @@ struct towerStats{
     int cost;
 
     std::vector<int> specials;
+    std::string data;
 };
 
 class tower1{

@@ -3,7 +3,7 @@
 
 class gameplayScreen : public baseScreen{
 private:
-    int money = 999;
+    int money = 500;
     float baseHealth = 100.f;
 
     // Map ve seçme değişkenleri
@@ -17,7 +17,7 @@ private:
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu;
-    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM;
+    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::switchButton waweBut;
     gui::font mainFont, smallFont;
@@ -25,32 +25,35 @@ private:
 
     // OYNANIŞ
     std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {   { 5.f, 150.f, 0.5f, 150, {TS_NULL}},
-            { 5.f, 150.f, 0.1f, 200, {TS_NULL}},
-            {10.f, 150.f, 0.1f, 450, {TS_NULL}}},
+        {   { 2.f, 150.f, 0.5f, 250, {TS_NULL}, "Basic Tower"}, // Normal
+            { 2.f, 200.f, 0.5f, 100, {TS_NULL}, "Range Update"}, 
+            { 4.f, 200.f, 0.3f, 200, {TS_NULL}, "Better guns"}},
 
-        {   {15.f, 300.f, 2.0f, 200, {TS_NULL}},
-            {25.f, 600.f, 4.0f, 100, {TS_NULL}},
-            {50.f, 600.f, 2.0f, 250, {TS_NULL}}},
+        {   { 8.f, 250.f, 2.0f, 450, {TS_NULL}, "Strong & Slow tower"}, // yavaş ve güçlü
+            { 8.f, 400.f, 2.0f, 120, {TS_NULL}, "Range Update"},
+            {16.f, 400.f, 1.0f, 400, {TS_NULL}, "Faster & Strong reload"}},
 
-        {   {10.f, 150.f, 2.0f, 500, {TS_MULTIPLE}},
-            {15.f, 200.f, 4.0f, 250, {TS_MULTIPLE}},
-            {30.f, 300.f, 2.0f, 700, {TS_MULTIPLE}}},
+        {   { 8.f, 150.f, 4.0f, 350, {TS_MULTIPLE}, "Range Attack Tower"}, // Alan vuran, yavaş
+            {16.f, 150.f, 4.0f, 250, {TS_MULTIPLE}, "Strong bomb"},
+            {16.f, 200.f, 2.5f, 550, {TS_MULTIPLE}, "Mobile bomb"}},
 
-        {   { 2.f, 150.f, 2.0f, 250, {TS_SLOW}},
-            { 2.f, 200.f, 1.0f, 100, {TS_SLOW}},
-            { 2.f, 300.f, 0.5f, 100, {TS_SLOW}}}
+        {   { 0.f, 150.f, 1.0f, 150, {TS_SLOW}, "Slowwer Tower"}, // Yavaşlatan
+            { 0.f, 300.f, 1.0f, 150, {TS_SLOW}, "Range Update"},
+            { 0.f, 300.f, 0.5f, 300, {TS_SLOW}, "Faster"}}
     };
 
     std::vector<EnemyStats> eStats = { //? Maksimum can, can, hız
         // LVL 1
-        { 25.f,  25.f, 100.f, {ES_NULL}}, // Normal düşman
-        { 10.f,  10.f, 200.f, {ES_NULL}}, // Hızlı düşman
-        {100.f, 100.f,  50.f, {ES_NULL}}, // Yavaş/Güçlü düşman
+        {  8.f,   8.f, 150.f, {ES_NULL}}, // Normal düşman
+        {  4.f,   4.f, 250.f, {ES_NULL}}, // Hızlı düşman
+        { 20.f,  20.f, 100.f, {ES_NULL}}, // Yavaş/Güçlü düşman
+        {500.f, 500.f, 150.f, {ES_BOSS}}, // Güçlü
+
+
         // LVL 2
-        {  30.f,   30.f,  350.f, {ES_NULL}},// Çok hızlı / Hafif güçlü
-        { 100.f,  100.f,  200.f, {ES_NULL}}, // Orta hızlı / Çok güçlü
-        {1000.f, 1000.f,  100.f, {ES_BOSS}}  // Boss fight
+        { 150.f,  150.f,  350.f, {ES_NULL}},// Çok hızlı / Hafif güçlü
+        { 300.f,  300.f,  200.f, {ES_NULL}}, // Orta hızlı / Çok güçlü
+        {2500.f, 2500.f,  100.f, {ES_BOSS}}  // Boss fight
     };
 
     std::vector<towerTexturesData> towerTexture;
@@ -66,15 +69,41 @@ private:
     int endStatus = 0;
     int currentWawe = 0;
     bool waweIsReady = 1;
-    std::vector<wawe> wawes{ //? Olduğu Wawe / Wawe başlayınca geçen süre / Kule / Sayısı / Aralık
-        {0, 1.f , E_LBoss, 1, 0.1},
-        {1, 1.f , E_Speed, 1, 0.1},
-        {2, 1.f , E_Normal, 5, .5},
-        {2, 1.f , E_Speed, 50, 0.1},
-        {2, 1.f , E_Normal, 10, 1},
-        {2, 1.f , E_Heavy, 50, 0.5},
-        {3, 1.f , E_Normal, 100, 0.01},
-        {3, 3.f , E_Normal, 250, 0.01}
+    std::vector<wawe> wawes{ //? Olduğu Wawe / Wawe başlayınca geçen süre / Düşman Türü / Sayısı / Aralık
+        {1, 1.f , E_Normal, 5, 1.},
+
+        {2, 0.f , E_Normal, 5,  .5},
+        {2, 0.f , E_Speed,  5, 1.},
+
+        {3, 1.f , E_Normal, 10, 1.},
+        {3, 1.5f, E_Speed, 10,  1.},
+
+        {4, 1.f, E_Heavy, 8, 1.},
+
+        {5, 1.f , E_Normal, 10, 1.},
+        {5, 1.f, E_Heavy, 5, 2.},
+        {5, 5.f, E_Speed, 10, .5},
+        
+        {6, 1.f , E_Heavy, 10, 1.},
+        {6, 1.f , E_Speed, 20, .5},
+
+        {7, 1.f , E_Heavy, 20, .5},
+
+        {8, 1.f , E_Heavy, 20, 0.2},
+        {8, 3.f, E_Speed, 20, .3},
+
+        {9, 1.5f , E_Speed, 25, .5},
+        {9, 1.f, E_Heavy, 25, .5},
+        {9, 8.f, E_Heavy, 10, 1.},
+        {9, 12.f, E_Speed, 30, 0.5},
+
+        // Boss 1 - New lvl
+        {10, 1.f , E_Speed, 30, 1.},
+        {10, 1.f, E_Heavy, 25, 0.5},
+
+        {10, 10.f, E_Normal, 10, 1.},
+        {10, 10.f, E_Speed, 10, 1.},
+        {10, 10.f, E_Boss, 1, 1.},
     };
 
 
@@ -83,9 +112,10 @@ public:
         towerInfoMenu("data/gui/towerInfoMenu.png", {0,125}),
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
+        tChangeM(LoadTexture("data/gui/towerChange.png")),
         towerUpdateButton(tUpdateM, {20, 550}),
         towerRemoveButton(tDeleteM, {20, 675}),
-        towerTargetButton(tDeleteM, {20, 350}),
+        towerTargetButton(tChangeM, {20, 350}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
         waweBut(startButtonM, stopButtonM, {1000,550}),
@@ -126,12 +156,13 @@ public:
         });
 
         for(int x=0; x<towerTexture.size(); x++){
-            towerButtons.push_back(gui::button(towerTexture[x].buttonTexture, {1000.f + 100.f * (x/2), 100.f * (x%2)}));}
+            towerButtons.push_back(gui::button(towerTexture[x].buttonTexture, {1000.f + 100.f * (x/2), 120.f * (x%2)}));}
 
         // LVL 1
         enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemy.png"));
         enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemySpeed.png"));
         enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemyHeavy.png"));
+        enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemyBoss.png"));
         // LVL 2
         enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyLight.png"));
         enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyHeavy.png"));
@@ -142,6 +173,7 @@ public:
         // TODO: tüm görsel içeren veriler vector içinde olsun ve o şekilde bellekten sil
         UnloadTexture(tUpdateM);
         UnloadTexture(tDeleteM);
+        UnloadTexture(tChangeM);
         UnloadTexture(startButtonM);
         UnloadTexture(stopButtonM);
 

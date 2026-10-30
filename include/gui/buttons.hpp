@@ -12,6 +12,8 @@ namespace gui{
     public:
         button(Texture2D& text, Vector2 pos): pos(pos), text(&text){}
 
+        virtual Vector2 getPos() const {return pos;};
+        
         virtual bool isClicked(Vector2 mousePos);
         virtual void draw();
     };

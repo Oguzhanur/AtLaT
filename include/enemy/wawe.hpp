@@ -6,7 +6,8 @@ private:
     int towerType;
     int count;
     int waweNum;
-
+    
+    float waweStartTime = 0.f;
     float savedClock = 0.f;
 public:
     wawe(int waweNum, float timeAsFrame, int towerType, int count, float interval) : timeAsFrame(timeAsFrame), 
@@ -17,6 +18,9 @@ public:
     int getTowerType() const {return towerType;};
     bool getActive() const {return count>0;};
     int getWawe() const {return this->waweNum;};
+    
+    void setWaweStartTime(float dt) {waweStartTime=dt;};
+    float getWaweStartTime() const {return waweStartTime;};
 
     void saveTime(float dt) {savedClock=dt;};
     float getSavedClock() const {return savedClock;};
