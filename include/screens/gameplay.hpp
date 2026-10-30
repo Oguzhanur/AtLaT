@@ -118,7 +118,7 @@ public:
         towerTargetButton(tChangeM, {20, 350}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
-        waweBut(startButtonM, stopButtonM, {1000,550}),
+        waweBut(startButtonM, stopButtonM, {1000,700}),
         rightMenu("data/gui/RMenu.png", {1000,0}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         smallFont("data/font/Bungee-Regular.ttf", 24.f),

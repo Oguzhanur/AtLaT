@@ -291,9 +291,9 @@ void gameplayScreen::draw(){
             
             towerInfoMenu.draw();
             towerStats s = placedTowers[selectedTower-1].getStats();
-            gui::drawText("Saldırı Hızı: " + gui::floatToStr(s.attackSpeed), {10,150}, smallFont, BLACK);
-            gui::drawText("Saldırı Gücü: " + gui::floatToStr(s.damage), {10,200}, smallFont, BLACK);
-            gui::drawText("Saldırı Alanı: " + gui::floatToStr(s.range), {10,250}, smallFont, BLACK);
+            gui::drawText("Attack Speed: " + gui::floatToStr(s.attackSpeed), {20,150}, smallFont, BLACK);
+            gui::drawText("Damage: " + gui::floatToStr(s.damage), {20,200}, smallFont, BLACK);
+            gui::drawText("Range: " + gui::floatToStr(s.range), {20,250}, smallFont, BLACK);
             
             towerUpdateButton.draw();
             towerRemoveButton.draw();
@@ -301,26 +301,26 @@ void gameplayScreen::draw(){
             std::string targetText = " ";
             switch (placedTowers[selectedTower-1].getTargetSelect()){
                 case TARGET_NULL:
-                    targetText = "Hiçbiri";
+                    targetText = "None";
                     break;
                 case TARGET_FIRST:
-                    targetText = "EN ÖN";
+                    targetText = "First";
                     break;
                 case TARGET_LAST:
-                    targetText = "EN SON";
+                    targetText = "Last";
                     break;
             };
 
             towerTargetButton.draw();
-            gui::drawText("Hedef: " + targetText, {20, 320}, smallFont, BLACK);
+            gui::drawText("Target: " + targetText, {20, 320}, smallFont, BLACK);
             
             if(placedTowers[selectedTower-1].isInMaxLevel()){
-                gui::drawText("Maxsimum level", {20,520}, smallFont, BLACK);
+                gui::drawText("MAX Level", {20,520}, smallFont, BLACK);
             } else {
                 towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
                 gui::drawText(nextStats.data + ": ", {22,500}, smallFont, BLACK);
-                gui::drawText(gui::floatToStr(nextStats.cost) + "$", {22,520}, smallFont, BLACK);
+                gui::drawText("Cost: " + gui::floatToStr(nextStats.cost) + "$", {22,520}, smallFont, BLACK);
             }
 
         }
@@ -337,7 +337,7 @@ void gameplayScreen::draw(){
         gui::drawText(moneyText, {800,20}, mainFont, Color{255,215,0,255});
 
         std::string waweText = "Wawe: " + std::to_string(currentWawe);
-        gui::drawText(waweText, {1010, 520}, mainFont, BLACK);
+        gui::drawText(waweText, {1015, 670}, mainFont, BLACK);
 
         waweBut.draw(waweIsReady);
 
