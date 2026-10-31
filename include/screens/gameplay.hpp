@@ -52,7 +52,7 @@ private:
         {  4.f,   4.f, 150.f, {ES_NULL}}, // Normal düşman
         {  2.f,   2.f, 250.f, {ES_NULL}}, // Hızlı düşman
         { 10.f,  10.f, 100.f, {ES_NULL}}, // Yavaş/Güçlü düşman
-        {150.f, 150.f,  50.f, {ES_BOSS}}, // Güçlü
+        {150.f, 150.f, 150.f, {ES_BOSS}}, // Güçlü
 
 
         // LVL 2
@@ -78,8 +78,7 @@ private:
     std::vector<waweData> waweDatas{
         // LVL 1 (DPS/COST = EASY:60, NORMAL:50 HARD:40)
         // LVL 1 (DPS-ATTACK = EASY:3, NORMAL:4 HARD:5)
-        {1, {wawe{3.f, E_Boss, 1, 1.},
-             wawe{1.f, E_Normal, 10, 1.}}, reward{50}}, // START: 500
+        {1, {wawe{1.f, E_Normal, 7, 1.}}, reward{50}}, // START: 500
 
         {2, {wawe{1.f, E_Normal, 10, .5}}, reward{25}},
 
