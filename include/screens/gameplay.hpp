@@ -4,7 +4,8 @@
 
 class gameplayScreen : public baseScreen{
 private:
-    int money = 9999;
+    int moneyEarnData = 500;
+    int money = 500;
     float baseHealth = 100.f;
 
     // Map ve seçme değişkenleri
@@ -71,42 +72,39 @@ private:
     int endStatus = 0;
     int currentWawe = 0;
     bool waweIsReady = 1;
-    std::vector<wawe> wawes{ //? Olduğu Wawe / Wawe başlayınca geçen süre / Düşman Türü / Sayısı / Aralık
-        {1, 1.f , E_Normal, 5, 1.},
+    std::vector<waweData> waweDatas{
+        {1, {wawe{1.f, E_Normal, 5, 1.}}, reward{100}},
 
-        {2, 0.f , E_Normal, 5,  .5},
-        {2, 0.f , E_Speed,  5, 1.},
+        {2, {wawe{1.f, E_Normal, 5, .5}, 
+             wawe{1.f, E_Speed, 5, 1.}}, reward{0}},
 
-        {3, 1.f , E_Normal, 10, 1.},
-        {3, 1.5f, E_Speed, 10,  1.},
+        {3, {wawe{1.f, E_Normal, 10, 1.}, 
+             wawe{1.5f, E_Speed, 10, 1.}}, reward{100}},
 
-        {4, 1.f, E_Heavy, 8, 1.},
+        {4, {wawe{1.f, E_Heavy, 10, 1.}}, reward{150}},
 
-        {5, 1.f , E_Normal, 10, 1.},
-        {5, 1.f, E_Heavy, 5, 2.},
-        {5, 5.f, E_Speed, 10, .5},
+        {5, {wawe{1.f, E_Heavy, 10, 1.}, 
+             wawe{1.f, E_Heavy, 10, 1.}, 
+             wawe{1.f, E_Heavy, 10, 1.}}, reward{150}},
         
-        {6, 1.f , E_Heavy, 10, 1.},
-        {6, 1.f , E_Speed, 20, .5},
+        {6, {wawe{1.f, E_Heavy, 10, 1.},
+             wawe{1.f, E_Speed, 20, .5}}, reward{150}},
 
-        {7, 1.f , E_Heavy, 20, .5},
+        {7, {wawe{1.f, E_Heavy, 20, .5}}, reward{150}},
 
-        {8, 1.f , E_Heavy, 20, 0.2},
-        {8, 3.f, E_Speed, 20, .3},
+        {8, {wawe{1.f, E_Heavy, 20, .2},
+             wawe{3.f, E_Speed, 20, .3}}, reward{150}},
 
-        {9, 1.5f , E_Speed, 25, .5},
-        {9, 1.f, E_Heavy, 25, .5},
-        {9, 8.f, E_Heavy, 10, 1.},
-        {9, 12.f, E_Speed, 30, 0.5},
+        {9, {wawe{1.5f , E_Speed, 25, .5},
+             wawe{1.f, E_Heavy, 25, .5},
+             wawe{8.f, E_Heavy, 10, 1.},
+             wawe{12.f, E_Speed, 30, 0.5}}, reward{150}},
 
-        // Boss 1 - New lvl
-        {10, 1.f , E_Speed, 30, 1.},
-        {10, 1.f, E_Heavy, 25, 0.5},
-
-        {10, 10.f, E_Normal, 10, 1.},
-        {10, 10.f, E_Speed, 10, 1.},
-        {10, 10.f, E_Boss, 1, 1.},
+        {10, {wawe{1.f, E_Normal, 10, 1.},
+             wawe{1.f, E_Speed, 10, 1.},
+             wawe{1.f, E_Boss, 1, 1.}}, reward{150}}
     };
+
 
 
 public:

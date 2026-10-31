@@ -70,6 +70,7 @@ void gameplayScreen::loop(){
             // Kule Silme
             if(towerRemoveButton.isClicked(mousePos)){
                 money += placedTowers[selectedTower-1].getStats().cost / 2;
+                moneyEarnData += placedTowers[selectedTower-1].getStats().cost / 2;
 
                 placedTowers[selectedTower-1].kill();
                 selectedTower = 0;
@@ -139,6 +140,7 @@ void gameplayScreen::loop(){
                     bul.killBullet();
                     enemy.attack(bul.getDamage());
                     money += bul.getDamage() * (0.5f * GData->hardness );
+                    moneyEarnData += bul.getDamage() * (0.5f * GData->hardness );
 
                     // Özellikler
                     for(TowerSpecial& s : specials){
@@ -221,22 +223,31 @@ void gameplayScreen::loop(){
 
     // Wawe'ler
     waweIsReady = 1;
-    for (wawe& w : wawes){
-        if(!w.getActive()) continue;
+    for (waweData& wData : waweDatas){
+        if(!wData.active) continue;
+        bool anyWaweActive = 0;
         
+        for (wawe& w : wData.usedWawes){
+            if(!w.getActive()) continue;
+            endStatus = 0;
+            anyWaweActive = 1;
 
-        endStatus = 0;
+            if(currentWawe == wData.waweNum){
+                if(w.getWaweStartTime()==0.f) w.setWaweStartTime(TimeAsFrame);
+                waweIsReady = 0;
 
-        if(currentWawe == w.getWawe()){
-
-            if(w.getWaweStartTime()==0.f) w.setWaweStartTime(TimeAsFrame);
-            waweIsReady = 0;
-
-            if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
-                w.saveTime(TimeAsFrame);
-                enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, eStats[w.getTowerType()-1]);
-                w.countN();
+                if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
+                    w.saveTime(TimeAsFrame);
+                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, eStats[w.getTowerType()-1]);
+                    w.countN();
+                }
             }
+        }
+        if (currentWawe==wData.waweNum && !anyWaweActive){
+            money += wData.waweReward.money;
+            moneyEarnData += wData.waweReward.money;
+
+            wData.active = 0;
         }
     }
 
@@ -364,6 +375,11 @@ void gameplayScreen::draw(){
 
         std::string waweText = "Wawe: " + std::to_string(currentWawe);
         gui::drawText(waweText, {1015, 670}, mainFont, BLACK);
+
+        if(GData->debugMode){
+            std::string totalEarnedMoneyText = "Earned Money: " + std::to_string(moneyEarnData);
+            gui::drawText(totalEarnedMoneyText, {700,50}, mainFont, RED);
+        }
 
         waweBut.draw(waweIsReady);
 
