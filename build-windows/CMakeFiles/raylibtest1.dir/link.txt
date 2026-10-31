@@ -1,3 +1,0 @@
-/usr/bin/cmake -E rm -f CMakeFiles/raylibtest1.dir/objects.a
-/usr/bin/x86_64-w64-mingw32-ar qc CMakeFiles/raylibtest1.dir/objects.a @CMakeFiles/raylibtest1.dir/objects1.rsp
-/usr/bin/x86_64-w64-mingw32-g++ -Wl,--whole-archive CMakeFiles/raylibtest1.dir/objects.a -Wl,--no-whole-archive -o raylibtest1.exe -Wl,--out-implib,libraylibtest1.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles/raylibtest1.dir/linkLibs.rsp
