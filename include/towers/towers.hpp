@@ -27,6 +27,7 @@ enum TowerTarget{
     
     TARGET_FIRST,
     TARGET_LAST,
+    TARGET_STRONG,
 
     TARGET_SIZE
 };
@@ -73,6 +74,15 @@ public:
     Rectangle getRec() const {return {pos.x, pos.y, (float)text->width, (float)text->height};};
     bool getActive() const {return active;};
     int getTargetSelect() const {return targetSelect;};
+
+    int getTotalCost() const {
+        int total = 0;
+        for(int x = level; x>=0; x--){
+            total += stats[x].cost;
+        }
+
+        return total;
+    };
 
     void setTarget(int x) {targetSelect = x;};
     void kill() {active=0;};

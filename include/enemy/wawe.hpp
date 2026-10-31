@@ -19,6 +19,7 @@ public:
 
     float getInterval() const {return interval;};
     float getTimeAsFrame() const {return timeAsFrame;};
+    int getCount() const {return count;};
     int getTowerType() const {return towerType;};
     bool getActive() const {return count>0;};
     

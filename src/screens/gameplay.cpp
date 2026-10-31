@@ -167,7 +167,6 @@ void gameplayScreen::loop(){
                 enemy.attack(bombValue);
                 x++;
 
-                TraceLog(LOG_INFO, "Bomba değdi %i", x);
             }
         }
 
@@ -183,6 +182,7 @@ void gameplayScreen::loop(){
         const towerStats& stats = tower.getStats();
         Vector2* enemyPosPtr = nullptr;
         float enemyTakenPos = 0.f;
+        float enemyHealth = 0.f;
 
         for (enemys& enemy : enemysComming){
             if (!enemy.getActive()) continue;
@@ -190,7 +190,7 @@ void gameplayScreen::loop(){
             if(CheckCollisionCircleRec(tower.getCenter(), stats.range, enemy.getRec())){
                 switch (tower.getTargetSelect()){
                     case TARGET_NULL:
-                        break;
+                        continue;
 
                     case TARGET_FIRST:
                         if(enemyPosPtr==nullptr || enemyTakenPos < enemy.getTakedPosFloat()){
@@ -198,7 +198,7 @@ void gameplayScreen::loop(){
                             enemyTakenPos = enemy.getTakedPosFloat();
                             tower.setTimer(TimeAsFrame);
                         }
-                        break;
+                        continue;
 
                     case TARGET_LAST:
                         if(enemyPosPtr==nullptr || enemyTakenPos > enemy.getTakedPosFloat()){
@@ -206,22 +206,69 @@ void gameplayScreen::loop(){
                             enemyTakenPos = enemy.getTakedPosFloat();
                             tower.setTimer(TimeAsFrame);
                         }
-                        break;
-
-                    default:
-                        break;
+                        continue;
+                    
+                    case TARGET_STRONG:
+                        if(enemyPosPtr==nullptr || enemyHealth < enemy.getStats().health){
+                            enemyPosPtr = enemy.getPosPtr();
+                            enemyHealth = enemy.getStats().health;
+                            tower.setTimer(TimeAsFrame);
+                        }
+                        
+                        continue;
                 }
             
             }
             
         }
 
+
         if(enemyPosPtr != nullptr){
             bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemyPosPtr, 1500.f, stats.damage, tower.getStats().specials});
         }
     }
 
-    // Wawe'ler
+    //  DEBUGG
+    if(GData->debugMode){
+        if(DEBUG_WAWESTART){
+            int wx = 0;
+            int earnedMoney = money;
+            int lastLevel = 0;
+            for(waweData& wData : waweDatas){
+                wx++;
+                TraceLog(LOG_INFO, "Wawe %i Başlangıç parası: %i", wx, earnedMoney);
+
+                for (wawe& w : wData.usedWawes){
+                    earnedMoney += (eStats[w.getTowerType()-1].health * w.getCount());
+                    earnedMoney += wData.waweReward.money;
+                }
+            }
+
+            TraceLog(LOG_INFO, "----------------------");
+            DEBUG_WAWESTART = 0;
+        }
+        if(DEBUG_TOWERDATAS){
+            for (const auto& tower : TStats){
+                TraceLog(LOG_INFO, "%s:", tower[0].data.c_str());
+                int level = 0;
+                int totalCost = 0;
+                for(const auto& data : tower){
+                    totalCost += data.cost;
+                    
+                    float dps = data.damage/data.attackSpeed;
+                    float cost_dps = totalCost/dps;
+                    float efficiens = (dps*data.range)/(150.f/5.f); // Range / Tahmini düşman hızı / 5.f
+
+                    TraceLog(LOG_INFO, "  %i -> DPS: %f, Cost/DPS: %f, Tahmini Hasar:%f", level, dps, cost_dps, efficiens);
+                    level++;
+                }
+            }
+
+            TraceLog(LOG_INFO, "----------------------");
+            DEBUG_TOWERDATAS = 0;
+        }
+    }
+
     waweIsReady = 1;
     for (waweData& wData : waweDatas){
         if(!wData.active) continue;
@@ -328,9 +375,15 @@ void gameplayScreen::draw(){
             
             towerInfoMenu.draw();
             towerStats s = placedTowers[selectedTower-1].getStats();
-            gui::drawText("Attack Speed: " + gui::floatToStr(s.attackSpeed), {20,150}, smallFont, BLACK);
-            gui::drawText("Damage: " + gui::floatToStr(s.damage), {20,200}, smallFont, BLACK);
-            gui::drawText("Range: " + gui::floatToStr(s.range), {20,250}, smallFont, BLACK);
+            float towerDps = s.damage/s.attackSpeed;
+            if(GData->debugMode){
+                gui::drawText("Attack Speed: " + gui::floatToStr(s.attackSpeed), {20,150}, smallFont, BLACK);
+                gui::drawText("Damage: " + gui::floatToStr(s.damage), {20,180}, smallFont, BLACK);
+                gui::drawText("Range: " + gui::floatToStr(s.range), {20,210}, smallFont, BLACK);
+                gui::drawText("DPS: " + gui::floatToStr(towerDps), {20,240}, smallFont, BLACK);
+                gui::drawText("Cost/DPS: " + gui::floatToStr((float)placedTowers[selectedTower-1].getTotalCost()/towerDps), {20,270}, smallFont, BLACK);
+
+            }
             
             towerUpdateButton.draw();
             towerRemoveButton.draw();
@@ -345,6 +398,9 @@ void gameplayScreen::draw(){
                     break;
                 case TARGET_LAST:
                     targetText = "Last";
+                    break;
+                case TARGET_STRONG:
+                    targetText = "Strong";
                     break;
             };
 

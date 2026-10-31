@@ -16,6 +16,10 @@ private:
     int selectedTower = 0;
     int selectedTData = 0;
 
+    // DEBUG
+    bool DEBUG_TOWERDATAS = 1;
+    bool DEBUG_WAWESTART = 1;
+
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu;
@@ -27,17 +31,17 @@ private:
 
     // OYNANIŞ
     std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {   { 2.f, 150.f, 0.5f, 250, {{TS_NULL}}, "Basic Tower"}, // Normal
-            { 2.f, 200.f, 0.5f, 100, {{TS_NULL}}, "Range Update"}, 
-            { 4.f, 200.f, 0.3f, 200, {{TS_NULL}}, "Better guns"}},
+        {   { 1.f, 150.f, 0.5f, 250, {{TS_NULL}}, "Basic Tower"}, // Normal
+            { 1.f, 200.f, 0.5f, 100, {{TS_NULL}}, "Range Update"}, 
+            { 2.f, 200.f, 0.3f, 300, {{TS_NULL}}, "Better guns"}},
 
-        {   { 8.f, 250.f, 2.0f, 450, {{TS_NULL}}, "Strong & Slow tower"}, // yavaş ve güçlü
-            { 8.f, 400.f, 2.0f, 120, {{TS_NULL}}, "Range Update"},
-            {16.f, 400.f, 1.0f, 400, {{TS_NULL}}, "Faster & Strong reload"}},
+        {   { 4.f, 250.f, 2.0f, 450, {{TS_NULL}}, "Strong & Slow tower"}, // yavaş ve güçlü
+            { 4.f, 400.f, 2.0f, 120, {{TS_NULL}}, "Range Update"},
+            { 8.f, 400.f, 1.0f, 400, {{TS_NULL}}, "Faster & Strong reload"}},
 
-        {   { 8.f, 150.f, 4.0f, 350, {{TS_BOMB, 6}}, "Range Attack Tower"}, // Alan vuran, yavaş
-            {16.f, 150.f, 4.0f, 250, {{TS_BOMB, 6}}, "Strong bomb"},
-            {16.f, 200.f, 2.5f, 550, {{TS_BOMB, 6}}, "Mobile bomb"}},
+        {   { 4.f, 150.f, 4.0f, 350, {{TS_BOMB, 6}}, "Range Attack Tower"}, // Alan vuran, yavaş
+            { 8.f, 150.f, 4.0f, 250, {{TS_BOMB, 6}}, "Strong bomb"},
+            { 8.f, 200.f, 2.5f, 550, {{TS_BOMB, 6}}, "Mobile bomb"}},
 
         {   { 0.f, 150.f, 1.0f, 150, {{TS_SLOW, 3}}, "Slowwer Tower"}, // Yavaşlatan
             { 0.f, 300.f, 1.0f, 150, {{TS_SLOW, 3}}, "Range Update"},
@@ -45,11 +49,10 @@ private:
     };
 
     std::vector<EnemyStats> eStats = { //? Maksimum can, can, hız
-        // LVL 1
-        {  8.f,   8.f, 150.f, {ES_NULL}}, // Normal düşman
-        {  4.f,   4.f, 250.f, {ES_NULL}}, // Hızlı düşman
-        { 20.f,  20.f, 100.f, {ES_NULL}}, // Yavaş/Güçlü düşman
-        {500.f, 500.f, 150.f, {ES_BOSS}}, // Güçlü
+        {  4.f,   4.f, 150.f, {ES_NULL}}, // Normal düşman
+        {  2.f,   2.f, 250.f, {ES_NULL}}, // Hızlı düşman
+        { 10.f,  10.f, 100.f, {ES_NULL}}, // Yavaş/Güçlü düşman
+        {150.f, 150.f,  50.f, {ES_BOSS}}, // Güçlü
 
 
         // LVL 2
@@ -73,36 +76,35 @@ private:
     int currentWawe = 0;
     bool waweIsReady = 1;
     std::vector<waweData> waweDatas{
-        {1, {wawe{1.f, E_Normal, 5, 1.}}, reward{100}},
+        // LVL 1 (DPS/COST = EASY:60, NORMAL:50 HARD:40)
+        // LVL 1 (DPS-ATTACK = EASY:3, NORMAL:4 HARD:5)
+        {1, {wawe{3.f, E_Boss, 1, 1.},
+             wawe{1.f, E_Normal, 10, 1.}}, reward{50}}, // START: 500
 
-        {2, {wawe{1.f, E_Normal, 5, .5}, 
-             wawe{1.f, E_Speed, 5, 1.}}, reward{0}},
+        {2, {wawe{1.f, E_Normal, 10, .5}}, reward{25}},
 
-        {3, {wawe{1.f, E_Normal, 10, 1.}, 
-             wawe{1.5f, E_Speed, 10, 1.}}, reward{100}},
+        {3, {wawe{1.5f, E_Speed, 10, .5}}, reward{50}},
 
-        {4, {wawe{1.f, E_Heavy, 10, 1.}}, reward{150}},
+        {4, {wawe{1.f, E_Heavy, 10, 1.}}, reward{100}},
 
-        {5, {wawe{1.f, E_Heavy, 10, 1.}, 
-             wawe{1.f, E_Heavy, 10, 1.}, 
+        {5, {wawe{1.f, E_Normal, 10, 1.}, 
+             wawe{1.f, E_Speed, 10, 1.}, 
              wawe{1.f, E_Heavy, 10, 1.}}, reward{150}},
         
         {6, {wawe{1.f, E_Heavy, 10, 1.},
-             wawe{1.f, E_Speed, 20, .5}}, reward{150}},
+             wawe{1.f, E_Speed, 20, .5}}, reward{100}},
 
-        {7, {wawe{1.f, E_Heavy, 20, .5}}, reward{150}},
+        {7, {wawe{1.f, E_Heavy, 20, .5}}, reward{100}},
 
         {8, {wawe{1.f, E_Heavy, 20, .2},
-             wawe{3.f, E_Speed, 20, .3}}, reward{150}},
+             wawe{3.f, E_Speed, 20, .3}}, reward{100}},
 
-        {9, {wawe{1.5f , E_Speed, 25, .5},
-             wawe{1.f, E_Heavy, 25, .5},
-             wawe{8.f, E_Heavy, 10, 1.},
-             wawe{12.f, E_Speed, 30, 0.5}}, reward{150}},
+        {9, {wawe{1.5f, E_Speed, 25, .5},
+             wawe{12.f, E_Normal, 20, .5}}, reward{200}},
 
-        {10, {wawe{1.f, E_Normal, 10, 1.},
-             wawe{1.f, E_Speed, 10, 1.},
-             wawe{1.f, E_Boss, 1, 1.}}, reward{150}}
+        {10, {wawe{1.f, E_Normal, 10, 0.5},
+             wawe{1.f, E_Speed, 10, 0.5},
+             wawe{3.f, E_Boss, 1, 1.}}, reward{250}}
     };
 
 
