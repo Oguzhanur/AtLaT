@@ -10,7 +10,7 @@ enum Screens{
 
     SCREEN_MAINMENU,
     SCREEN_GAMEPLAY,
-    SCREEN_GAMEMENU,
+    SCREEN_SETTINGS,
 
     SCREEN_END
 };
@@ -38,7 +38,7 @@ struct ctx{
     float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 
     bool debugMode = 1;
-    int status = 1;
+    int status = SCREEN_MAINMENU;
     int hardness = H_NORMAL;
 
     //? Screen'lar arası iletişim

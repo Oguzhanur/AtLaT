@@ -98,6 +98,12 @@ void gameplayScreen::loop(){
             waweIsReady = waweIsReady;
             //waweIsReady=!waweIsReady;
         }
+
+        // Restart
+        if(restartButton.isClicked(mousePos)){
+            GData->status = SCREEN_SETTINGS;
+        }
+
     } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
         selectedBut = 0;
         selectedTower = 0;
@@ -214,7 +220,7 @@ void gameplayScreen::loop(){
                             enemyHealth = enemy.getStats().health;
                             tower.setTimer(TimeAsFrame);
                         }
-                        
+
                         continue;
                 }
             
@@ -290,6 +296,7 @@ void gameplayScreen::loop(){
                 }
             }
         }
+        
         if (currentWawe==wData.waweNum && !anyWaweActive){
             money += wData.waweReward.money;
             moneyEarnData += wData.waweReward.money;
@@ -438,6 +445,7 @@ void gameplayScreen::draw(){
         }
 
         waweBut.draw(waweIsReady);
+        restartButton.draw();
 
         if(endStatus==1){
             gui::drawText("GAME OVER: YOU WİN", {600, 100}, mainFont, GREEN);

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <raylib.h>
+#include <raymath.h>
 #include <string>
+#include "gui/text.hpp"
 
 namespace gui{
     class button{
@@ -18,6 +20,18 @@ namespace gui{
         virtual void draw();
     };
 
+    class textButton : public button{
+    private:
+        std::string textData;
+        font& fontData;
+        Color color;
+    public:
+        textButton(Texture2D& text, std::string textData, font& fontData, Color color, Vector2 pos) : button(text, pos), textData(textData), fontData(fontData), color(color) {}
+        ~textButton() = default;
+
+        void draw() override;
+    };
+
     class switchButton : public button {
     private:
         Texture2D* text2;
@@ -27,4 +41,6 @@ namespace gui{
 
         void draw(bool isOn);
     };
+
+    
 };

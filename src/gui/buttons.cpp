@@ -10,6 +10,13 @@ void gui::button::draw(){
 }
 
 
+void gui::textButton::draw(){
+    DrawTextureEx(*text, pos, 0.f, 1.f, WHITE);
+
+    Vector2 centerPos = gui::centeringText(textData, Vector2Add(pos, {text->width/2.f, text->height/2.f}), fontData);
+
+    DrawTextEx(fontData.getFontData(), textData.c_str(), centerPos, fontData.getFontSize(), 2, color);
+}
 
 void gui::switchButton::draw(bool isOn){
     if(isOn){  

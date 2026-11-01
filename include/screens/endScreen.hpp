@@ -1,15 +1,16 @@
+#pragma once
 #include "screens/base.hpp"
 
 class endScreen : public baseScreen{
 private:
     Texture2D playButT;
-    gui::button playBut, backBut;
+    gui::textButton playBut, backBut;
     gui::font mainFont, megaFont;
 public:
     endScreen(ctx* GData) : baseScreen(GData),
         playButT(LoadTexture("data/gui/buttons/but450x150.png")),
-        playBut(playButT, {100,600}),
-        backBut(playButT, {600,600}),
+        playBut(playButT, "Play Again", megaFont, BLACK, {100,600}),
+        backBut(playButT, "Back to Menu", megaFont, BLACK, {600,600}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f)
     {}

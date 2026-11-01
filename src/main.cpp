@@ -8,6 +8,7 @@
 #include "screens/gameplay.hpp"
 #include "screens/mainMenu.hpp"
 #include "screens/endScreen.hpp"
+#include "screens/settings.hpp"
 
 int main(void) {
     ctx GData;
@@ -32,6 +33,9 @@ int main(void) {
                     break;
                 case SCREEN_GAMEPLAY:
                     currentScreen = new gameplayScreen(&GData);
+                    break;
+                case SCREEN_SETTINGS:
+                    currentScreen = new settingsScreen(&GData);
                     break;
                 case SCREEN_END:
                     currentScreen = new endScreen(&GData);

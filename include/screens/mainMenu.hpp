@@ -1,15 +1,16 @@
+#pragma once
 #include "screens/base.hpp"
 
 
 class mainMenuScreen : public baseScreen{
 private:
     Texture2D playButT;
-    gui::button playBut;
+    gui::textButton playBut;
     gui::font mainFont, megaFont;
 public:
     mainMenuScreen(ctx* GData) : baseScreen(GData),
         playButT(LoadTexture("data/gui/buttons/but880x150.png")),
-        playBut(playButT, {200,600}),
+        playBut(playButT, "START GAME", megaFont, BLACK, {200,600}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f)
     {}

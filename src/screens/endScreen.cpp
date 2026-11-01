@@ -20,10 +20,7 @@ void endScreen::draw(){
     ClearBackground(RAYWHITE);
     BeginMode2D(camera);
         playBut.draw();
-        gui::drawText("Play Again", {120,640}, megaFont, BLACK);
-
         backBut.draw();
-        gui::drawText("Main Menu", {680,640}, megaFont, BLACK);
 
         if(GData->isPlayerWinnedGame){
             gui::drawText("YOU WİN", {420,200}, megaFont, GREEN);

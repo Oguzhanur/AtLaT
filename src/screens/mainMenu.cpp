@@ -17,6 +17,5 @@ void mainMenuScreen::draw(){
     ClearBackground(GRAY);
     BeginMode2D(camera);
         playBut.draw();
-        gui::drawText("START GAME", {430,640}, megaFont, BLACK);
     EndMode2D();
 }

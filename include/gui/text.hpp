@@ -1,3 +1,5 @@
+#pragma once
+
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -5,6 +7,7 @@
 #include <iomanip>
 
 namespace gui{
+
     class font{
     private:
         Font fontData;
@@ -17,7 +20,13 @@ namespace gui{
         float getFontSize() const {return fontSize;};
     };
 
+    struct TextData{
+        std::string& data;
+        font& fontData;
+        Color color;
+    };
 
+    Vector2 centeringText(const std::string& text, Vector2 pos, const font& font);
     void drawText(const std::string& data, Vector2 pos, const font& font, Color color);
 
     std::string floatToStr(float f);

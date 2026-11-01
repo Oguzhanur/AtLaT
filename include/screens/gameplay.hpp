@@ -23,8 +23,9 @@ private:
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu;
-    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM, timedBomb64x64;
+    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
+    gui::textButton restartButton;
     gui::switchButton waweBut;
     gui::font mainFont, smallFont;
     healthBar hBar, ehBar;
@@ -33,7 +34,7 @@ private:
     std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
         {   { 1.f, 150.f, 0.5f, 250, {{TS_NULL}}, "Basic Tower"}, // Normal
             { 1.f, 200.f, 0.5f, 100, {{TS_NULL}}, "Range Update"}, 
-            { 2.f, 200.f, 0.3f, 300, {{TS_NULL}}, "Better guns"}},
+            { 2.f, 200.f, 0.5f, 300, {{TS_NULL}}, "Better guns"}},
 
         {   { 4.f, 250.f, 2.0f, 450, {{TS_NULL}}, "Strong & Slow tower"}, // yavaş ve güçlü
             { 4.f, 400.f, 2.0f, 120, {{TS_NULL}}, "Range Update"},
@@ -51,7 +52,7 @@ private:
     std::vector<EnemyStats> eStats = { //? Maksimum can, can, hız
         {  4.f,   4.f, 150.f, {ES_NULL}}, // Normal düşman
         {  2.f,   2.f, 250.f, {ES_NULL}}, // Hızlı düşman
-        { 10.f,  10.f, 100.f, {ES_NULL}}, // Yavaş/Güçlü düşman
+        { 10.f,  10.f, 100.f, {ES_NULL}}, // Yaşlı dayılar
         {150.f, 150.f, 150.f, {ES_BOSS}}, // Güçlü
 
 
@@ -115,11 +116,13 @@ public:
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
         tChangeM(LoadTexture("data/gui/towerChange.png")),
+        button200x100Text(LoadTexture("data/gui/button200x100.png")),
         towerUpdateButton(tUpdateM, {20, 550}),
         towerRemoveButton(tDeleteM, {20, 675}),
         towerTargetButton(tChangeM, {20, 350}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
+        restartButton(button200x100Text, "Back Menu", mainFont, BLACK, {1000, 570}),
         waweBut(startButtonM, stopButtonM, {1000,700}),
         rightMenu("data/gui/RMenu.png", {1000,0}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
