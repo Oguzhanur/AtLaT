@@ -27,24 +27,24 @@ void enemys::aiLoop(mapMan& man, const float dt){
 
         if (direction.x != 0 || direction.y != 0) timeBackup = 0.0f;
 
-        if (man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 1) && lastDir != DIR_LEFT && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 2)){
+        if (man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {1}) && lastDir != DIR_LEFT && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {2,3,4})){
             //* ------- SAĞ -------
             direction.x = movementSpeed;
         } else {
             //* ------- SOL -------
             newPos.x-=size+movementSpeed*2;
-            if(man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 1) && lastDir != DIR_RIGHT && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 2)){
+            if(man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {1}) && lastDir != DIR_RIGHT && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {2,3,4})){
                 direction.x = -movementSpeed;
             } else {
                 newPos.x = pos.x;
                 newPos.y += size+movementSpeed;
-                if(man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 1) && lastDir != DIR_UP && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 2)){
+                if(man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {1}) && lastDir != DIR_UP && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {2,3,4})){
                     //* ------- AŞŞAĞI -------
                     direction.y = movementSpeed;
                 } else {
                     //* ------- YUKARI -------
                     newPos.y -= size+movementSpeed*2;
-                    if(man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 1) && lastDir != DIR_DOWN && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, 2)){
+                    if(man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {1}) && lastDir != DIR_DOWN && !man.isInCollionWithID(newPos, {(float)text->width, (float)text->height}, {2,3,4})){                                             
                         direction.y = -movementSpeed;
                     } else {
                         //* ------- HAREKET YOKKK -------

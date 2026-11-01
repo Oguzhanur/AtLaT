@@ -6,7 +6,10 @@ void gameselectScreen::start(){
 
 void gameselectScreen::loop(){
     Vector2 mousePos = GetMousePosition();
-    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+    episodeButton1.effectLoop(mousePos);
+    backBut.effectLoop(mousePos);
+
+    if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
         if(backBut.isClicked(mousePos)){
             GData->status = SCREEN_MAINMENU;
         }

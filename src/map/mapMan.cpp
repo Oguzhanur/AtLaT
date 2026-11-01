@@ -73,7 +73,7 @@ TileData mapMan::getTileByPos(Vector2 mousePos){
     return out;
 }
 
-bool mapMan::isInCollionWithID(Vector2 objPos, Vector2 objSize, int selectedID){
+bool mapMan::isInCollionWithID(Vector2 objPos, Vector2 objSize, std::vector<int> selectedIDs){
     Rectangle ObjRec = {objPos.x, objPos.y, objSize.x, objSize.y};
     Vector2i StartPos = {
         ((int)objPos.x/(int)TILESIZE), 
@@ -99,12 +99,13 @@ bool mapMan::isInCollionWithID(Vector2 objPos, Vector2 objSize, int selectedID){
 
             Rectangle tileRec = {x*TILESIZE, y*TILESIZE, TILESIZE, TILESIZE};
 
-
-            if(data==selectedID && CheckCollisionRecs(ObjRec, tileRec)){
-                //TraceLog(LOG_INFO, "selectedID=%d, data=%d, x=%d, y=%d", selectedID, data, x, y);
-                //TraceLog(LOG_INFO, "%i Tile: {%f, %f} TileTilePos: {%i, %i}",data,  tileRec.x, tileRec.y ,x, y);
-                return true;
-                
+            for(int selectedID : selectedIDs){
+                if(data==selectedID && CheckCollisionRecs(ObjRec, tileRec)){
+                    //TraceLog(LOG_INFO, "selectedID=%d, data=%d, x=%d, y=%d", selectedID, data, x, y);
+                    //TraceLog(LOG_INFO, "%i Tile: {%f, %f} TileTilePos: {%i, %i}",data,  tileRec.x, tileRec.y ,x, y);
+                    return true;
+                    
+                }
             }
         }
     }

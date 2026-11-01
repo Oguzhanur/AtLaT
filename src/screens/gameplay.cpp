@@ -8,7 +8,7 @@ void gameplayScreen::loop(){
     // -------------------------------- BUTONLAR VE TIKLAMA --------------------------------
     Vector2 mousePos = GetMousePosition();
 
-    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+    if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
         selectedTData = 0;
 
         if(selectedBut!=0){
@@ -104,7 +104,7 @@ void gameplayScreen::loop(){
             GData->status = SCREEN_GAMESELECT;
         }
 
-    } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+    } else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)){
         selectedBut = 0;
         selectedTower = 0;
     }

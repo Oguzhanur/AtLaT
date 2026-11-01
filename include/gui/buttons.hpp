@@ -11,11 +11,16 @@ namespace gui{
         Vector2 pos;
         Texture2D* text;
         Rectangle buttonRec;
+        
+        Color buttonColor{255,255,255,255};
+        float scale=1.f;
+        Vector2 oldPos = {0,0};
     public:
         button(Texture2D& text, Vector2 pos): pos(pos), text(&text){}
 
         virtual Vector2 getPos() const {return pos;};
         
+        virtual void effectLoop(Vector2 mousePos);
         virtual bool isClicked(Vector2 mousePos);
         virtual void draw();
     };

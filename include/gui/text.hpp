@@ -27,6 +27,8 @@ namespace gui{
     };
 
     Vector2 centeringText(const std::string& text, Vector2 pos, const font& font);
+    Vector2 centeringTextEx(const std::string& text, float scale, Vector2 pos, const font& font);
+
     void drawText(const std::string& data, Vector2 pos, const font& font, Color color);
     void drawCenteredText(const std::string& data, Vector2 pos, const font& font, Color color);
 

@@ -38,8 +38,12 @@ gui::font::~font(){
 // Draw Text
 
 Vector2 gui::centeringText(const std::string& text, Vector2 pos, const font& font){
-    
     Vector2 size = MeasureTextEx(font.getFontData(), text.c_str(), font.getFontSize(), 2);
+    return {pos.x-(size.x/2), pos.y-(size.y/2)};
+}
+
+Vector2 gui::centeringTextEx(const std::string& text, float scale, Vector2 pos, const font& font){
+    Vector2 size = MeasureTextEx(font.getFontData(), text.c_str(), font.getFontSize()*scale, 2);
     return {pos.x-(size.x/2), pos.y-(size.y/2)};
 }
 

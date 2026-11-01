@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include <vector>
 #include "core/cute_tiled.h"
 #include "core/ctx.hpp"
 
@@ -32,6 +33,6 @@ public:
     TileData getTileByPos(Vector2 mousePos);
     Vector2 getRealPos(Vector2i pos) {return {pos.x*TILESIZE, pos.y*TILESIZE};};
 
-    bool isInCollionWithID(Vector2 objPos, Vector2 objSize, int selectedID);
+    bool isInCollionWithID(Vector2 objPos, Vector2 objSize, std::vector<int> selectedIDs);
 };
 

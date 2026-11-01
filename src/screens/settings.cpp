@@ -6,7 +6,8 @@ void settingsScreen::start(){
 
 void settingsScreen::loop(){
     Vector2 mousePos = GetMousePosition();
-    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+    backBut.effectLoop(mousePos);
+    if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
         if(backBut.isClicked(mousePos)){
             GData->status = SCREEN_MAINMENU;
         }
