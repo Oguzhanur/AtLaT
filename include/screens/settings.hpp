@@ -11,7 +11,7 @@ public:
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f),
         playButT(LoadTexture("data/gui/buttons/but450x150.png")),
-        backBut(playButT, "Main Menu", megaFont, BLACK, {600,600})
+        backBut(playButT, "Main Menu", megaFont, BLACK, {400,500})
     {}
     ~settingsScreen() override {
         UnloadTexture(playButT);

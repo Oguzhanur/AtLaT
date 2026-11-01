@@ -111,20 +111,20 @@ private:
 
 public:
     gameplayScreen(ctx* GData) : baseScreen(GData),
-        towerInfoMenu("data/gui/towerInfoMenu.png", {0,125}),
+        towerInfoMenu("data/gui/towerInfoMenu.png", {0,120}),
         timedBomb64x64(LoadTexture("data/gui/bomb64x64.png")),
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
         tChangeM(LoadTexture("data/gui/towerChange.png")),
         button200x100Text(LoadTexture("data/gui/button200x100.png")),
-        towerUpdateButton(tUpdateM, {20, 550}),
-        towerRemoveButton(tDeleteM, {20, 675}),
-        towerTargetButton(tChangeM, {20, 350}),
+        towerUpdateButton(tUpdateM, {20, 495}),
+        towerRemoveButton(tDeleteM, {20, 605}),
+        towerTargetButton(tChangeM, {20, 345}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
-        restartButton(button200x100Text, "Back Menu", mainFont, BLACK, {1000, 570}),
-        waweBut(startButtonM, stopButtonM, {1000,700}),
-        rightMenu("data/gui/RMenu.png", {1000,0}),
+        restartButton(button200x100Text, "Back", mainFont, BLACK, {1080, 450}),
+        waweBut(startButtonM, stopButtonM, {1080,620}),
+        rightMenu("data/gui/RMenu.png", {1080,0}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         smallFont("data/font/Bungee-Regular.ttf", 24.f),
         hBar({20,20}, {400,50}, 10.f, baseHealth, "Health: ", 1),
@@ -161,7 +161,7 @@ public:
         });
 
         for(int x=0; x<towerTexture.size(); x++){
-            towerButtons.push_back(gui::button(towerTexture[x].buttonTexture, {1000.f + 100.f * (x/2), 120.f * (x%2)}));}
+            towerButtons.push_back(gui::button(towerTexture[x].buttonTexture, {1080.f + 100.f * (x/2), 120.f * (x%2)}));}
 
         // LVL 1
         enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemy.png"));

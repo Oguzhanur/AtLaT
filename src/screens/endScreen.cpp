@@ -23,9 +23,9 @@ void endScreen::draw(){
         backBut.draw();
 
         if(GData->isPlayerWinnedGame){
-            gui::drawText("YOU WİN", {420,200}, megaFont, GREEN);
+            gui::drawCenteredText("YOU WİN", {GData->ScreenSize.x/2,200}, megaFont, GREEN);
         } else {
-            gui::drawText("YOU LOSE", {420,200}, megaFont, RED);
+            gui::drawCenteredText("YOU LOSE", {GData->ScreenSize.x/2,200}, megaFont, RED);
         }
     EndMode2D();
 }

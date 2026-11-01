@@ -9,8 +9,8 @@ private:
 public:
     endScreen(ctx* GData) : baseScreen(GData),
         playButT(LoadTexture("data/gui/buttons/but450x150.png")),
-        playBut(playButT, "Play Again", megaFont, BLACK, {100,600}),
-        backBut(playButT, "Back to Menu", megaFont, BLACK, {600,600}),
+        playBut(playButT, "Play Again", megaFont, BLACK, {160,450}),
+        backBut(playButT, "Back to Menu", megaFont, BLACK, {660,450}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f)
     {}

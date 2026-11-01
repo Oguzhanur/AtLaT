@@ -9,6 +9,7 @@
 #include "screens/mainMenu.hpp"
 #include "screens/endScreen.hpp"
 #include "screens/settings.hpp"
+#include "screens/gameselect.hpp"
 
 int main(void) {
     ctx GData;
@@ -19,8 +20,7 @@ int main(void) {
     SetTargetFPS(60);
 
     // EKRANLAR
-    baseScreen* currentScreen = new mainMenuScreen(&GData);
-    currentScreen->start();
+    baseScreen* currentScreen = nullptr;
 
     // Loop
     while (!WindowShouldClose()){
@@ -36,6 +36,9 @@ int main(void) {
                     break;
                 case SCREEN_SETTINGS:
                     currentScreen = new settingsScreen(&GData);
+                    break;
+                case SCREEN_GAMESELECT:
+                    currentScreen = new gameselectScreen(&GData);
                     break;
                 case SCREEN_END:
                     currentScreen = new endScreen(&GData);

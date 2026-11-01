@@ -4,18 +4,20 @@
 
 class mainMenuScreen : public baseScreen{
 private:
-    Texture2D playButT;
-    gui::textButton playBut;
-    gui::font mainFont, megaFont;
+    Texture2D ButtonBasic;
+    gui::textButton playBut, settingsBut;
+    gui::font mainFont, megaFont, megamegaFont;
 public:
     mainMenuScreen(ctx* GData) : baseScreen(GData),
-        playButT(LoadTexture("data/gui/buttons/but880x150.png")),
-        playBut(playButT, "START GAME", megaFont, BLACK, {200,600}),
+        ButtonBasic(LoadTexture("data/gui/buttons/but880x150.png")),
+        playBut(ButtonBasic, "START GAME", megaFont, BLACK, {200,350}),
+        settingsBut(ButtonBasic, "SETTİNGS", megaFont, BLACK, {200,530}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
-        megaFont("data/font/Bungee-Regular.ttf", 64.f)
+        megaFont("data/font/Bungee-Regular.ttf", 64.f),
+        megamegaFont("data/font/Bungee-Regular.ttf", 128.f)
     {}
     ~mainMenuScreen() override {
-        UnloadTexture(playButT);
+        UnloadTexture(ButtonBasic);
     }
 
     void start() override;

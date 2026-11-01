@@ -11,7 +11,7 @@ enum Screens{
     SCREEN_MAINMENU,
     SCREEN_GAMEPLAY,
     SCREEN_SETTINGS,
-
+    SCREEN_GAMESELECT,
     SCREEN_END
 };
 
@@ -34,7 +34,7 @@ struct Vector2i{
 
 
 struct ctx{
-    Vector2 ScreenSize = {1200,800};
+    Vector2 ScreenSize = {1280,720};
     float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 
     bool debugMode = 1;

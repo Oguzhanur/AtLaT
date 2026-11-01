@@ -36,14 +36,20 @@ gui::font::~font(){
 
 
 // Draw Text
-void gui::drawText(const std::string& data, Vector2 pos, const font& font, Color color) {
-    DrawTextEx(font.getFontData(), data.c_str(), pos, font.getFontSize(), 2, color);
-}
 
 Vector2 gui::centeringText(const std::string& text, Vector2 pos, const font& font){
     
     Vector2 size = MeasureTextEx(font.getFontData(), text.c_str(), font.getFontSize(), 2);
     return {pos.x-(size.x/2), pos.y-(size.y/2)};
+}
+
+void gui::drawText(const std::string& data, Vector2 pos, const font& font, Color color) {
+    DrawTextEx(font.getFontData(), data.c_str(), pos, font.getFontSize(), 2, color);
+}
+
+void gui::drawCenteredText(const std::string& data, Vector2 pos, const font& font, Color color){
+    Vector2 newPos = centeringText(data, pos, font);
+    drawText(data, newPos, font, color);
 }
 
 std::string gui::floatToStr(float f){ //! AI GENERATED

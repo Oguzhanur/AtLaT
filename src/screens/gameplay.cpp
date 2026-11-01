@@ -101,7 +101,7 @@ void gameplayScreen::loop(){
 
         // Restart
         if(restartButton.isClicked(mousePos)){
-            GData->status = SCREEN_SETTINGS;
+            GData->status = SCREEN_GAMESELECT;
         }
 
     } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
@@ -415,12 +415,12 @@ void gameplayScreen::draw(){
             gui::drawText("Target: " + targetText, {20, 320}, smallFont, BLACK);
             
             if(placedTowers[selectedTower-1].isInMaxLevel()){
-                gui::drawText("MAX Level", {20,520}, smallFont, BLACK);
+                gui::drawText("MAX Level", {20,450}, smallFont, BLACK);
             } else {
                 towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
-                gui::drawText(nextStats.data + ": ", {22,500}, smallFont, BLACK);
-                gui::drawText("Cost: " + gui::floatToStr(nextStats.cost) + "$", {22,520}, smallFont, BLACK);
+                gui::drawText(nextStats.data + ": ", {22,450}, smallFont, BLACK);
+                gui::drawText("Cost: " + gui::floatToStr(nextStats.cost) + "$", {22,470}, smallFont, BLACK);
             }
 
         }
@@ -434,14 +434,14 @@ void gameplayScreen::draw(){
         gui::drawText(hBar.getAsText(baseHealth), {hPos.x, hPos.y+hSize.y+10}, mainFont, WHITE);
 
         std::string moneyText = "Money: " + std::to_string(money);
-        gui::drawText(moneyText, {800,20}, mainFont, Color{255,215,0,255});
+        gui::drawText(moneyText, {900,20}, mainFont, Color{255,215,0,255});
 
         std::string waweText = "Wawe: " + std::to_string(currentWawe);
-        gui::drawText(waweText, {1015, 670}, mainFont, BLACK);
+        gui::drawText(waweText, {1095, 590}, mainFont, BLACK);
 
         if(GData->debugMode){
             std::string totalEarnedMoneyText = "Earned Money: " + std::to_string(moneyEarnData);
-            gui::drawText(totalEarnedMoneyText, {700,50}, mainFont, RED);
+            gui::drawText(totalEarnedMoneyText, {780,50}, mainFont, RED);
         }
 
         waweBut.draw(waweIsReady);

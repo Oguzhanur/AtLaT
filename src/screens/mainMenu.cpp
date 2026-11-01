@@ -8,7 +8,10 @@ void mainMenuScreen::loop(){
     Vector2 mousePos = GetMousePosition();
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         if(playBut.isClicked(mousePos)){
-            GData->status = SCREEN_GAMEPLAY;
+            GData->status = SCREEN_GAMESELECT;
+        }
+        if(settingsBut.isClicked(mousePos)){
+            GData->status = SCREEN_SETTINGS;
         }
     }
 }
@@ -16,6 +19,9 @@ void mainMenuScreen::loop(){
 void mainMenuScreen::draw(){
     ClearBackground(GRAY);
     BeginMode2D(camera);
-        playBut.draw();
+        
     EndMode2D();
+    gui::drawText("AtLaT", {450,100}, megamegaFont, BLACK);
+    playBut.draw();
+    settingsBut.draw();
 }
