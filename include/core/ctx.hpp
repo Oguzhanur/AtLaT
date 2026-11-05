@@ -2,6 +2,7 @@
 
 #include <raylib.h>
 #include <string>
+#include <vector>
 
 inline float NULL_POS = -999;
 
@@ -32,14 +33,26 @@ struct Vector2i{
     }
 };
 
+enum TowerType{
+    T_NOTOWER, 
+    T_NORMAL, 
+    T_RANGE, 
+    T_TOWER3, 
+    T_TOWER4,
+    T_TOWER5
+};
 
 struct ctx{
     Vector2 ScreenSize = {1280,720};
     float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 
     bool debugMode = 1;
-    int status = SCREEN_MAINMENU;
+    int status = SCREEN_GAMESELECT;
     int hardness = H_NORMAL;
+
+    std::vector<int> havedTowerList = {0,1};
+    int curentWawe = 2;
+    int endedWawes = 0;
 
     //? Screen'lar arası iletişim
     int isPlayerWinnedGame = 0;

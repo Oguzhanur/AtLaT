@@ -7,14 +7,6 @@
 #include <iostream>
 
 
-enum TowerType{
-    T_NOTOWER, 
-    T_TOWER1, 
-    T_TOWER2, 
-    T_TOWER3, 
-    T_TOWER4,
-    T_TOWER5
-};
 
 enum TowerSpecials{
     TS_NULL,

@@ -3,8 +3,8 @@
 
 class gameselectScreen : public baseScreen{
 private:
-    Texture2D basicBut, e1, e2, e3, e4, e5;
-    gui::button episodeButton1, episodeButton2, episodeButton3, episodeButton4, episodeButton5;
+    Texture2D basicBut, e1, e2, e3, e4, e5, hiddene;
+    std::vector<gui::hiddenButton> episodeButtons;
     gui::textButton backBut;
     gui::font mainFont, megaFont;
 public:
@@ -13,18 +13,20 @@ public:
         megaFont("data/font/Bungee-Regular.ttf", 64.f),
         basicBut(LoadTexture("data/gui/buttons/but200x100.png")),
         backBut(basicBut, "Main Menu", mainFont, BLACK, {20,20}),
-
         e1(LoadTexture("data/gui/episode1but.png")),
         e2(LoadTexture("data/gui/episode2but.png")),
         e3(LoadTexture("data/gui/episode3but.png")),
         e4(LoadTexture("data/gui/episode4but.png")),
         e5(LoadTexture("data/gui/episode5but.png")),
-        episodeButton1(e1, {150,350}),
-        episodeButton2(e2, {400,350}),
-        episodeButton3(e3, {650,350}),
-        episodeButton4(e4, {900,225}),
-        episodeButton5(e5, {900,475})
-    {}
+        hiddene(LoadTexture("data/gui/episodebutNoAc.png"))
+    {
+        episodeButtons.reserve(5);
+        episodeButtons.push_back(gui::hiddenButton{e1, hiddene, {150,350}, 0});
+        episodeButtons.push_back(gui::hiddenButton{e2, hiddene, {400,350}, 0});
+        episodeButtons.push_back(gui::hiddenButton{e3, hiddene, {650,350}, 0});
+        episodeButtons.push_back(gui::hiddenButton{e4, hiddene, {900,225}, 0});
+        episodeButtons.push_back(gui::hiddenButton{e5, hiddene, {900,475}, 0});
+    }
     ~gameselectScreen() override {
         UnloadTexture(basicBut);
         UnloadTexture(e1);

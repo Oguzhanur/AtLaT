@@ -34,6 +34,19 @@ void gui::button::draw(){
     DrawTextureEx(*text, pos, 0.f, scale, buttonColor);
 }
 
+void gui::hiddenButton::drawAdd(){
+    DrawTextureEx(*text, pos, 0.f, scale, buttonColor);
+    if(!isActive)
+        DrawTextureEx(*text2, pos, 0.f, scale, buttonColor);
+}
+
+void gui::hiddenButton::draw(){
+    if(isActive){
+        DrawTextureEx(*text, pos, 0.f, scale, buttonColor);
+    } else {
+        DrawTextureEx(*text2, pos, 0.f, scale, buttonColor);
+    }
+}
 
 void gui::textButton::draw(){
     DrawTextureEx(*text, pos, 0.f, scale, buttonColor);

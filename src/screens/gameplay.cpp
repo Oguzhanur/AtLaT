@@ -21,9 +21,9 @@ void gameplayScreen::loop(){
                     if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                 }
 
-                if(data.isTileEmpty && TStats[selectedBut-1][0].cost<=money){
-                    placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos), TStats[selectedBut-1], selectedBut);
-                    money -= TStats[selectedBut-1][0].cost;
+                if(data.isTileEmpty && data::TStats[selectedBut-1][0].cost<=money){
+                    placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos), data::TStats[selectedBut-1], selectedBut);
+                    money -= data::TStats[selectedBut-1][0].cost;
                 }
             }
             selectedBut = 0;
@@ -83,7 +83,7 @@ void gameplayScreen::loop(){
 
         // Butondan towerı koymak için seçme
         for(int x=1; x<=towerButtons.size(); x++){
-            if(towerButtons[x-1].isClicked(mousePos)){
+            if(towerButtons[x-1].isClicked(mousePos) && towerButtons[x-1].getActive()){
                 if(selectedBut==x){
                     selectedBut = 0;
                 } else {
@@ -240,12 +240,12 @@ void gameplayScreen::loop(){
             int wx = 0;
             int earnedMoney = money;
             int lastLevel = 0;
-            for(waweData& wData : waweDatas){
+            for(auto& wData : data::waweDatas[GData->curentWawe-1].waweDatA){
                 wx++;
                 TraceLog(LOG_INFO, "Wawe %i Başlangıç parası: %i", wx, earnedMoney);
 
                 for (wawe& w : wData.usedWawes){
-                    earnedMoney += (eStats[w.getTowerType()-1].health * w.getCount());
+                    earnedMoney += (data::eStats[w.getTowerType()-1].health * w.getCount());
                     earnedMoney += wData.waweReward.money;
                 }
             }
@@ -254,7 +254,7 @@ void gameplayScreen::loop(){
             DEBUG_WAWESTART = 0;
         }
         if(DEBUG_TOWERDATAS){
-            for (const auto& tower : TStats){
+            for (const auto& tower : data::TStats){
                 TraceLog(LOG_INFO, "%s:", tower[0].data.c_str());
                 int level = 0;
                 int totalCost = 0;
@@ -276,7 +276,7 @@ void gameplayScreen::loop(){
     }
 
     waweIsReady = 1;
-    for (waweData& wData : waweDatas){
+    for (waweData& wData : data::waweDatas[GData->curentWawe-1].waweDatA){
         if(!wData.active) continue;
         bool anyWaweActive = 0;
         
@@ -291,7 +291,7 @@ void gameplayScreen::loop(){
 
                 if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
                     w.saveTime(TimeAsFrame);
-                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, eStats[w.getTowerType()-1]);
+                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, data::eStats[w.getTowerType()-1]);
                     w.countN();
                 }
             }
@@ -374,7 +374,8 @@ void gameplayScreen::draw(){
 
         for(int x=1; x<=towerButtons.size(); x++){
             towerButtons[x-1].draw();
-            gui::drawText(std::to_string(TStats[x-1][0].cost) + "$", Vector2Add(towerButtons[x-1].getPos(), {20,95}), smallFont, WHITE);
+            if(towerButtons[x-1].getActive())
+                gui::drawText(std::to_string(data::TStats[x-1][0].cost) + "$", Vector2Add(towerButtons[x-1].getPos(), {20,95}), smallFont, WHITE);
         }
 
         if(selectedTower!=0){
@@ -447,8 +448,23 @@ void gameplayScreen::draw(){
         waweBut.draw(waweIsReady);
         restartButton.draw();
 
-        if(endStatus==1){
+        if(endStatus==1 || IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)){
             gui::drawText("GAME OVER: YOU WİN", {600, 100}, mainFont, GREEN);
+
+            GData->endedWawes = std::max(GData->curentWawe, GData->endedWawes);
+            for(int a : data::waweDatas[GData->curentWawe-1].winTower){
+                bool isThere = 0;
+                for(int b : GData->havedTowerList){
+                    if(b==a){
+                        isThere = 1;
+                        continue;
+                    }
+                }
+                if(!isThere){
+                    GData->havedTowerList.push_back(a);
+                }
+            }
+
             GData->isPlayerWinnedGame = 1;
             GData->status = SCREEN_END;
         } else if (endStatus==-1){

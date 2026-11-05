@@ -1,3 +1,4 @@
+#pragma once
 #include <variant>
 
 struct reward{
@@ -38,4 +39,9 @@ struct waweData {
     std::vector<wawe> usedWawes;
     reward waweReward;
     bool active = 1;
+};
+
+struct AllWawesData{
+    std::vector<waweData> waweDatA;
+    std::vector<int> winTower;
 };

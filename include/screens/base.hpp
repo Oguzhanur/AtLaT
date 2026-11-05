@@ -2,9 +2,10 @@
 
 #include <raylib.h>
 #include <raymath.h>
-#include "core/ctx.hpp"
 #include <variant>
 
+#include "core/ctx.hpp"
+#include "core/data.hpp"
 
 #include "gui/textures.hpp"
 #include "gui/healthBar.hpp"

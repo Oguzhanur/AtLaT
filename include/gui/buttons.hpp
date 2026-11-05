@@ -25,6 +25,22 @@ namespace gui{
         virtual void draw();
     };
 
+    class hiddenButton : public button{
+    private:
+        bool isActive;
+        Texture2D* text2;
+    public:
+        hiddenButton(Texture2D& text, Texture2D& text2, Vector2 pos, bool isActive) : button(text, pos), isActive(isActive), text2(&text2) {}
+        ~hiddenButton() = default;
+
+        bool getActive() {return isActive;};
+        void setActive(bool x) {isActive = x;};
+
+        void drawAdd();
+        void draw() override;
+    };
+    
+
     class textButton : public button{
     private:
         std::string textData;

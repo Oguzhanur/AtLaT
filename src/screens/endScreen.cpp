@@ -6,6 +6,8 @@ void endScreen::start(){
 
 void endScreen::loop(){
     Vector2 mousePos = GetMousePosition();
+    playBut.effectLoop(mousePos);
+    backBut.effectLoop(mousePos);
     if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
         if(playBut.isClicked(mousePos)){
             GData->status = SCREEN_GAMEPLAY;
