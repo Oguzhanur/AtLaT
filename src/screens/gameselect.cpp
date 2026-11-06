@@ -30,7 +30,7 @@ void gameselectScreen::draw(){
     ClearBackground(GRAY);
     BeginMode2D(camera);
         backBut.draw();
-        gui::drawText("SELECT EPİSODE", {300,150}, megaFont, BLACK);
+        gui::drawText("BÖLÜM SEÇ", {300,150}, megaFont, BLACK);
 
         for(auto& but : episodeButtons){
             but.drawAdd();

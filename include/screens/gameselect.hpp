@@ -12,7 +12,7 @@ public:
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f),
         basicBut(LoadTexture("data/gui/buttons/but200x100.png")),
-        backBut(basicBut, "Main Menu", mainFont, BLACK, {20,20}),
+        backBut(basicBut, "Ana Menü", mainFont, BLACK, {20,20}),
         e1(LoadTexture("data/gui/episode1but.png")),
         e2(LoadTexture("data/gui/episode2but.png")),
         e3(LoadTexture("data/gui/episode3but.png")),

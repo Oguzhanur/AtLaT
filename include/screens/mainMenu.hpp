@@ -10,8 +10,8 @@ private:
 public:
     mainMenuScreen(ctx* GData) : baseScreen(GData),
         ButtonBasic(LoadTexture("data/gui/buttons/but880x150.png")),
-        playBut(ButtonBasic, "START GAME", megaFont, BLACK, {200,350}),
-        settingsBut(ButtonBasic, "SETTİNGS", megaFont, BLACK, {200,530}),
+        playBut(ButtonBasic, "BAŞLA", megaFont, BLACK, {200,350}),
+        settingsBut(ButtonBasic, "AYARLAR", megaFont, BLACK, {200,530}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f),
         megamegaFont("data/font/Bungee-Regular.ttf", 128.f)

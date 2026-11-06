@@ -23,7 +23,7 @@ private:
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu;
-    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut;
+    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::textButton restartButton;
     gui::switchButton waweBut;
@@ -39,6 +39,11 @@ private:
     std::vector<tower1> placedTowers;
     std::vector<enemys> enemysComming;
     std::vector<Bullet> bullets;
+    notification* mainNotification = nullptr;
+
+    std::vector<AllWawesData> waweDatas;
+    std::vector<EnemyStats> eStats;
+    std::vector<std::vector<towerStats>> TStats;
 
     towerTexturesData t1,t2, t3,t4;
 
@@ -46,9 +51,6 @@ private:
     int endStatus = 0;
     int currentWawe = 0;
     bool waweIsReady = 1;
-
-
-
 public:
     gameplayScreen(ctx* GData) : baseScreen(GData),
         towerInfoMenu("data/gui/towerInfoMenu.png", {0,120}),
@@ -67,9 +69,13 @@ public:
         rightMenu("data/gui/RMenu.png", {1080,0}),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         smallFont("data/font/Bungee-Regular.ttf", 24.f),
-        hBar({20,20}, {400,50}, 10.f, baseHealth, "Health: ", 1),
-        ehBar({500,20}, {84,20}, 3.f, 0.f, "Enemy health: ", 0),
-        hiddenBut(LoadTexture("data/items/hiddenBut.png"))
+        hBar({20,20}, {400,50}, 10.f, baseHealth, "Ana Can: ", 1),
+        ehBar({500,20}, {84,20}, 3.f, 0.f, "Düşman Canı: ", 0),
+        hiddenBut(LoadTexture("data/items/hiddenBut.png")),
+        notificationText(LoadTexture("data/gui/notification.png")),
+        waweDatas(data::waweDatas),
+        eStats(data::eStats),
+        TStats(data::TStats)
     {
         camera.target = {GData->ScreenSize.x/2, GData->ScreenSize.y/2};
         camera.offset = {GData->ScreenSize.x/2, GData->ScreenSize.y/2};

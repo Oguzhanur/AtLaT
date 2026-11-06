@@ -39,7 +39,7 @@ namespace data{
     };
 
 
-    inline std::vector<AllWawesData> waweDatas{
+    inline const std::vector<AllWawesData> waweDatas{
         // LVL 1 (DPS/COST = EASY:60, NORMAL:50 HARD:40)
         // LVL 1 (DPS-ATTACK = EASY:3, NORMAL:4 HARD:5)
         {{

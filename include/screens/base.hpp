@@ -12,6 +12,7 @@
 #include "gui/buttons.hpp"
 #include "gui/text.hpp"
 #include "gui/timedTexture.hpp"
+#include "gui/notification.hpp"
 
 #include "towers/towers.hpp"
 #include "enemy/enemys.hpp"

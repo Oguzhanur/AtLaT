@@ -21,10 +21,16 @@ void gameplayScreen::loop(){
                     if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
                 }
 
-                if(data.isTileEmpty && data::TStats[selectedBut-1][0].cost<=money){
-                    placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos), data::TStats[selectedBut-1], selectedBut);
-                    money -= data::TStats[selectedBut-1][0].cost;
+                if(data.isTileEmpty){
+                    if(TStats[selectedBut-1][0].cost<=money){
+                        placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos),  TStats[selectedBut-1], selectedBut);
+                        money -=  TStats[selectedBut-1][0].cost;
+                    } else {
+                        mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                    }
                 }
+            } else {
+                mainNotification = new notification{notificationText, smallFont, "Sadece toprağa\nkule koyabilirsin!", NOTİ_INFO, 2};
             }
             selectedBut = 0;
             selectedTower = 0;
@@ -57,13 +63,15 @@ void gameplayScreen::loop(){
             if(selectedTower!=0 && !placedTowers[selectedTower-1].isInMaxLevel()){
                 towerStats newS = placedTowers[selectedTower-1].getNextStats();
 
-                if(towerUpdateButton.isClicked(mousePos) && newS.cost<=money){
-                    placedTowers[selectedTower-1].updateLevel();
-                    money -= newS.cost;
+                if(towerUpdateButton.isClicked(mousePos)){
+                    if(newS.cost<=money){
+                        placedTowers[selectedTower-1].updateLevel();
+                        money -= newS.cost;
+                    } else {
+                        mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                    }
                 } else if (selectedTData==1){
                     selectedTData = 1;
-                } else {
-                    selectedTData = 0;
                 }
             }
 
@@ -74,6 +82,7 @@ void gameplayScreen::loop(){
 
                 placedTowers[selectedTower-1].kill();
                 selectedTower = 0;
+                mainNotification = new notification{notificationText, mainFont, "Kule silindi!!", NOTİ_INFO, 2};
             }
 
             if(!selectedTData) selectedTower = 0;
@@ -240,12 +249,12 @@ void gameplayScreen::loop(){
             int wx = 0;
             int earnedMoney = money;
             int lastLevel = 0;
-            for(auto& wData : data::waweDatas[GData->curentWawe-1].waweDatA){
+            for(auto& wData :  waweDatas[GData->curentWawe-1].waweDatA){
                 wx++;
                 TraceLog(LOG_INFO, "Wawe %i Başlangıç parası: %i", wx, earnedMoney);
 
                 for (wawe& w : wData.usedWawes){
-                    earnedMoney += (data::eStats[w.getTowerType()-1].health * w.getCount());
+                    earnedMoney += ( eStats[w.getTowerType()-1].health * w.getCount());
                     earnedMoney += wData.waweReward.money;
                 }
             }
@@ -254,7 +263,7 @@ void gameplayScreen::loop(){
             DEBUG_WAWESTART = 0;
         }
         if(DEBUG_TOWERDATAS){
-            for (const auto& tower : data::TStats){
+            for (const auto& tower :  TStats){
                 TraceLog(LOG_INFO, "%s:", tower[0].data.c_str());
                 int level = 0;
                 int totalCost = 0;
@@ -276,7 +285,7 @@ void gameplayScreen::loop(){
     }
 
     waweIsReady = 1;
-    for (waweData& wData : data::waweDatas[GData->curentWawe-1].waweDatA){
+    for (waweData& wData : waweDatas[GData->curentWawe-1].waweDatA){
         if(!wData.active) continue;
         bool anyWaweActive = 0;
         
@@ -291,7 +300,7 @@ void gameplayScreen::loop(){
 
                 if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
                     w.saveTime(TimeAsFrame);
-                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192}, data::eStats[w.getTowerType()-1]);
+                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192},  eStats[w.getTowerType()-1]);
                     w.countN();
                 }
             }
@@ -369,13 +378,13 @@ void gameplayScreen::draw(){
         }
 
     EndMode2D();
-        // Arayüz
+        //* --------------------------- ARAYÜZ ---------------------------------------
         rightMenu.draw();
 
         for(int x=1; x<=towerButtons.size(); x++){
             towerButtons[x-1].draw();
             if(towerButtons[x-1].getActive())
-                gui::drawText(std::to_string(data::TStats[x-1][0].cost) + "$", Vector2Add(towerButtons[x-1].getPos(), {20,95}), smallFont, WHITE);
+                gui::drawText(std::to_string( TStats[x-1][0].cost) + "$", Vector2Add(towerButtons[x-1].getPos(), {20,95}), smallFont, WHITE);
         }
 
         if(selectedTower!=0){
@@ -399,29 +408,29 @@ void gameplayScreen::draw(){
             std::string targetText = " ";
             switch (placedTowers[selectedTower-1].getTargetSelect()){
                 case TARGET_NULL:
-                    targetText = "None";
+                    targetText = "Hiçbiri";
                     break;
                 case TARGET_FIRST:
-                    targetText = "First";
+                    targetText = "Baştaki";
                     break;
                 case TARGET_LAST:
-                    targetText = "Last";
+                    targetText = "Sonuncu";
                     break;
                 case TARGET_STRONG:
-                    targetText = "Strong";
+                    targetText = "En güçlü";
                     break;
             };
 
             towerTargetButton.draw();
-            gui::drawText("Target: " + targetText, {20, 320}, smallFont, BLACK);
+            gui::drawText("Hedef: " + targetText, {20, 320}, smallFont, BLACK);
             
             if(placedTowers[selectedTower-1].isInMaxLevel()){
-                gui::drawText("MAX Level", {20,450}, smallFont, BLACK);
+                gui::drawText("SON SEVİYE", {20,450}, smallFont, BLACK);
             } else {
                 towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
                 gui::drawText(nextStats.data + ": ", {22,450}, smallFont, BLACK);
-                gui::drawText("Cost: " + gui::floatToStr(nextStats.cost) + "$", {22,470}, smallFont, BLACK);
+                gui::drawText("Maaliyet: " + gui::floatToStr(nextStats.cost) + "$", {22,470}, smallFont, BLACK);
             }
 
         }
@@ -434,25 +443,30 @@ void gameplayScreen::draw(){
 
         gui::drawText(hBar.getAsText(baseHealth), {hPos.x, hPos.y+hSize.y+10}, mainFont, WHITE);
 
-        std::string moneyText = "Money: " + std::to_string(money);
+        std::string moneyText = "Para: " + std::to_string(money);
         gui::drawText(moneyText, {900,20}, mainFont, Color{255,215,0,255});
 
         std::string waweText = "Wawe: " + std::to_string(currentWawe);
         gui::drawText(waweText, {1095, 590}, mainFont, BLACK);
 
         if(GData->debugMode){
-            std::string totalEarnedMoneyText = "Earned Money: " + std::to_string(moneyEarnData);
-            gui::drawText(totalEarnedMoneyText, {780,50}, mainFont, RED);
+            std::string totalEarnedMoneyText = "Kazanılan: " + std::to_string(moneyEarnData);
+            gui::drawText(totalEarnedMoneyText, {810,50}, mainFont, RED);
         }
 
         waweBut.draw(waweIsReady);
         restartButton.draw();
 
-        if(endStatus==1 || IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)){
-            gui::drawText("GAME OVER: YOU WİN", {600, 100}, mainFont, GREEN);
+        // Bildirimler
+        if(mainNotification != nullptr && mainNotification->getActive()){
+            mainNotification->loop(frameTime);
+            mainNotification->draw();
+        }
 
+        // Oyun sonu Durumu
+        if(endStatus==1){
             GData->endedWawes = std::max(GData->curentWawe, GData->endedWawes);
-            for(int a : data::waweDatas[GData->curentWawe-1].winTower){
+            for(int a :  waweDatas[GData->curentWawe-1].winTower){
                 bool isThere = 0;
                 for(int b : GData->havedTowerList){
                     if(b==a){
@@ -468,7 +482,6 @@ void gameplayScreen::draw(){
             GData->isPlayerWinnedGame = 1;
             GData->status = SCREEN_END;
         } else if (endStatus==-1){
-            gui::drawText("GAME OVER: YOU LOSE", {600, 100}, mainFont, RED);
             GData->isPlayerWinnedGame = 0;
             GData->status = SCREEN_END;
         }
