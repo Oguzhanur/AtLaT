@@ -47,12 +47,12 @@ struct ctx{
     float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 
     bool debugMode = 1;
-    int status = SCREEN_GAMEPLAY;
+    int status = SCREEN_MAINMENU;
     int hardness = H_NORMAL;
 
-    std::vector<int> havedTowerList = {0,1};
+    std::vector<int> havedTowerList = {0,1,2,3};
     int curentWawe = 1;
-    int endedWawes = 0;
+    int endedWawes = 2;
 
     //? Screen'lar arası iletişim
     int isPlayerWinnedGame = -1;

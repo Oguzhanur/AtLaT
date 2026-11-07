@@ -16,7 +16,7 @@ enum Dir{
 enum EnemyList{
     E_NULL, 
     E_Normal, E_Speed, E_Heavy, E_Boss,
-    E_LLight, E_LHeavy, E_LBoss
+    E2_Normal, E2_Speed, E2_Heavy, E2_Light, E2_Storm, E2_Boss
 };
 
 enum EnemySpecials{

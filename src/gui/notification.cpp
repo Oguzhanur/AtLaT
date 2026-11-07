@@ -5,7 +5,6 @@ void notification::loop(float dt){
     if(endTime <= 0){
         isActive = 0;
     }
-    TraceLog(LOG_INFO, "t: %f", endTime);
 }
 
 void notification::draw(){

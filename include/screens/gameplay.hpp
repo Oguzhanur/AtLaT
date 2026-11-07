@@ -17,7 +17,7 @@ private:
     int selectedTData = 0;
 
     // Ayarlar
-    bool settingsScreen = 1;
+    bool settingsScreen = 0;
     bool SET_Noti=1;
 
     // DEBUG
@@ -29,7 +29,7 @@ private:
     gui::texture towerInfoMenu, rightMenu, settingsMenu;
     Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
-    gui::textButton restartButton, settingsExit, settingsToMenu;
+    gui::textButton settingsButton, settingsExit, settingsToMenu;
     gui::switchTextButton settingsNoti;
     gui::switchButton waweBut;
     gui::font megaFont, mainFont, smallFont;
@@ -74,7 +74,7 @@ public:
         settingsNoti(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,200}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
-        restartButton(button200x100Text, "Back", mainFont, BLACK, {1080, 450}),
+        settingsButton(button200x100Text, "Oyun içi\n\nayarlar", mainFont, BLACK, {1080, 450}),
         waweBut(startButtonM, stopButtonM, {1080,620}),
         megaFont("data/font/Bungee-Regular.ttf", 64.f),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
@@ -134,8 +134,11 @@ public:
         enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemyHeavy.png"));
         enemyTextures.push_back(LoadTexture("data/enemys/lvl1/enemyBoss.png"));
         // LVL 2
-        enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyLight.png"));
+        enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemy.png"));
+        enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemySpeed.png"));
         enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyHeavy.png"));
+        enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyLight.png"));
+        enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyStorm.png"));
         enemyTextures.push_back(LoadTexture("data/enemys/lvl2/enemyBoss.png"));
     }
 

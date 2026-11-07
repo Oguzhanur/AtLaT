@@ -5,6 +5,7 @@ void gameplayScreen::start(){
 }
 void gameplayScreen::loop(){
     Vector2 mousePos = GetMousePosition();
+    bool isClickAnything = 0;
 
     if(!settingsScreen){
         // -------------------------------- BUTONLAR VE TIKLAMA --------------------------------
@@ -34,11 +35,13 @@ void gameplayScreen::loop(){
                 }
                 selectedBut = 0;
                 selectedTower = 0;
+                isClickAnything=1;
             } else {
                 
                 // Kuleyi seçme
                 for(int x=1; x<=placedTowers.size(); x++){
                     if(CheckCollisionPointRec(mousePos, placedTowers[x-1].getRec())){
+                        isClickAnything=1;
                         selectedTower = x;
                         selectedTData = 1;
                         continue;
@@ -49,7 +52,8 @@ void gameplayScreen::loop(){
                 if(selectedTower!=0 && placedTowers[selectedTower-1].getTargetSelect()!=TARGET_NULL){
                     int targetType = placedTowers[selectedTower-1].getTargetSelect();
 
-                    if(towerTargetButton.isClicked(mousePos)){
+                    if(towerTargetButton.isClicked(mousePos) && !isClickAnything){
+                        isClickAnything=1;
                         if(targetType < TARGET_SIZE-1){
                             targetType++;
                         } else {
@@ -63,7 +67,8 @@ void gameplayScreen::loop(){
                 if(selectedTower!=0 && !placedTowers[selectedTower-1].isInMaxLevel()){
                     towerStats newS = placedTowers[selectedTower-1].getNextStats();
 
-                    if(towerUpdateButton.isClicked(mousePos)){
+                    if(towerUpdateButton.isClicked(mousePos) && !isClickAnything){
+                        isClickAnything=1;
                         if(newS.cost<=money){
                             placedTowers[selectedTower-1].updateLevel();
                             money -= newS.cost;
@@ -76,7 +81,8 @@ void gameplayScreen::loop(){
                 }
 
                 // Kule Silme
-                if(towerRemoveButton.isClicked(mousePos)){
+                if(towerRemoveButton.isClicked(mousePos) && !isClickAnything){
+                    isClickAnything=1;
                     money += placedTowers[selectedTower-1].getStats().cost / 2;
                     moneyEarnData += placedTowers[selectedTower-1].getStats().cost / 2;
 
@@ -92,7 +98,8 @@ void gameplayScreen::loop(){
 
             // Butondan towerı koymak için seçme
             for(int x=1; x<=towerButtons.size(); x++){
-                if(towerButtons[x-1].isClicked(mousePos) && towerButtons[x-1].getActive()){
+                if(towerButtons[x-1].isClicked(mousePos) && towerButtons[x-1].getActive() && !isClickAnything){
+                    isClickAnything=1;
                     if(selectedBut==x){
                         selectedBut = 0;
                     } else {
@@ -102,14 +109,16 @@ void gameplayScreen::loop(){
             }
 
             // Durdurma başlatma
-            if(waweBut.isClicked(mousePos) && waweIsReady){
+            if(waweBut.isClicked(mousePos) && waweIsReady && !isClickAnything){
+                isClickAnything=1;
                 currentWawe++;
                 waweIsReady = waweIsReady;
                 //waweIsReady=!waweIsReady;
             }
 
-            // Restart
-            if(restartButton.isClicked(mousePos)){
+            // Ayarlar
+            if(settingsButton.isClicked(mousePos) && !isClickAnything){
+                isClickAnything=1;
                 settingsScreen=!settingsScreen;
             }
 
@@ -468,7 +477,7 @@ void gameplayScreen::draw(){
         }
 
         waweBut.draw(waweIsReady);
-        restartButton.draw();
+        settingsButton.draw();
 
         // Ayarlar
         if(settingsScreen){

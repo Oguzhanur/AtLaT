@@ -24,6 +24,9 @@ namespace data{
             { 0.f, 300.f, 0.5f, 300, {{TS_SLOW, 5}}, "Faster"}}
     };
 
+    inline const std::vector<std::string> ePaths = {
+
+    };
 
     inline const std::vector<EnemyStats> eStats = { //? Maksimum can, can, hız
         {  4.f,   4.f, 150.f, {ES_NULL}}, // Normal düşman
@@ -33,9 +36,12 @@ namespace data{
 
 
         // LVL 2
-        { 150.f,  150.f,  350.f, {ES_NULL}},// Çok hızlı / Hafif güçlü
-        { 300.f,  300.f,  200.f, {ES_NULL}}, // Orta hızlı / Çok güçlü
-        {2500.f, 2500.f,  100.f, {ES_BOSS}}  // Boss fight
+        {   8.f,    8.f, 150.f, {ES_NULL}}, // Normal düşman
+        {   4.f,    4.f, 250.f, {ES_NULL}}, // Hızlı düşman
+        {  20.f,   20.f, 100.f, {ES_NULL}}, // Yaşlı dayılar
+        {  50.f,   50.f,  350.f, {ES_NULL}},// Çok hızlı / Hafif güçlü
+        { 150.f,  150.f,  200.f, {ES_NULL}}, // Orta hızlı / Çok güçlü
+        {1000.f, 1000.f,  100.f, {ES_BOSS}}  // Boss fight
     };
 
 
@@ -53,8 +59,8 @@ namespace data{
             {6, {wawe{1.f, E_Heavy, 10, 1.},
                 wawe{1.f, E_Speed, 20, .5}}, reward{100}},
             {7, {wawe{1.f, E_Heavy, 20, .5}}, reward{100}},
-            {8, {wawe{1.f, E_Heavy, 20, .2},
-                wawe{3.f, E_Speed, 20, .3}}, reward{100}},
+            {8, {wawe{1.f, E_Heavy, 20, .5},
+                wawe{3.f, E_Speed, 20, .5}}, reward{100}},
             {9, {wawe{1.5f, E_Speed, 25, .5},
                 wawe{12.f, E_Normal, 20, .5}}, reward{200}},
             {10, {wawe{1.f, E_Normal, 10, 0.5},
@@ -62,22 +68,60 @@ namespace data{
                 wawe{3.f, E_Boss, 1, 1.}}, reward{250}}
         }, {2,3}},
         {{
-            {1, {wawe{1.f, E_LLight, 4, 1.}}, reward{500}},
-            {2, {wawe{1.f, E_LHeavy, 3, .5}}, reward{250}},
-            {3, {wawe{1.5f, E_LLight, 5, .5}}, reward{500}},
-            {4, {wawe{1.f, E_LHeavy, 5, 1.}}, reward{1000}},
-            {5, {wawe{1.f, E_LLight, 5, 1.}, 
-                wawe{1.f, E_LHeavy, 2, 1.}}, reward{1500}},
-            {6, {wawe{1.f, E_LHeavy, 5, 1.},
-                wawe{1.f, E_LLight, 10, .5}}, reward{1000}},
-            {7, {wawe{1.f, E_LLight, 10, .5}}, reward{1000}},
-            {8, {wawe{1.f, E_LHeavy, 10, .2},
-                wawe{3.f, E_LLight, 10, .3}}, reward{1000}},
-            {9, {wawe{1.5f, E_LLight, 8, .5},
-                wawe{12.f, E_LLight, 10, .5}}, reward{2000}},
-            {10, {wawe{1.f, E_LLight, 5, 0.5},
-                wawe{1.f, E_LLight, 5, 0.5},
-                wawe{3.f, E_LBoss, 1, 1.}}, reward{2500}}
+            {1, {wawe{1.f, E2_Normal, 4, 1.}}, reward{100}},
+            {2, {wawe{1.f, E2_Normal, 6, .5}}, reward{100}},
+            {3, {wawe{1.f, E2_Normal, 5, .5},
+                 wawe{1.5f, E2_Speed, 5, .5}}, reward{150}},
+            {4, {wawe{1.f, E2_Heavy, 5, 1.}}, reward{200}},
+            {5, {wawe{3.f, E2_Speed, 5, .5}, 
+                wawe{1.f, E2_Heavy, 8, 1.}}, reward{250}},
+            {6, {wawe{3.f, E2_Heavy, 5, .5},
+                wawe{1.f, E2_Speed, 10, .5},
+                wawe{1.f, E2_Normal, 5, .5}}, reward{300}},
+            {7, {wawe{1.f, E2_Speed, 20, .3}}, reward{250}},
+            {8, {wawe{1.f, E2_Heavy, 10, .2},
+                wawe{3.f, E2_Speed, 10, .3}}, reward{200}},
+            {9, {wawe{1.5f, E2_Speed, 8, .5},
+                wawe{3.f, E2_Normal, 10, .5}}, reward{200}},
+            {10, {wawe{1.f, E2_Speed, 5, 0.5},
+                wawe{1.f, E2_Heavy, 5, 0.5},
+                wawe{2.f, E2_Light, 1, 1.}}, reward{300}},
+            {11, {wawe{5.f, E2_Light, 2, 1},
+                wawe{1.f, E2_Heavy, 10, 0.5}}, reward{450}},
+            {12, {wawe{1.f, E2_Heavy, 20, 1},
+                wawe{10.f, E2_Light, 3, 2}}, reward{450}},
+
+            {13, {wawe{1.f, E2_Storm, 2, 5},
+                wawe{1.f, E2_Speed, 20, 1}}, reward{500}},
+
+            {14, {wawe{1.f, E2_Storm, 2, 5},
+                wawe{2.f, E2_Light, 2, 5},
+                wawe{1.f, E2_Speed, 24, 0.5}}, reward{400}},
+
+            {15, {wawe{1.f, E2_Storm, 2, 1},
+                wawe{10.f, E2_Heavy, 5, 1},
+                wawe{1.f, E2_Speed, 24, 0.5}}, reward{200}},
+
+            {16, {wawe{1.f, E2_Storm, 2, 1},
+                wawe{1.f, E2_Light, 3, 1}}, reward{400}},
+
+            {17, {wawe{1.f, E2_Storm, 2, 5},
+                wawe{1.f, E2_Speed, 24, 0.5}}, reward{500}},
+
+            {18, {wawe{10.f, E2_Storm, 3, 2},
+                wawe{5.f, E2_Light, 3, 2},
+                wawe{1.f, E2_Speed, 32, 0.5}}, reward{400}},
+
+            {19, {wawe{5.f, E2_Storm, 3, 5},
+                wawe{2.f, E2_Normal, 15, 1},
+                wawe{1.f, E2_Speed, 24, 0.5},
+                wawe{1.f, E2_Heavy, 10, 2}}, reward{400}},
+
+            {20, {wawe{20.f, E2_Boss, 1, 0.1},
+                wawe{15.f, E2_Storm, 5, 1},
+                wawe{25.f, E2_Light, 3, 0.5},
+                wawe{1.f, E2_Heavy, 25, 1},
+                wawe{2.f, E2_Speed, 25, 1}}, reward{300}},
         }, {}}
     };
 };
