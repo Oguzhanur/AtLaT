@@ -47,7 +47,7 @@ struct ctx{
     float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 
     bool debugMode = 1;
-    int status = SCREEN_MAINMENU;
+    int status = SCREEN_GAMEPLAY;
     int hardness = H_NORMAL;
 
     std::vector<int> havedTowerList = {0,1};

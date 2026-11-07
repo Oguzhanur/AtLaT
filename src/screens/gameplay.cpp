@@ -4,337 +4,350 @@ void gameplayScreen::start(){
     TraceLog(LOG_INFO, "MAIN BASLADI");
 }
 void gameplayScreen::loop(){
-
-    // -------------------------------- BUTONLAR VE TIKLAMA --------------------------------
     Vector2 mousePos = GetMousePosition();
 
-    if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
-        selectedTData = 0;
+    if(!settingsScreen){
+        // -------------------------------- BUTONLAR VE TIKLAMA --------------------------------
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
+            selectedTData = 0;
 
-        if(selectedBut!=0){
-            // Kuleyi yerleştirme
-            Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-            TileData data = mapMan1.getTileByPos(worldPos);
+            if(selectedBut!=0){
+                // Kuleyi yerleştirme
+                Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+                TileData data = mapMan1.getTileByPos(worldPos);
 
-            if(data.type==Tile_GRASS){
-                for (tower1& tower : placedTowers){
-                    if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
+                if(data.type==Tile_GRASS){
+                    for (tower1& tower : placedTowers){
+                        if(mapMan1.getRealPos(data.tilePos).x == tower.getPos().x && mapMan1.getRealPos(data.tilePos).y == tower.getPos().y) data.isTileEmpty = 0;
+                    }
+
+                    if(data.isTileEmpty){
+                        if(TStats[selectedBut-1][0].cost<=money){
+                            placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos),  TStats[selectedBut-1], selectedBut);
+                            money -=  TStats[selectedBut-1][0].cost;
+                        } else {
+                            mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                        }
+                    }
+                } else {
+                    mainNotification = new notification{notificationText, smallFont, "Sadece toprağa\nkule koyabilirsin!", NOTİ_INFO, 2};
                 }
-
-                if(data.isTileEmpty){
-                    if(TStats[selectedBut-1][0].cost<=money){
-                        placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos),  TStats[selectedBut-1], selectedBut);
-                        money -=  TStats[selectedBut-1][0].cost;
-                    } else {
-                        mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                selectedBut = 0;
+                selectedTower = 0;
+            } else {
+                
+                // Kuleyi seçme
+                for(int x=1; x<=placedTowers.size(); x++){
+                    if(CheckCollisionPointRec(mousePos, placedTowers[x-1].getRec())){
+                        selectedTower = x;
+                        selectedTData = 1;
+                        continue;
                     }
                 }
-            } else {
-                mainNotification = new notification{notificationText, smallFont, "Sadece toprağa\nkule koyabilirsin!", NOTİ_INFO, 2};
+
+                // Kule hedef değiştirme
+                if(selectedTower!=0 && placedTowers[selectedTower-1].getTargetSelect()!=TARGET_NULL){
+                    int targetType = placedTowers[selectedTower-1].getTargetSelect();
+
+                    if(towerTargetButton.isClicked(mousePos)){
+                        if(targetType < TARGET_SIZE-1){
+                            targetType++;
+                        } else {
+                            targetType=1;
+                        }
+                        placedTowers[selectedTower-1].setTarget(targetType);
+                    }
+                }
+
+                // Kule geliştime 
+                if(selectedTower!=0 && !placedTowers[selectedTower-1].isInMaxLevel()){
+                    towerStats newS = placedTowers[selectedTower-1].getNextStats();
+
+                    if(towerUpdateButton.isClicked(mousePos)){
+                        if(newS.cost<=money){
+                            placedTowers[selectedTower-1].updateLevel();
+                            money -= newS.cost;
+                        } else {
+                            mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                        }
+                    } else if (selectedTData==1){
+                        selectedTData = 1;
+                    }
+                }
+
+                // Kule Silme
+                if(towerRemoveButton.isClicked(mousePos)){
+                    money += placedTowers[selectedTower-1].getStats().cost / 2;
+                    moneyEarnData += placedTowers[selectedTower-1].getStats().cost / 2;
+
+                    placedTowers[selectedTower-1].kill();
+                    selectedTower = 0;
+                    mainNotification = new notification{notificationText, mainFont, "Kule silindi!!", NOTİ_INFO, 2};
+                }
+
+                if(!selectedTData) selectedTower = 0;
+                
             }
+
+
+            // Butondan towerı koymak için seçme
+            for(int x=1; x<=towerButtons.size(); x++){
+                if(towerButtons[x-1].isClicked(mousePos) && towerButtons[x-1].getActive()){
+                    if(selectedBut==x){
+                        selectedBut = 0;
+                    } else {
+                        selectedBut = x;
+                    }
+                }
+            }
+
+            // Durdurma başlatma
+            if(waweBut.isClicked(mousePos) && waweIsReady){
+                currentWawe++;
+                waweIsReady = waweIsReady;
+                //waweIsReady=!waweIsReady;
+            }
+
+            // Restart
+            if(restartButton.isClicked(mousePos)){
+                settingsScreen=!settingsScreen;
+            }
+
+        } else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)){
             selectedBut = 0;
             selectedTower = 0;
-        } else {
-            
-            // Kuleyi seçme
-            for(int x=1; x<=placedTowers.size(); x++){
-                if(CheckCollisionPointRec(mousePos, placedTowers[x-1].getRec())){
-                    selectedTower = x;
-                    selectedTData = 1;
-                    continue;
-                }
+        }
+
+        
+        ehBar.setActive(0);
+        endStatus = 1;
+
+        frameTime = GetFrameTime() * GData->gameSpeed; // Frame arası süre
+        TimeAsFrame += frameTime;   // Geçen frame sayısı
+
+
+        // Ai ve arka sistemler
+        for (enemys& enemy : enemysComming){
+            enemy.effectsLoop(frameTime);
+            enemy.aiLoop(mapMan1, frameTime);
+            enemy.move(frameTime);
+                    
+
+            if(enemy.getEndData()==1){
+                baseHealth-=enemy.getStats().health;
+                enemy.kill();
             }
 
-            // Kule hedef değiştirme
-            if(selectedTower!=0 && placedTowers[selectedTower-1].getTargetSelect()!=TARGET_NULL){
-                int targetType = placedTowers[selectedTower-1].getTargetSelect();
+            endStatus=0;
+        }
 
-                if(towerTargetButton.isClicked(mousePos)){
-                    if(targetType < TARGET_SIZE-1){
-                        targetType++;
-                    } else {
-                        targetType=1;
+
+        Vector2 bombPos = {NULL_POS, NULL_POS};
+        int bombValue = 0.f;
+
+        for (Bullet& bul : bullets){
+            if(bul.getActive()){ 
+                std::vector<TowerSpecial> specials = bul.getSpecials();
+                bul.updateBullet(frameTime);
+
+                for (enemys& enemy : enemysComming){
+                    if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){
+                        bul.killBullet();
+                        enemy.attack(bul.getDamage());
+                        money += bul.getDamage() * (0.5f * GData->hardness );
+                        moneyEarnData += bul.getDamage() * (0.5f * GData->hardness );
+
+                        // Özellikler
+                        for(TowerSpecial& s : specials){
+                            if(s.type == TS_BOMB){
+                                bombPos = bul.getPos();
+                                timedTextures.push_back(gui::timedTexture{timedBomb64x64, bombPos, .1f, TimeAsFrame});
+                                bombValue = s.value;
+                            } else if (s.type == TS_SLOW){
+                                enemy.addEffect({EFFECT_SLOW, (float)s.value, 0.f});
+                            }
+                        }
+
+                        break;
                     }
-                    placedTowers[selectedTower-1].setTarget(targetType);
-                }
-            }
-
-            // Kule geliştime 
-            if(selectedTower!=0 && !placedTowers[selectedTower-1].isInMaxLevel()){
-                towerStats newS = placedTowers[selectedTower-1].getNextStats();
-
-                if(towerUpdateButton.isClicked(mousePos)){
-                    if(newS.cost<=money){
-                        placedTowers[selectedTower-1].updateLevel();
-                        money -= newS.cost;
-                    } else {
-                        mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
-                    }
-                } else if (selectedTData==1){
-                    selectedTData = 1;
-                }
-            }
-
-            // Kule Silme
-            if(towerRemoveButton.isClicked(mousePos)){
-                money += placedTowers[selectedTower-1].getStats().cost / 2;
-                moneyEarnData += placedTowers[selectedTower-1].getStats().cost / 2;
-
-                placedTowers[selectedTower-1].kill();
-                selectedTower = 0;
-                mainNotification = new notification{notificationText, mainFont, "Kule silindi!!", NOTİ_INFO, 2};
-            }
-
-            if(!selectedTData) selectedTower = 0;
-            
-        }
-
-
-        // Butondan towerı koymak için seçme
-        for(int x=1; x<=towerButtons.size(); x++){
-            if(towerButtons[x-1].isClicked(mousePos) && towerButtons[x-1].getActive()){
-                if(selectedBut==x){
-                    selectedBut = 0;
-                } else {
-                    selectedBut = x;
                 }
             }
         }
 
-        // Durdurma başlatma
-        if(waweBut.isClicked(mousePos) && waweIsReady){
-            currentWawe++;
-            waweIsReady = waweIsReady;
-            //waweIsReady=!waweIsReady;
+        // Bomba
+        if(bombPos.x != NULL_POS && bombPos.y != NULL_POS){
+            int x = 0;
+            for (enemys& enemy : enemysComming){
+                if (CheckCollisionPointCircle(enemy.getPos(), bombPos, 64) && enemy.getActive()){
+                    enemy.attack(bombValue);
+                    x++;
+
+                }
+            }
+
+            TraceLog(LOG_INFO, "-------------------");
+            bombPos = {NULL_POS, NULL_POS};
+            bombValue = 0;
         }
 
-        // Restart
-        if(restartButton.isClicked(mousePos)){
-            GData->status = SCREEN_GAMESELECT;
-        }
+        // --------------------------- KULE -------------------
+        for (tower1& tower : placedTowers){
+            if(!tower.getBulletIsReady(TimeAsFrame)) continue;
 
-    } else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)){
-        selectedBut = 0;
-        selectedTower = 0;
-    }
-
-    
-    ehBar.setActive(0);
-    endStatus = 1;
-
-    frameTime = GetFrameTime() * GData->gameSpeed; // Frame arası süre
-    TimeAsFrame += frameTime;   // Geçen frame sayısı
-
-
-    // Ai ve arka sistemler
-    for (enemys& enemy : enemysComming){
-        enemy.effectsLoop(frameTime);
-        enemy.aiLoop(mapMan1, frameTime);
-        enemy.move(frameTime);
-                
-
-        if(enemy.getEndData()==1){
-            baseHealth-=enemy.getStats().health;
-            enemy.kill();
-        }
-
-        endStatus=0;
-    }
-
-
-    Vector2 bombPos = {NULL_POS, NULL_POS};
-    int bombValue = 0.f;
-
-    for (Bullet& bul : bullets){
-        if(bul.getActive()){ 
-            std::vector<TowerSpecial> specials = bul.getSpecials();
-            bul.updateBullet(frameTime);
+            const towerStats& stats = tower.getStats();
+            Vector2* enemyPosPtr = nullptr;
+            float enemyTakenPos = 0.f;
+            float enemyHealth = 0.f;
 
             for (enemys& enemy : enemysComming){
-                if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){
-                    bul.killBullet();
-                    enemy.attack(bul.getDamage());
-                    money += bul.getDamage() * (0.5f * GData->hardness );
-                    moneyEarnData += bul.getDamage() * (0.5f * GData->hardness );
+                if (!enemy.getActive()) continue;
 
-                    // Özellikler
-                    for(TowerSpecial& s : specials){
-                        if(s.type == TS_BOMB){
-                            bombPos = bul.getPos();
-                            timedTextures.push_back(gui::timedTexture{timedBomb64x64, bombPos, .1f, TimeAsFrame});
-                            bombValue = s.value;
-                        } else if (s.type == TS_SLOW){
-                            enemy.addEffect({EFFECT_SLOW, (float)s.value, 0.f});
-                        }
+                if(CheckCollisionCircleRec(tower.getCenter(), stats.range, enemy.getRec())){
+                    switch (tower.getTargetSelect()){
+                        case TARGET_NULL:
+                            continue;
+
+                        case TARGET_FIRST:
+                            if(enemyPosPtr==nullptr || enemyTakenPos < enemy.getTakedPosFloat()){
+                                enemyPosPtr = enemy.getPosPtr();
+                                enemyTakenPos = enemy.getTakedPosFloat();
+                                tower.setTimer(TimeAsFrame);
+                            }
+                            continue;
+
+                        case TARGET_LAST:
+                            if(enemyPosPtr==nullptr || enemyTakenPos > enemy.getTakedPosFloat()){
+                                enemyPosPtr = enemy.getPosPtr();
+                                enemyTakenPos = enemy.getTakedPosFloat();
+                                tower.setTimer(TimeAsFrame);
+                            }
+                            continue;
+                        
+                        case TARGET_STRONG:
+                            if(enemyPosPtr==nullptr || enemyHealth < enemy.getStats().health){
+                                enemyPosPtr = enemy.getPosPtr();
+                                enemyHealth = enemy.getStats().health;
+                                tower.setTimer(TimeAsFrame);
+                            }
+
+                            continue;
                     }
-
-                    break;
+                
                 }
+                
             }
-        }
-    }
 
-    // Bomba
-    if(bombPos.x != NULL_POS && bombPos.y != NULL_POS){
-        int x = 0;
-        for (enemys& enemy : enemysComming){
-            if (CheckCollisionPointCircle(enemy.getPos(), bombPos, 64) && enemy.getActive()){
-                enemy.attack(bombValue);
-                x++;
 
+            if(enemyPosPtr != nullptr){
+                bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemyPosPtr, 1500.f, stats.damage, tower.getStats().specials});
             }
         }
 
-        TraceLog(LOG_INFO, "-------------------");
-        bombPos = {NULL_POS, NULL_POS};
-        bombValue = 0;
-    }
+        //  DEBUGG
+        if(GData->debugMode){
+            if(DEBUG_WAWESTART){
+                int wx = 0;
+                int earnedMoney = money;
+                int lastLevel = 0;
+                for(auto& wData :  waweDatas[GData->curentWawe-1].waweDatA){
+                    wx++;
+                    TraceLog(LOG_INFO, "Wawe %i Başlangıç parası: %i", wx, earnedMoney);
 
-    // --------------------------- KULE -------------------
-    for (tower1& tower : placedTowers){
-        if(!tower.getBulletIsReady(TimeAsFrame)) continue;
-
-        const towerStats& stats = tower.getStats();
-        Vector2* enemyPosPtr = nullptr;
-        float enemyTakenPos = 0.f;
-        float enemyHealth = 0.f;
-
-        for (enemys& enemy : enemysComming){
-            if (!enemy.getActive()) continue;
-
-            if(CheckCollisionCircleRec(tower.getCenter(), stats.range, enemy.getRec())){
-                switch (tower.getTargetSelect()){
-                    case TARGET_NULL:
-                        continue;
-
-                    case TARGET_FIRST:
-                        if(enemyPosPtr==nullptr || enemyTakenPos < enemy.getTakedPosFloat()){
-                            enemyPosPtr = enemy.getPosPtr();
-                            enemyTakenPos = enemy.getTakedPosFloat();
-                            tower.setTimer(TimeAsFrame);
-                        }
-                        continue;
-
-                    case TARGET_LAST:
-                        if(enemyPosPtr==nullptr || enemyTakenPos > enemy.getTakedPosFloat()){
-                            enemyPosPtr = enemy.getPosPtr();
-                            enemyTakenPos = enemy.getTakedPosFloat();
-                            tower.setTimer(TimeAsFrame);
-                        }
-                        continue;
-                    
-                    case TARGET_STRONG:
-                        if(enemyPosPtr==nullptr || enemyHealth < enemy.getStats().health){
-                            enemyPosPtr = enemy.getPosPtr();
-                            enemyHealth = enemy.getStats().health;
-                            tower.setTimer(TimeAsFrame);
-                        }
-
-                        continue;
+                    for (wawe& w : wData.usedWawes){
+                        earnedMoney += ( eStats[w.getTowerType()-1].health * w.getCount());
+                        earnedMoney += wData.waweReward.money;
+                    }
                 }
+
+                TraceLog(LOG_INFO, "----------------------");
+                DEBUG_WAWESTART = 0;
+            }
+            if(DEBUG_TOWERDATAS){
+                for (const auto& tower :  TStats){
+                    TraceLog(LOG_INFO, "%s:", tower[0].data.c_str());
+                    int level = 0;
+                    int totalCost = 0;
+                    for(const auto& data : tower){
+                        totalCost += data.cost;
+                        
+                        float dps = data.damage/data.attackSpeed;
+                        float cost_dps = totalCost/dps;
+                        float efficiens = (dps*data.range)/(150.f/5.f); // Range / Tahmini düşman hızı / 5.f
+
+                        TraceLog(LOG_INFO, "  %i -> DPS: %f, Cost/DPS: %f, Tahmini Hasar:%f", level, dps, cost_dps, efficiens);
+                        level++;
+                    }
+                }
+
+                TraceLog(LOG_INFO, "----------------------");
+                DEBUG_TOWERDATAS = 0;
+            }
+        }
+
+        waweIsReady = 1;
+        for (waweData& wData : waweDatas[GData->curentWawe-1].waweDatA){
+            if(!wData.active) continue;
+            bool anyWaweActive = 0;
             
+            for (wawe& w : wData.usedWawes){
+                if(!w.getActive()) continue;
+                endStatus = 0;
+                anyWaweActive = 1;
+
+                if(currentWawe == wData.waweNum){
+                    if(w.getWaweStartTime()==0.f) w.setWaweStartTime(TimeAsFrame);
+                    waweIsReady = 0;
+
+                    if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
+                        w.saveTime(TimeAsFrame);
+                        enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192},  eStats[w.getTowerType()-1]);
+                        w.countN();
+                    }
+                }
             }
             
-        }
+            if (currentWawe==wData.waweNum && !anyWaweActive){
+                money += wData.waweReward.money;
+                moneyEarnData += wData.waweReward.money;
 
-
-        if(enemyPosPtr != nullptr){
-            bullets.push_back(Bullet{towerTexture[tower.getType()-1].bulletTexture, tower.getCenter(), enemyPosPtr, 1500.f, stats.damage, tower.getStats().specials});
-        }
-    }
-
-    //  DEBUGG
-    if(GData->debugMode){
-        if(DEBUG_WAWESTART){
-            int wx = 0;
-            int earnedMoney = money;
-            int lastLevel = 0;
-            for(auto& wData :  waweDatas[GData->curentWawe-1].waweDatA){
-                wx++;
-                TraceLog(LOG_INFO, "Wawe %i Başlangıç parası: %i", wx, earnedMoney);
-
-                for (wawe& w : wData.usedWawes){
-                    earnedMoney += ( eStats[w.getTowerType()-1].health * w.getCount());
-                    earnedMoney += wData.waweReward.money;
-                }
-            }
-
-            TraceLog(LOG_INFO, "----------------------");
-            DEBUG_WAWESTART = 0;
-        }
-        if(DEBUG_TOWERDATAS){
-            for (const auto& tower :  TStats){
-                TraceLog(LOG_INFO, "%s:", tower[0].data.c_str());
-                int level = 0;
-                int totalCost = 0;
-                for(const auto& data : tower){
-                    totalCost += data.cost;
-                    
-                    float dps = data.damage/data.attackSpeed;
-                    float cost_dps = totalCost/dps;
-                    float efficiens = (dps*data.range)/(150.f/5.f); // Range / Tahmini düşman hızı / 5.f
-
-                    TraceLog(LOG_INFO, "  %i -> DPS: %f, Cost/DPS: %f, Tahmini Hasar:%f", level, dps, cost_dps, efficiens);
-                    level++;
-                }
-            }
-
-            TraceLog(LOG_INFO, "----------------------");
-            DEBUG_TOWERDATAS = 0;
-        }
-    }
-
-    waweIsReady = 1;
-    for (waweData& wData : waweDatas[GData->curentWawe-1].waweDatA){
-        if(!wData.active) continue;
-        bool anyWaweActive = 0;
-        
-        for (wawe& w : wData.usedWawes){
-            if(!w.getActive()) continue;
-            endStatus = 0;
-            anyWaweActive = 1;
-
-            if(currentWawe == wData.waweNum){
-                if(w.getWaweStartTime()==0.f) w.setWaweStartTime(TimeAsFrame);
-                waweIsReady = 0;
-
-                if(TimeAsFrame>+w.getSavedClock()+w.getInterval() && TimeAsFrame > w.getWaweStartTime() + w.getTimeAsFrame()){
-                    w.saveTime(TimeAsFrame);
-                    enemysComming.emplace_back(enemyTextures[w.getTowerType()-1], Vector2{0, 192},  eStats[w.getTowerType()-1]);
-                    w.countN();
-                }
+                wData.active = 0;
             }
         }
-        
-        if (currentWawe==wData.waweNum && !anyWaweActive){
-            money += wData.waweReward.money;
-            moneyEarnData += wData.waweReward.money;
 
-            wData.active = 0;
+        // Oyun kaybetme
+        if(baseHealth<=0.f){
+            endStatus = -1;
+        }
+
+        // Temizlik
+        bullets.erase(
+            std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
+        );
+
+        enemysComming.erase(
+            std::remove_if(enemysComming.begin(), enemysComming.end(), [](const enemys& enemy) {return !enemy.getActive();}), enemysComming.end()
+        );
+
+        placedTowers.erase(
+            std::remove_if(placedTowers.begin(), placedTowers.end(), [](const tower1& tower) {return !tower.getActive();}), placedTowers.end()
+        );
+
+        timedTextures.erase(
+            std::remove_if(timedTextures.begin(), timedTextures.end(), [this](const gui::timedTexture& timedText) {return !timedText.getActive(TimeAsFrame);}), timedTextures.end()
+        );
+    } else {
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
+            if(settingsExit.isClicked(mousePos)){
+                settingsScreen = 0;
+            }
+            if(settingsToMenu.isClicked(mousePos)){
+                GData->status = SCREEN_MAINMENU;
+            }
+            if(settingsNoti.isClicked(mousePos)){
+                SET_Noti = !SET_Noti;
+            }
         }
     }
-
-    // Oyun kaybetme
-    if(baseHealth<=0.f){
-        endStatus = -1;
-    }
-
-    // Temizlik
-    bullets.erase(
-        std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {return !bullet.getActive();}), bullets.end()
-    );
-
-    enemysComming.erase(
-        std::remove_if(enemysComming.begin(), enemysComming.end(), [](const enemys& enemy) {return !enemy.getActive();}), enemysComming.end()
-    );
-
-    placedTowers.erase(
-        std::remove_if(placedTowers.begin(), placedTowers.end(), [](const tower1& tower) {return !tower.getActive();}), placedTowers.end()
-    );
-
-    timedTextures.erase(
-        std::remove_if(timedTextures.begin(), timedTextures.end(), [this](const gui::timedTexture& timedText) {return !timedText.getActive(TimeAsFrame);}), timedTextures.end()
-    );
 }
 
 //* --------------------------- ÇİZİM BAŞLADI ---------------------------------------
@@ -457,10 +470,20 @@ void gameplayScreen::draw(){
         waweBut.draw(waweIsReady);
         restartButton.draw();
 
+        // Ayarlar
+        if(settingsScreen){
+            settingsMenu.draw();
+            settingsExit.draw();
+            settingsToMenu.draw();
+
+            gui::drawText("Bildirimler: ", {320,220}, megaFont, BLACK);
+            settingsNoti.draw(SET_Noti);
+        }
+
         // Bildirimler
         if(mainNotification != nullptr && mainNotification->getActive()){
             mainNotification->loop(frameTime);
-            mainNotification->draw();
+            if(SET_Noti) mainNotification->draw();
         }
 
         // Oyun sonu Durumu

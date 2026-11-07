@@ -16,18 +16,23 @@ private:
     int selectedTower = 0;
     int selectedTData = 0;
 
+    // Ayarlar
+    bool settingsScreen = 1;
+    bool SET_Noti=1;
+
     // DEBUG
     bool DEBUG_TOWERDATAS = 1;
     bool DEBUG_WAWESTART = 1;
 
     // ARAYÜZ
     Color BColor{0,100,0,100};
-    gui::texture towerInfoMenu, rightMenu;
-    Texture2D tUpdateM, tDeleteM, startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText;
+    gui::texture towerInfoMenu, rightMenu, settingsMenu;
+    Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
-    gui::textButton restartButton;
+    gui::textButton restartButton, settingsExit, settingsToMenu;
+    gui::switchTextButton settingsNoti;
     gui::switchButton waweBut;
-    gui::font mainFont, smallFont;
+    gui::font megaFont, mainFont, smallFont;
     healthBar hBar, ehBar;
 
     // OYNANIŞ
@@ -54,6 +59,8 @@ private:
 public:
     gameplayScreen(ctx* GData) : baseScreen(GData),
         towerInfoMenu("data/gui/towerInfoMenu.png", {0,120}),
+        rightMenu("data/gui/RMenu.png", {1080,0}),
+        settingsMenu("data/gui/settingsScreen.png", {100,100}),
         timedBomb64x64(LoadTexture("data/gui/bomb64x64.png")),
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
@@ -62,11 +69,14 @@ public:
         towerUpdateButton(tUpdateM, {20, 495}),
         towerRemoveButton(tDeleteM, {20, 605}),
         towerTargetButton(tChangeM, {20, 345}),
+        settingsExit(button200x100Text, "Çıkış", mainFont, BLACK, {980,100}),
+        settingsToMenu(button200x100Text, "Menüye dön", mainFont, BLACK, {100,100}),
+        settingsNoti(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,200}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
         restartButton(button200x100Text, "Back", mainFont, BLACK, {1080, 450}),
         waweBut(startButtonM, stopButtonM, {1080,620}),
-        rightMenu("data/gui/RMenu.png", {1080,0}),
+        megaFont("data/font/Bungee-Regular.ttf", 64.f),
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         smallFont("data/font/Bungee-Regular.ttf", 24.f),
         hBar({20,20}, {400,50}, 10.f, baseHealth, "Ana Can: ", 1),

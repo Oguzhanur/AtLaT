@@ -64,3 +64,17 @@ void gui::switchButton::draw(bool isOn){
         DrawTextureEx(*text2, pos, 0.f, scale, buttonColor);
     }
 }
+
+void gui::switchTextButton::draw(bool isOn){
+    std::string textData;
+    if(isOn){
+        textData = data1;
+    } else {
+        textData = data2;
+    }
+
+    DrawTextureEx(*text , pos, 0.f, scale, buttonColor);
+    
+    Vector2 centerPos = gui::centeringTextEx(textData, scale, Vector2Add(pos, {(text->width*scale)/2.f, (text->height*scale)/2.f}), fontData);
+    DrawTextEx(fontData.getFontData(), textData.c_str(), centerPos, fontData.getFontSize()*scale, 2, color);
+}
