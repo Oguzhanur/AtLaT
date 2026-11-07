@@ -1,11 +1,11 @@
 #pragma once
 #include "screens/base.hpp"
-
+#include <algorithm>
 
 class gameplayScreen : public baseScreen{
 private:
     int moneyEarnData = 500;
-    int money = 500;
+    int money = 99999;
     float baseHealth = 100.f;
 
     // Map ve seçme değişkenleri
@@ -19,6 +19,7 @@ private:
     // Ayarlar
     bool settingsScreen = 0;
     bool SET_Noti=1;
+    bool SET_DamageVis=1;
 
     // DEBUG
     bool DEBUG_TOWERDATAS = 1;
@@ -27,10 +28,10 @@ private:
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu, settingsMenu;
-    Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText;
+    Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText, notificationDamageText;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::textButton settingsButton, settingsExit, settingsToMenu;
-    gui::switchTextButton settingsNoti;
+    gui::switchTextButton settingsNoti, settingsDamageVis;
     gui::switchButton waweBut;
     gui::font megaFont, mainFont, smallFont;
     healthBar hBar, ehBar;
@@ -45,6 +46,7 @@ private:
     std::vector<enemys> enemysComming;
     std::vector<Bullet> bullets;
     notification* mainNotification = nullptr;
+    std::vector<notification*> damageNotifications;
 
     std::vector<AllWawesData> waweDatas;
     std::vector<EnemyStats> eStats;
@@ -69,9 +71,10 @@ public:
         towerUpdateButton(tUpdateM, {20, 495}),
         towerRemoveButton(tDeleteM, {20, 605}),
         towerTargetButton(tChangeM, {20, 345}),
-        settingsExit(button200x100Text, "Çıkış", mainFont, BLACK, {980,100}),
+        settingsExit(button200x100Text, "Oyuna Dön", mainFont, BLACK, {980,100}),
         settingsToMenu(button200x100Text, "Menüye dön", mainFont, BLACK, {100,100}),
         settingsNoti(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,200}),
+        settingsDamageVis(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,305}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
         settingsButton(button200x100Text, "Oyun içi\n\nayarlar", mainFont, BLACK, {1080, 450}),
@@ -83,6 +86,7 @@ public:
         ehBar({500,20}, {84,20}, 3.f, 0.f, "Düşman Canı: ", 0),
         hiddenBut(LoadTexture("data/items/hiddenBut.png")),
         notificationText(LoadTexture("data/gui/notification.png")),
+        notificationDamageText(LoadTexture("data/gui/damageInfo.png")),
         waweDatas(data::waweDatas),
         eStats(data::eStats),
         TStats(data::TStats)

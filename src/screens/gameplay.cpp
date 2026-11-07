@@ -27,11 +27,11 @@ void gameplayScreen::loop(){
                             placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos),  TStats[selectedBut-1], selectedBut);
                             money -=  TStats[selectedBut-1][0].cost;
                         } else {
-                            mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                            mainNotification = new notification{mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2, {450.f, 20.f}};
                         }
                     }
                 } else {
-                    mainNotification = new notification{notificationText, smallFont, "Sadece toprağa\nkule koyabilirsin!", NOTİ_INFO, 2};
+                    mainNotification = new notification{smallFont, "Sadece toprağa\nkule koyabilirsin!", NOTİ_INFO, 2, {450.f, 20.f}};
                 }
                 selectedBut = 0;
                 selectedTower = 0;
@@ -73,7 +73,7 @@ void gameplayScreen::loop(){
                             placedTowers[selectedTower-1].updateLevel();
                             money -= newS.cost;
                         } else {
-                            mainNotification = new notification{notificationText, mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2};
+                            mainNotification = new notification{ mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2, {450.f, 20.f}};
                         }
                     } else if (selectedTData==1){
                         selectedTData = 1;
@@ -88,7 +88,7 @@ void gameplayScreen::loop(){
 
                     placedTowers[selectedTower-1].kill();
                     selectedTower = 0;
-                    mainNotification = new notification{notificationText, mainFont, "Kule silindi!!", NOTİ_INFO, 2};
+                    mainNotification = new notification{mainFont, "Kule silindi!!", NOTİ_INFO, 2, {450.f, 20.f}};
                 }
 
                 if(!selectedTData) selectedTower = 0;
@@ -161,6 +161,11 @@ void gameplayScreen::loop(){
 
                 for (enemys& enemy : enemysComming){
                     if (CheckCollisionPointCircle(enemy.getPos(), bul.getPos(), 32) && enemy.getActive()){
+                        if(SET_DamageVis){
+                            std::string outData = gui::floatToStr(bul.getDamage());
+                            damageNotifications.push_back(new notification(smallFont, outData, NOTİ_INFO, 1, Vector2Add(enemy.getPos(), {32,32})));
+                        }
+
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
                         money += bul.getDamage() * (0.5f * GData->hardness );
@@ -344,16 +349,28 @@ void gameplayScreen::loop(){
         timedTextures.erase(
             std::remove_if(timedTextures.begin(), timedTextures.end(), [this](const gui::timedTexture& timedText) {return !timedText.getActive(TimeAsFrame);}), timedTextures.end()
         );
+
+        damageNotifications.erase(
+            std::remove_if(damageNotifications.begin(), damageNotifications.end(), [](const notification* noti) {
+                if(noti == nullptr) return true;
+                if(!noti->getActive()){
+                    delete noti;
+                    return true;
+                }
+                return false;
+            }), damageNotifications.end()
+        );
     } else {
+        //* --------------------------- AYARLAR ---------------------------------------
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
             if(settingsExit.isClicked(mousePos)){
                 settingsScreen = 0;
-            }
-            if(settingsToMenu.isClicked(mousePos)){
+            } else if(settingsToMenu.isClicked(mousePos)){
                 GData->status = SCREEN_MAINMENU;
-            }
-            if(settingsNoti.isClicked(mousePos)){
+            } else if(settingsNoti.isClicked(mousePos)){
                 SET_Noti = !SET_Noti;
+            } else if(settingsDamageVis.isClicked(mousePos)){
+                SET_DamageVis = !SET_DamageVis;
             }
         }
     }
@@ -479,7 +496,7 @@ void gameplayScreen::draw(){
         waweBut.draw(waweIsReady);
         settingsButton.draw();
 
-        // Ayarlar
+        //* Ayarlar
         if(settingsScreen){
             settingsMenu.draw();
             settingsExit.draw();
@@ -487,12 +504,22 @@ void gameplayScreen::draw(){
 
             gui::drawText("Bildirimler: ", {320,220}, megaFont, BLACK);
             settingsNoti.draw(SET_Noti);
+
+            gui::drawText("Hasarları göster: ", {170,320}, megaFont, BLACK);
+            settingsDamageVis.draw(SET_DamageVis);
         }
 
         // Bildirimler
         if(mainNotification != nullptr && mainNotification->getActive()){
             mainNotification->loop(frameTime);
             if(SET_Noti) mainNotification->draw();
+        }
+
+        for(notification* noti : damageNotifications){
+            if(noti != nullptr && noti->getActive()){
+                noti->loop(frameTime);
+                noti->draw();
+            }
         }
 
         // Oyun sonu Durumu

@@ -24,6 +24,14 @@ int main(void) {
 
     // Loop
     while (!WindowShouldClose()){
+        // Tam ekran
+        if(GData.fullscreen){
+            SetWindowState(FLAG_FULLSCREEN_MODE);
+        } else {
+            ClearWindowState(FLAG_FULLSCREEN_MODE);
+        }
+
+        // Ekran değişimi
         if(GData.status!=SCREEN_NULL){
             delete currentScreen;
 

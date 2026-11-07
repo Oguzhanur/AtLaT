@@ -50,9 +50,12 @@ struct ctx{
     int status = SCREEN_MAINMENU;
     int hardness = H_NORMAL;
 
-    std::vector<int> havedTowerList = {0,1,2,3};
+    std::vector<int> havedTowerList = {0,1,};
     int curentWawe = 1;
-    int endedWawes = 2;
+    int endedWawes = 0;
+
+    //? Genel ayarlar
+    bool fullscreen = 0;
 
     //? Screen'lar arası iletişim
     int isPlayerWinnedGame = -1;
