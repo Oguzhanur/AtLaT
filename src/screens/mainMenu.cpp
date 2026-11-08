@@ -23,7 +23,8 @@ void mainMenuScreen::draw(){
     BeginMode2D(camera);
         
     EndMode2D();
-    gui::drawText("AtLaT", {450,100}, megamegaFont, BLACK);
+    gui::drawText("AtLaT", {logo.getPos().x+230,100}, megamegaFont, BLACK);
     playBut.draw();
     settingsBut.draw();
+    logo.drawEx(logo.getPos(), 2.f);
 }

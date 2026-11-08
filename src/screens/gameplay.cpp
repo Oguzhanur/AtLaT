@@ -29,11 +29,11 @@ void gameplayScreen::loop(){
                             placedTowers.emplace_back(towerTexture[selectedBut-1].towerTexture, mapMan1.getRealPos(data.tilePos),  TStats[selectedBut-1], selectedBut);
                             money -=  TStats[selectedBut-1][0].cost;
                         } else {
-                            mainNotification = new notification{mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2, {450.f, 20.f}};
+                            mainNotification = new notification{mainFont, LANG::notiNotEnoghMoney[GData->lang], NOTİ_INFO, 2, {450.f, 20.f}};
                         }
                     }
                 } else {
-                    mainNotification = new notification{smallFont, "Sadece toprağa\n\nkule koyabilirsin!", NOTİ_INFO, 2, {450.f, 20.f}};
+                    mainNotification = new notification{smallFont, LANG::notiOnlyGrass[GData->lang], NOTİ_INFO, 2, {450.f, 20.f}};
                 }
                 selectedBut = 0;
                 selectedTower = 0;
@@ -75,7 +75,7 @@ void gameplayScreen::loop(){
                             placedTowers[selectedTower-1].updateLevel();
                             money -= newS.cost;
                         } else {
-                            mainNotification = new notification{ mainFont, "Yetersiz Para!!!", NOTİ_INFO, 2, {450.f, 20.f}};
+                            mainNotification = new notification{ mainFont, LANG::notiNotEnoghMoney[GData->lang], NOTİ_INFO, 2, {450.f, 20.f}};
                         }
                     } else if (selectedTData==1){
                         selectedTData = 1;
@@ -90,7 +90,7 @@ void gameplayScreen::loop(){
 
                     placedTowers[selectedTower-1].kill();
                     selectedTower = 0;
-                    mainNotification = new notification{mainFont, "Kule silindi!!", NOTİ_INFO, 2, {450.f, 20.f}};
+                    mainNotification = new notification{mainFont, LANG::notiTowerDeleted[GData->lang], NOTİ_INFO, 2, {450.f, 20.f}};
                 }
 
                 if(!selectedTData) selectedTower = 0;
@@ -441,9 +441,9 @@ void gameplayScreen::draw(){
             towerStats s = placedTowers[selectedTower-1].getStats();
             float towerDps = s.damage/s.attackSpeed;
             if(GData->debugMode){
-                gui::drawText("Attack Speed: " + gui::floatToStr(s.attackSpeed), {20,150}, smallFont, BLACK);
-                gui::drawText("Damage: " + gui::floatToStr(s.damage), {20,180}, smallFont, BLACK);
-                gui::drawText("Range: " + gui::floatToStr(s.range), {20,210}, smallFont, BLACK);
+                gui::drawText("Saldırı hızı: " + gui::floatToStr(s.attackSpeed), {20,150}, smallFont, BLACK);
+                gui::drawText("Hasar: " + gui::floatToStr(s.damage), {20,180}, smallFont, BLACK);
+                gui::drawText("Alan: " + gui::floatToStr(s.range), {20,210}, smallFont, BLACK);
                 gui::drawText("DPS: " + gui::floatToStr(towerDps), {20,240}, smallFont, BLACK);
                 gui::drawText("Cost/DPS: " + gui::floatToStr((float)placedTowers[selectedTower-1].getTotalCost()/towerDps), {20,270}, smallFont, BLACK);
 
@@ -455,29 +455,29 @@ void gameplayScreen::draw(){
             std::string targetText = " ";
             switch (placedTowers[selectedTower-1].getTargetSelect()){
                 case TARGET_NULL:
-                    targetText = "Hiçbiri";
+                    targetText = LANG::targetNone[GData->lang];
                     break;
                 case TARGET_FIRST:
-                    targetText = "Baştaki";
+                    targetText = LANG::targetFirst[GData->lang];
                     break;
                 case TARGET_LAST:
-                    targetText = "Sonuncu";
+                    targetText = LANG::targetLast[GData->lang];
                     break;
                 case TARGET_STRONG:
-                    targetText = "En güçlü";
+                    targetText = LANG::targetStrongest[GData->lang];
                     break;
             };
 
             towerTargetButton.draw();
-            gui::drawText("Hedef: " + targetText, {20, 320}, smallFont, BLACK);
+            gui::drawText(LANG::target[GData->lang] + targetText, {20, 320}, smallFont, BLACK);
             
             if(placedTowers[selectedTower-1].isInMaxLevel()){
-                gui::drawText("SON SEVİYE", {20,450}, smallFont, BLACK);
+                gui::drawText(LANG::maxLevel[GData->lang], {20,450}, smallFont, BLACK);
             } else {
                 towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
                 gui::drawText(nextStats.data + ": ", {22,450}, smallFont, BLACK);
-                gui::drawText("Maaliyet: " + gui::floatToStr(nextStats.cost) + "$", {22,470}, smallFont, BLACK);
+                gui::drawText(LANG::cost[GData->lang] + gui::floatToStr(nextStats.cost) + "$", {22,470}, smallFont, BLACK);
             }
 
         }
@@ -490,10 +490,10 @@ void gameplayScreen::draw(){
 
         gui::drawText(hBar.getAsText(baseHealth), {hPos.x, hPos.y+hSize.y+10}, mainFont, WHITE);
 
-        std::string moneyText = "Para: " + std::to_string(money);
+        std::string moneyText = LANG::money[GData->lang] + std::to_string(money);
         gui::drawText(moneyText, {900,20}, mainFont, Color{255,215,0,255});
 
-        std::string waweText = "Wawe: " + std::to_string(currentWawe);
+        std::string waweText = LANG::wawe[GData->lang] + std::to_string(currentWawe);
         gui::drawText(waweText, {1095, 590}, mainFont, BLACK);
 
         if(GData->debugMode){
@@ -510,13 +510,13 @@ void gameplayScreen::draw(){
             settingsExit.draw();
             settingsToMenu.draw();
 
-            gui::drawText("Bildirimler: ", {150,220}, megaFont, BLACK);
+            gui::drawText(LANG::gSetNoti[GData->lang], {150,220}, megaFont, BLACK);
             settingsNoti.draw(SET_Noti);
 
-            gui::drawText("Hasarları göster: ", {150,320}, megaFont, BLACK);
+            gui::drawText(LANG::gSetDamageVis[GData->lang], {150,320}, megaFont, BLACK);
             settingsDamageVis.draw(SET_DamageVis);
 
-            gui::drawText("Ses Efektleri: ", {150,420}, megaFont, BLACK);
+            gui::drawText(LANG::gSetDamageVis[GData->lang], {150,420}, megaFont, BLACK);
             settingsSoundEffects.draw(SET_Sounds);
         }
 

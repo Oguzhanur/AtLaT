@@ -21,17 +21,17 @@ void endScreen::loop(){
 }
 
 void endScreen::draw(){
-    ClearBackground(RAYWHITE);
+    ClearBackground(GRAY);
     BeginMode2D(camera);
         playBut.draw();
         backBut.draw();
 
         if(GData->isPlayerWinnedGame==1){
-            gui::drawCenteredText("Kazandın", {GData->ScreenSize.x/2,200}, megaFont, GREEN);
+            gui::drawCenteredText(LANG::endWin[GData->lang], {GData->ScreenSize.x/2,200}, megaFont, GREEN);
         } else if (GData->isPlayerWinnedGame==0) {
-            gui::drawCenteredText("Kaybettin", {GData->ScreenSize.x/2,200}, megaFont, RED);
+            gui::drawCenteredText(LANG::endLose[GData->lang], {GData->ScreenSize.x/2,200}, megaFont, RED);
         } else {
-            gui::drawCenteredText("Oyun Bitti", {GData->ScreenSize.x/2,200}, megaFont, YELLOW);
+            gui::drawCenteredText(LANG::endEnd[GData->lang], {GData->ScreenSize.x/2,200}, megaFont, YELLOW);
         }
     EndMode2D();
 }

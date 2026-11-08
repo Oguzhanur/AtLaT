@@ -6,6 +6,7 @@
 
 #include "core/ctx.hpp"
 #include "core/data.hpp"
+#include "core/lang.hpp"
 
 #include "gui/textures.hpp"
 #include "gui/healthBar.hpp"

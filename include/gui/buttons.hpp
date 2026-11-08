@@ -65,13 +65,12 @@ namespace gui{
 
     class switchTextButton : public button {
     private:
-        std::string data1;
-        std::string data2;
+        std::vector<std::string> data;
         font& fontData;
         Color color;
     public:
-        switchTextButton(Texture2D& text, std::string data1, std::string data2, font& fontData, Color color, Vector2 pos) 
-            : button(text, pos), data1(data1), data2(data2), fontData(fontData), color(color) {}
+        switchTextButton(Texture2D& text, std::vector<std::string> data, font& fontData, Color color, Vector2 pos) 
+            : button(text, pos), data(data), fontData(fontData), color(color) {}
         ~switchTextButton() = default;
 
         void draw(bool isOn);

@@ -68,9 +68,9 @@ void gui::switchButton::draw(bool isOn){
 void gui::switchTextButton::draw(bool isOn){
     std::string textData;
     if(isOn){
-        textData = data1;
+        textData = data[0];
     } else {
-        textData = data2;
+        textData = data[1];
     }
 
     DrawTextureEx(*text , pos, 0.f, scale, buttonColor);

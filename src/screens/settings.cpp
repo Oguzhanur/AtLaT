@@ -10,8 +10,16 @@ void settingsScreen::loop(){
     if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
         if(backBut.isClicked(mousePos)){
             GData->status = SCREEN_MAINMENU;
-        } else if (settingsNoti.isClicked(mousePos)){
+        } else if(settingsNoti.isClicked(mousePos)){
             GData->fullscreen = !GData->fullscreen;
+        } else if(langButton.isClicked(mousePos)){
+            TraceLog(LOG_INFO, "LANG: %i", GData->lang);
+            if(GData->lang+1<LANG_END){
+                GData->lang++;
+            } else {
+                GData->lang = 0;
+            }
+            GData->status = SCREEN_SETTINGS;
         }
     }
 }
@@ -21,6 +29,9 @@ void settingsScreen::draw(){
     BeginMode2D(camera);
         backBut.draw();
         settingsNoti.draw(GData->fullscreen);
-        gui::drawText("Tam ekran ayarı: ", {200,200}, megaFont, BLACK);
+        gui::drawText(LANG::settingsFullScreenText[GData->lang], {200,200}, megaFont, BLACK);
+
+        langButton.draw();
+        gui::drawText(LANG::settingsLangagesText[GData->lang], {200,300}, megaFont, BLACK);
     EndMode2D();
 }
