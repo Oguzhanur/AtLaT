@@ -32,7 +32,7 @@ private:
     // ARAYÜZ
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu, settingsMenu;
-    Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText, notificationDamageText;
+    Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, button200x80Text, hiddenBut, notificationText, notificationDamageText;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::textButton settingsButton, settingsExit, settingsToMenu;
     gui::switchTextButton settingsNoti, settingsDamageVis, settingsSoundEffects;
@@ -73,15 +73,18 @@ public:
         tUpdateM(LoadTexture("data/gui/towerUpgrade.png")),
         tDeleteM(LoadTexture("data/gui/towerRemove.png")),
         tChangeM(LoadTexture("data/gui/towerChange.png")),
-        button200x100Text(LoadTexture("data/gui/button200x100.png")),
+        button200x100Text(LoadTexture("data/gui/buttons/button200x100.png")),
+        button200x80Text(LoadTexture("data/gui/buttons/button200x80.png")),
         towerUpdateButton(tUpdateM, {20, 495}),
         towerRemoveButton(tDeleteM, {20, 605}),
         towerTargetButton(tChangeM, {20, 345}),
+
         settingsExit(button200x100Text, "Oyuna Dön", mainFont, BLACK, {980,100}),
         settingsToMenu(button200x100Text, "Menüye dön", mainFont, BLACK, {100,100}),
-        settingsNoti(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,200}),
-        settingsDamageVis(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,305}),
-        settingsSoundEffects(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,410}),
+        settingsNoti(button200x80Text, "Açık", "Kapalı", mainFont, BLACK, {880,210}),
+        settingsDamageVis(button200x80Text, "Açık", "Kapalı", mainFont, BLACK, {880,310}),
+        settingsSoundEffects(button200x80Text, "Açık", "Kapalı", mainFont, BLACK, {880,410}),
+        
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
         settingsButton(button200x100Text, "Oyun içi\n\nayarlar", mainFont, BLACK, {1080, 450}),

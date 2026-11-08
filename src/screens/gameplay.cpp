@@ -9,10 +9,6 @@ void gameplayScreen::loop(){
     Vector2 mousePos = GetMousePosition();
     bool isClickAnything = 0;
 
-    if (IsKeyPressed(KEY_SPACE)) {
-        damageEffect.play();
-    }
-
     if(!settingsScreen){
         // -------------------------------- BUTONLAR VE TIKLAMA --------------------------------
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
@@ -37,7 +33,7 @@ void gameplayScreen::loop(){
                         }
                     }
                 } else {
-                    mainNotification = new notification{smallFont, "Sadece toprağa\nkule koyabilirsin!", NOTİ_INFO, 2, {450.f, 20.f}};
+                    mainNotification = new notification{smallFont, "Sadece toprağa\n\nkule koyabilirsin!", NOTİ_INFO, 2, {450.f, 20.f}};
                 }
                 selectedBut = 0;
                 selectedTower = 0;
@@ -172,7 +168,9 @@ void gameplayScreen::loop(){
                             damageNotifications.push_back(new notification(smallFont, outData, NOTİ_INFO, 1, Vector2Add(enemy.getPos(), {32,32})));
                         }
 
-                        damageEffect.play();
+                        if(SET_Sounds){
+                            damageEffect.play();
+                        }
 
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
@@ -381,7 +379,6 @@ void gameplayScreen::loop(){
                 SET_DamageVis = !SET_DamageVis;
             } else if(settingsSoundEffects.isClicked(mousePos)){
                 SET_Sounds = !SET_Sounds;
-                damageEffect.setActive(SET_Sounds);
             }
         }
     }
@@ -513,13 +510,13 @@ void gameplayScreen::draw(){
             settingsExit.draw();
             settingsToMenu.draw();
 
-            gui::drawText("Bildirimler: ", {320,220}, megaFont, BLACK);
+            gui::drawText("Bildirimler: ", {150,220}, megaFont, BLACK);
             settingsNoti.draw(SET_Noti);
 
-            gui::drawText("Hasarları göster: ", {170,320}, megaFont, BLACK);
+            gui::drawText("Hasarları göster: ", {150,320}, megaFont, BLACK);
             settingsDamageVis.draw(SET_DamageVis);
 
-            gui::drawText("Ses Efektleri: ", {170,420}, megaFont, BLACK);
+            gui::drawText("Ses Efektleri: ", {150,420}, megaFont, BLACK);
             settingsSoundEffects.draw(SET_Sounds);
         }
 
