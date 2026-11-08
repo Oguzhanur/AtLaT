@@ -14,6 +14,8 @@
 #include "gui/timedTexture.hpp"
 #include "gui/notification.hpp"
 
+#include "sounds/sounds.hpp"
+
 #include "towers/towers.hpp"
 #include "enemy/enemys.hpp"
 

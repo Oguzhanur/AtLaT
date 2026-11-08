@@ -2,10 +2,16 @@
 
 void gameplayScreen::start(){
     TraceLog(LOG_INFO, "MAIN BASLADI");
+
 }
+
 void gameplayScreen::loop(){
     Vector2 mousePos = GetMousePosition();
     bool isClickAnything = 0;
+
+    if (IsKeyPressed(KEY_SPACE)) {
+        damageEffect.play();
+    }
 
     if(!settingsScreen){
         // -------------------------------- BUTONLAR VE TIKLAMA --------------------------------
@@ -165,6 +171,8 @@ void gameplayScreen::loop(){
                             std::string outData = gui::floatToStr(bul.getDamage());
                             damageNotifications.push_back(new notification(smallFont, outData, NOTİ_INFO, 1, Vector2Add(enemy.getPos(), {32,32})));
                         }
+
+                        damageEffect.play();
 
                         bul.killBullet();
                         enemy.attack(bul.getDamage());
@@ -371,6 +379,9 @@ void gameplayScreen::loop(){
                 SET_Noti = !SET_Noti;
             } else if(settingsDamageVis.isClicked(mousePos)){
                 SET_DamageVis = !SET_DamageVis;
+            } else if(settingsSoundEffects.isClicked(mousePos)){
+                SET_Sounds = !SET_Sounds;
+                damageEffect.setActive(SET_Sounds);
             }
         }
     }
@@ -507,6 +518,9 @@ void gameplayScreen::draw(){
 
             gui::drawText("Hasarları göster: ", {170,320}, megaFont, BLACK);
             settingsDamageVis.draw(SET_DamageVis);
+
+            gui::drawText("Ses Efektleri: ", {170,420}, megaFont, BLACK);
+            settingsSoundEffects.draw(SET_Sounds);
         }
 
         // Bildirimler

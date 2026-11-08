@@ -50,7 +50,7 @@ struct ctx{
     int status = SCREEN_MAINMENU;
     int hardness = H_NORMAL;
 
-    std::vector<int> havedTowerList = {0,1,};
+    std::vector<int> havedTowerList = {0,1};
     int curentWawe = 1;
     int endedWawes = 0;
 

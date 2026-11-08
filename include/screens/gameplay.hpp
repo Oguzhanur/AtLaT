@@ -5,7 +5,7 @@
 class gameplayScreen : public baseScreen{
 private:
     int moneyEarnData = 500;
-    int money = 99999;
+    int money = 500;
     float baseHealth = 100.f;
 
     // Map ve seçme değişkenleri
@@ -20,6 +20,10 @@ private:
     bool settingsScreen = 0;
     bool SET_Noti=1;
     bool SET_DamageVis=1;
+    bool SET_Sounds=1;
+    
+    int testtt=0;
+    bool playSound = 1;
 
     // DEBUG
     bool DEBUG_TOWERDATAS = 1;
@@ -31,13 +35,15 @@ private:
     Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, hiddenBut, notificationText, notificationDamageText;
     gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::textButton settingsButton, settingsExit, settingsToMenu;
-    gui::switchTextButton settingsNoti, settingsDamageVis;
+    gui::switchTextButton settingsNoti, settingsDamageVis, settingsSoundEffects;
     gui::switchButton waweBut;
     gui::font megaFont, mainFont, smallFont;
     healthBar hBar, ehBar;
 
-    // OYNANIŞ
+    // SESLER
+    soundsEffect damageEffect;
 
+    // OYNANIŞ
     std::vector<gui::timedTexture> timedTextures;
     std::vector<towerTexturesData> towerTexture;
     std::vector<gui::hiddenButton> towerButtons;
@@ -75,6 +81,7 @@ public:
         settingsToMenu(button200x100Text, "Menüye dön", mainFont, BLACK, {100,100}),
         settingsNoti(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,200}),
         settingsDamageVis(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,305}),
+        settingsSoundEffects(button200x100Text, "Açık", "Kapalı", mainFont, BLACK, {780,410}),
         startButtonM(LoadTexture("data/gui/startButton.png")),
         stopButtonM(LoadTexture("data/gui/stopButton.png")),
         settingsButton(button200x100Text, "Oyun içi\n\nayarlar", mainFont, BLACK, {1080, 450}),
@@ -89,7 +96,8 @@ public:
         notificationDamageText(LoadTexture("data/gui/damageInfo.png")),
         waweDatas(data::waweDatas),
         eStats(data::eStats),
-        TStats(data::TStats)
+        TStats(data::TStats),
+        damageEffect("data/sounds/shoot.wav", 0.1)
     {
         camera.target = {GData->ScreenSize.x/2, GData->ScreenSize.y/2};
         camera.offset = {GData->ScreenSize.x/2, GData->ScreenSize.y/2};
@@ -153,7 +161,6 @@ public:
         UnloadTexture(tChangeM);
         UnloadTexture(startButtonM);
         UnloadTexture(stopButtonM);
-
     }
 
     void start() override;

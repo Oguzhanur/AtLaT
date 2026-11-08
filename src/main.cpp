@@ -16,7 +16,7 @@ int main(void) {
 
     TraceLog(LOG_INFO, "MAIN BASLADI");
     InitWindow(GData.ScreenSize.x, GData.ScreenSize.y, "Tank Oyunu");
-
+    InitAudioDevice();
     SetTargetFPS(60);
 
     // EKRANLAR
@@ -64,6 +64,7 @@ int main(void) {
         currentScreen->loop();
     }
 
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }
