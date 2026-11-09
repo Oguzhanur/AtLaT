@@ -23,6 +23,7 @@ void endScreen::loop(){
 void endScreen::draw(){
     ClearBackground(GRAY);
     BeginMode2D(camera);
+        background.draw();
         playBut.draw();
         backBut.draw();
 

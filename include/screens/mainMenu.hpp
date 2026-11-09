@@ -5,7 +5,7 @@
 class mainMenuScreen : public baseScreen{
 private:
     Texture2D ButtonBasic;
-    gui::texture logo;
+    gui::texture logo, background;
     gui::textButton playBut, settingsBut;
     gui::font mainFont, megaFont, megamegaFont;
 public:
@@ -16,7 +16,8 @@ public:
         mainFont("data/font/Bungee-Regular.ttf", 32.f),
         megaFont("data/font/Bungee-Regular.ttf", 64.f),
         megamegaFont("data/font/Bungee-Regular.ttf", 128.f),
-        logo("data/gui/logoBig.png", {350,57})
+        logo("data/gui/logoBig.png", {350,57}),
+        background("data/gui/mainMenu.png", {0,0})
     {}
     ~mainMenuScreen() override {
         UnloadTexture(ButtonBasic);

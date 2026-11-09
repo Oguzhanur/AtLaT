@@ -7,6 +7,8 @@ void settingsScreen::start(){
 void settingsScreen::loop(){
     Vector2 mousePos = GetMousePosition();
     backBut.effectLoop(mousePos);
+    langButton.effectLoop(mousePos);
+    settingsNoti.effectLoop(mousePos);
     if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
         if(backBut.isClicked(mousePos)){
             GData->status = SCREEN_MAINMENU;
@@ -27,11 +29,12 @@ void settingsScreen::loop(){
 void settingsScreen::draw(){
     ClearBackground(GRAY);
     BeginMode2D(camera);
+        background.draw();
         backBut.draw();
         settingsNoti.draw(GData->fullscreen);
-        gui::drawText(LANG::settingsFullScreenText[GData->lang], {200,200}, megaFont, BLACK);
+        gui::drawText(LANG::settingsFullScreenText[GData->lang], {200,settingsNoti.getPos().y+8}, megaFont, BLACK);
 
         langButton.draw();
-        gui::drawText(LANG::settingsLangagesText[GData->lang], {200,300}, megaFont, BLACK);
+        gui::drawText(LANG::settingsLangagesText[GData->lang], {200,langButton.getPos().y+8}, megaFont, BLACK);
     EndMode2D();
 }

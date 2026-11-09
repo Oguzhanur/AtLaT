@@ -5,6 +5,7 @@ class gameselectScreen : public baseScreen{
 private:
     Texture2D basicBut, e1, e2, e3, e4, e5, hiddene;
     std::vector<gui::hiddenButton> episodeButtons;
+    gui::texture background;
     gui::textButton backBut;
     gui::font mainFont, megaFont;
 public:
@@ -18,7 +19,8 @@ public:
         e3(LoadTexture("data/gui/episode3but.png")),
         e4(LoadTexture("data/gui/episode4but.png")),
         e5(LoadTexture("data/gui/episode5but.png")),
-        hiddene(LoadTexture("data/gui/episodebutNoAc.png"))
+        hiddene(LoadTexture("data/gui/episodebutNoAc.png")),
+        background("data/gui/gameselect.png", {0,0})
     {
         episodeButtons.reserve(5);
         episodeButtons.push_back(gui::hiddenButton{e1, hiddene, {150,350}, 0});

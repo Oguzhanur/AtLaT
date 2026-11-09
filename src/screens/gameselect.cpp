@@ -29,6 +29,7 @@ void gameselectScreen::loop(){
 void gameselectScreen::draw(){
     ClearBackground(GRAY);
     BeginMode2D(camera);
+        background.draw();
         backBut.draw();
         gui::drawText(LANG::gameselectSelectEpisode[GData->lang], {300,150}, megaFont, BLACK);
 

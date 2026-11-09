@@ -46,18 +46,19 @@ struct ctx{
     Vector2 ScreenSize = {1280,720};
     float gameSpeed = 1.f; //TODO: uygulanabilir gameSpeed yap
 
-    bool debugMode = 1;
-    int status = SCREEN_GAMEPLAY;
+    bool debugMode = 0;
+    int status = SCREEN_MAINMENU;
     int hardness = H_NORMAL;
 
     std::vector<int> havedTowerList = {0,1};
     int curentWawe = 1;
     int endedWawes = 0;
+    int lastWawe = 2;
 
     //? Genel ayarlar
     bool fullscreen = 0;
-    int lang = 0;
+    int lang = 1;
 
     //? Screen'lar arası iletişim
-    int isPlayerWinnedGame = -1;
+    int isPlayerWinnedGame = 1;
 };

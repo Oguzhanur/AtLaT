@@ -7,21 +7,21 @@
 
 namespace data{
     inline const std::vector<std::vector<towerStats>> TStats = { //? Hasar, Alan, Saldırı Hızı, Maliyet
-        {   { 1.f, 150.f, 0.5f, 250, {{TS_NULL}}, "Basic Tower"}, // Normal
-            { 1.f, 200.f, 0.5f, 100, {{TS_NULL}}, "Range Update"}, 
-            { 2.f, 200.f, 0.5f, 300, {{TS_NULL}}, "Better guns"}},
+        {   { 1.f, 150.f, 0.5f, 250, {{TS_NULL}}}, // Normal
+            { 1.f, 200.f, 0.5f, 100, {{TS_NULL}}}, 
+            { 2.f, 200.f, 0.5f, 300, {{TS_NULL}}}},
 
-        {   { 4.f, 250.f, 2.0f, 450, {{TS_NULL}}, "Strong & Slow tower"}, // yavaş ve güçlü
-            { 4.f, 400.f, 2.0f, 120, {{TS_NULL}}, "Range Update"},
-            { 8.f, 400.f, 1.0f, 400, {{TS_NULL}}, "Faster & Strong reload"}},
+        {   { 4.f, 250.f, 2.0f, 450, {{TS_NULL}}}, // yavaş ve güçlü
+            { 4.f, 400.f, 2.0f, 120, {{TS_NULL}}},
+            { 8.f, 400.f, 1.0f, 400, {{TS_NULL}}}},
 
-        {   { 4.f, 150.f, 4.0f, 350, {{TS_BOMB, 6}}, "Range Attack Tower"}, // Alan vuran, yavaş
-            { 8.f, 150.f, 4.0f, 250, {{TS_BOMB, 6}}, "Strong bomb"},
-            { 8.f, 200.f, 2.5f, 550, {{TS_BOMB, 6}}, "Mobile bomb"}},
+        {   { 4.f, 150.f, 4.0f, 350, {{TS_BOMB, 6}}}, // Alan vuran, yavaş
+            { 8.f, 150.f, 4.0f, 250, {{TS_BOMB, 6}}},
+            { 8.f, 200.f, 2.5f, 550, {{TS_BOMB, 6}}}},
 
-        {   { 0.f, 150.f, 1.0f, 150, {{TS_SLOW, 3}}, "Slowwer Tower"}, // Yavaşlatan
-            { 0.f, 300.f, 1.0f, 150, {{TS_SLOW, 3}}, "Range Update"},
-            { 0.f, 300.f, 0.5f, 300, {{TS_SLOW, 5}}, "Faster"}}
+        {   { 0.f, 150.f, 1.0f, 150, {{TS_SLOW, 3}}}, // Yavaşlatan
+            { 0.f, 300.f, 1.0f, 150, {{TS_SLOW, 3}}},
+            { 0.f, 300.f, 0.5f, 300, {{TS_SLOW, 5}}}}
     };
 
     inline const std::vector<std::string> ePaths = {
@@ -32,7 +32,7 @@ namespace data{
         {  4.f,   4.f, 150.f, {ES_NULL}}, // Normal düşman
         {  2.f,   2.f, 250.f, {ES_NULL}}, // Hızlı düşman
         { 10.f,  10.f, 100.f, {ES_NULL}}, // Yaşlı dayılar
-        {150.f, 150.f, 150.f, {ES_BOSS}}, // Güçlü
+        {150.f, 150.f, 100.f, {ES_BOSS}}, // Güçlü
 
 
         // LVL 2
@@ -118,8 +118,8 @@ namespace data{
                 wawe{1.f, E2_Heavy, 10, 2}}, reward{400}},
 
             {20, {wawe{20.f, E2_Boss, 1, 0.1},
-                wawe{15.f, E2_Storm, 5, 1},
-                wawe{25.f, E2_Light, 3, 0.5},
+                wawe{15.f, E2_Storm, 2, 1},
+                wawe{25.f, E2_Light, 2, 0.5},
                 wawe{1.f, E2_Heavy, 25, 1},
                 wawe{2.f, E2_Speed, 25, 1}}, reward{300}},
         }, {}}

@@ -20,6 +20,7 @@ void mainMenuScreen::loop(){
 
 void mainMenuScreen::draw(){
     ClearBackground(GRAY);
+    background.draw();
     BeginMode2D(camera);
         
     EndMode2D();

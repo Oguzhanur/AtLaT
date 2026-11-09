@@ -283,11 +283,11 @@ void gameplayScreen::loop(){
                 DEBUG_WAWESTART = 0;
             }
             if(DEBUG_TOWERDATAS){
-                for (const auto& tower :  TStats){
-                    TraceLog(LOG_INFO, "%s:", tower[0].data.c_str());
+                for(int x=0; x<TStats.size(); x++){
+                    TraceLog(LOG_INFO, "%s:",LANG::towersUpdates[x][GData->lang][0].c_str());
                     int level = 0;
                     int totalCost = 0;
-                    for(const auto& data : tower){
+                    for(const auto& data : TStats[x]){
                         totalCost += data.cost;
                         
                         float dps = data.damage/data.attackSpeed;
@@ -446,7 +446,8 @@ void gameplayScreen::draw(){
                 gui::drawText("Alan: " + gui::floatToStr(s.range), {20,210}, smallFont, BLACK);
                 gui::drawText("DPS: " + gui::floatToStr(towerDps), {20,240}, smallFont, BLACK);
                 gui::drawText("Cost/DPS: " + gui::floatToStr((float)placedTowers[selectedTower-1].getTotalCost()/towerDps), {20,270}, smallFont, BLACK);
-
+            } else {
+                gui::drawText(LANG::towersUpdates[placedTowers[selectedTower-1].getType()-1][GData->lang][0], {20,150}, smallFont, BLACK);
             }
             
             towerUpdateButton.draw();
@@ -476,7 +477,7 @@ void gameplayScreen::draw(){
             } else {
                 towerStats nextStats = placedTowers[selectedTower-1].getNextStats();
 
-                gui::drawText(nextStats.data + ": ", {22,450}, smallFont, BLACK);
+                gui::drawText(LANG::towersUpdates[placedTowers[selectedTower-1].getType()-1][GData->lang][placedTowers[selectedTower-1].getLevel()+1] + ": ", {22,450}, smallFont, BLACK);
                 gui::drawText(LANG::cost[GData->lang] + gui::floatToStr(nextStats.cost) + "$", {22,470}, smallFont, BLACK);
             }
 
@@ -516,7 +517,7 @@ void gameplayScreen::draw(){
             gui::drawText(LANG::gSetDamageVis[GData->lang], {150,320}, megaFont, BLACK);
             settingsDamageVis.draw(SET_DamageVis);
 
-            gui::drawText(LANG::gSetDamageVis[GData->lang], {150,420}, megaFont, BLACK);
+            gui::drawText(LANG::gSetSoundEffects[GData->lang], {150,420}, megaFont, BLACK);
             settingsSoundEffects.draw(SET_Sounds);
         }
 

@@ -33,7 +33,7 @@ private:
     Color BColor{0,100,0,100};
     gui::texture towerInfoMenu, rightMenu, settingsMenu;
     Texture2D tUpdateM, tDeleteM,startButtonM, stopButtonM, tChangeM, timedBomb64x64, button200x100Text, button200x80Text, hiddenBut, notificationText, notificationDamageText;
-    gui::button towerUpdateButton, towerRemoveButton, towerTargetButton;
+    gui::textButton towerUpdateButton, towerRemoveButton, towerTargetButton;
     gui::textButton settingsButton, settingsExit, settingsToMenu;
     gui::switchTextButton settingsNoti, settingsDamageVis, settingsSoundEffects;
     gui::switchButton waweBut;
@@ -75,9 +75,9 @@ public:
         tChangeM(LoadTexture("data/gui/towerChange.png")),
         button200x100Text(LoadTexture("data/gui/buttons/button200x100.png")),
         button200x80Text(LoadTexture("data/gui/buttons/button200x80.png")),
-        towerUpdateButton(tUpdateM, {20, 495}),
-        towerRemoveButton(tDeleteM, {20, 605}),
-        towerTargetButton(tChangeM, {20, 345}),
+        towerUpdateButton(tUpdateM, LANG::updateTower[GData->lang], mainFont, BLACK, {20, 495}),
+        towerRemoveButton(tDeleteM, LANG::deleteTower[GData->lang], mainFont, BLACK, {20, 605}),
+        towerTargetButton(tChangeM, LANG::changeTarget[GData->lang], mainFont, BLACK, {20, 345}),
 
         settingsExit(button200x100Text, LANG::BackToGame[GData->lang], mainFont, BLACK, {980,100}),
         settingsToMenu(button200x100Text, LANG::MainMenu[GData->lang], mainFont, BLACK, {100,100}),
