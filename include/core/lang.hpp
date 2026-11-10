@@ -16,6 +16,7 @@ namespace LANG{
     inline std::vector<std::string> MainMenu = {"Main menu", "Ana Menü"};
     inline std::vector<std::string> Start = {"Start", "Başla"};
     inline std::vector<std::string> Settings = {"Settings", "Ayarlar"};
+    inline std::vector<std::string> ExitGame = {"Exit Game", "Oyunu kapat"};
     inline std::vector<std::vector<std::string>> openClosed = {{"Open", "Closed"}, {"Açık", "Kapalı"}};
 
     //*------------------------- AYARLAR -----------------
@@ -29,9 +30,13 @@ namespace LANG{
 
     //*------------------------- OYUN SONU -----------------
     inline std::vector<std::string> endRetry = {"Retry", "Tekrar dene"};
+    inline std::vector<std::string> endNext = {"Next episode", "Sıradaki"};
     inline std::vector<std::string> endWin = {"You win", "Kazandınnn"};
     inline std::vector<std::string> endLose = {"You lose", "Kaybettin"};
     inline std::vector<std::string> endEnd = {"Game Over", "Maç bitti"};
+
+    //*------------------------- DEMO SONU -----------------
+    inline std::vector<std::string> demoEndText = {"You win but game is over", "Kazandın ama oyunu şimdilik bitti"};
 
     //*------------------------- OYNANIŞ -----------------
     inline std::vector<std::string> BackToGame = {"Back to\n\ngame", "Oyuna Dön"};
@@ -66,9 +71,9 @@ namespace LANG{
     inline std::vector<std::vector<std::vector<std::string>>> towersUpdates = {
         {{"Basic Tower", "Range Update", "Better guns"}, {"Basit Kule", "Geniş Alan", "Sağlam silah"}},
 
-        {{"Strong & Slow tower", "Range Update", "Faster & Strong reload"}, {"Güçlü ama yavaş kule", "Geniş Alan", "Daha hızlı ve güçlü"}},
+        {{"Strong & Slow tower", "Range Update", "Faster & Strong"}, {"Güçlü ama yavaş kule", "Geniş Alan", "Hızlı ve güçlü"}},
 
-        {{"Range Attack Tower", "Strong bomb", "Mobile bomb"}, {"Alan Hasarlı kule", "Güçlü bombalar", "Daha efektif bomba"}},
+        {{"Range Attack Tower", "Strong bomb", "Mobile bomb"}, {"Alan Hasarlı kule", "Güçlü bombalar", "Daha hızlı bomba"}},
         
         {{"Slowwer Tower", "Range Update", "Faster"}, {"Yavaşlatıcı kule", "Geniş Alan", "Daha hızlı"}}
     };

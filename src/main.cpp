@@ -10,6 +10,7 @@
 #include "screens/endScreen.hpp"
 #include "screens/settings.hpp"
 #include "screens/gameselect.hpp"
+#include "screens/demoEndScreen.hpp"
 
 int main(void) {
     ctx GData;
@@ -23,7 +24,7 @@ int main(void) {
     baseScreen* currentScreen = nullptr;
 
     // Loop
-    while (!WindowShouldClose()){
+    while (!WindowShouldClose() && GData.status!= SCREEN_CLOSE){
         // Tam ekran
         if(GData.fullscreen){
             SetWindowState(FLAG_FULLSCREEN_MODE);
@@ -51,7 +52,13 @@ int main(void) {
                 case SCREEN_END:
                     currentScreen = new endScreen(&GData);
                     break;
-
+                case SCREEN_DEMOEND:
+                    currentScreen = new demoendScreen(&GData);
+                    break;
+                case SCREEN_CLOSE:
+                    CloseAudioDevice();
+                    CloseWindow();
+                    break;
             }
             
             currentScreen->start();

@@ -13,7 +13,10 @@ enum Screens{
     SCREEN_GAMEPLAY,
     SCREEN_SETTINGS,
     SCREEN_GAMESELECT,
-    SCREEN_END
+    SCREEN_DEMOEND,
+    SCREEN_END,
+
+    SCREEN_CLOSE
 };
 
 enum Hardness{
@@ -60,5 +63,5 @@ struct ctx{
     int lang = 1;
 
     //? Screen'lar arası iletişim
-    int isPlayerWinnedGame = 1;
+    int isPlayerWinnedGame = -1;
 };

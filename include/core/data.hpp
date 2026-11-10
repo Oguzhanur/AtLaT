@@ -17,7 +17,7 @@ namespace data{
 
         {   { 4.f, 150.f, 4.0f, 350, {{TS_BOMB, 6}}}, // Alan vuran, yavaş
             { 8.f, 150.f, 4.0f, 250, {{TS_BOMB, 6}}},
-            { 8.f, 200.f, 2.5f, 550, {{TS_BOMB, 6}}}},
+            { 8.f, 200.f, 1.5f, 550, {{TS_BOMB, 9}}}},
 
         {   { 0.f, 150.f, 1.0f, 150, {{TS_SLOW, 3}}}, // Yavaşlatan
             { 0.f, 300.f, 1.0f, 150, {{TS_SLOW, 3}}},

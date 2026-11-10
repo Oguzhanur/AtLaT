@@ -550,8 +550,12 @@ void gameplayScreen::draw(){
                 }
             }
 
-            GData->isPlayerWinnedGame = 1;
-            GData->status = SCREEN_END;
+            if(GData->endedWawes>=GData->lastWawe){
+                GData->status = SCREEN_DEMOEND;
+            } else {
+                GData->isPlayerWinnedGame = 1;
+                GData->status = SCREEN_END;
+            }
         } else if (endStatus==-1){
             GData->isPlayerWinnedGame = 0;
             GData->status = SCREEN_END;
