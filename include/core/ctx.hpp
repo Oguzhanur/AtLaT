@@ -60,7 +60,7 @@ struct ctx{
 
     //? Genel ayarlar
     bool fullscreen = 0;
-    int lang = 1;
+    int lang = 0;
 
     //? Screen'lar arası iletişim
     int isPlayerWinnedGame = -1;
